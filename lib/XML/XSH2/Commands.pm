@@ -1,5 +1,5 @@
 # This file was automatically generated from src/xsh_grammar.xml on 
-# Sat Dec  4 22:00:04 2004
+# Sun Jan  9 22:10:04 2005
 package XML::XSH2::Functions;
 
 %COMMANDS = (
@@ -16,6 +16,13 @@ package XML::XSH2::Functions;
 	{
 	 'e' => 'encoding',
 	 'encoding' => 'string',
+	}],
+'apropos' => [\&apropos, 1, 1,
+	{
+	 'r' => 'regexp',
+	 'regexp' => '',
+	 'f' => 'fulltext',
+	 'fulltext' => '',
 	}],
 '?' => 'help',
 'help' => [\&help, 0, 1],
@@ -66,6 +73,8 @@ package XML::XSH2::Functions;
 	{
 	 'n' => 'namespace',
 	 'namespace' => 'exp',
+	 'i' => 'inner',
+	 'inner' => '',
 	}],
 'wrap_span' => 'wrap-span',
 'wrap-span' => [\&wrap_span, 3, 3,
@@ -136,6 +145,8 @@ package XML::XSH2::Functions;
 	{
 	 'n' => 'nonl',
 	 'nonl' => '',
+	 'e' => 'stderr',
+	 'stderr' => '',
 	}],
 'sort' => [\&perlsort, 1, 1,
 	{
@@ -218,6 +229,8 @@ package XML::XSH2::Functions;
 	 'file' => 'string',
 	 'p' => 'pipe',
 	 'pipe' => 'string',
+	 'S' => 'subtree',
+	 'subtree' => '',
 	 'r' => 'print',
 	 'print' => '',
 	 's' => 'string',

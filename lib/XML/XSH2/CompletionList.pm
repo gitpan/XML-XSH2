@@ -7,6 +7,7 @@ use vars qw(@XSH_COMMANDS @XSH_NOXPATH_COMMANDS);
 .
 ?
 add
+apropos
 assign
 backups
 call

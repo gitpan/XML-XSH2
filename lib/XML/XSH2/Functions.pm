@@ -1,5 +1,5 @@
 # -*- cperl -*-
-# $Id: Functions.pm,v 2.2 2004/12/04 10:26:15 pajas Exp $
+# $Id: Functions.pm,v 2.7 2005/01/09 21:31:33 pajas Exp $
 
 package XML::XSH2::Functions;
 
@@ -31,12 +31,12 @@ use vars qw/@ISA @EXPORT_OK %EXPORT_TAGS $VERSION $REVISION $OUT
 	    $XPATH_AXIS_COMPLETION
 	    $XPATH_COMPLETION $DEFAULT_FORMAT $LINE_NUMBERS
             $RT_LINE $RT_COLUMN $RT_OFFSET $RT_SCRIPT $SCRIPT
-            $BENCHMARK $Xinclude_prefix
+            $BENCHMARK $Xinclude_prefix $HISTFILE
 	  /;
 
 BEGIN {
-  $VERSION='2.0.1';
-  $REVISION=q($Revision: 2.2 $);
+  $VERSION='2.0.2';
+  $REVISION=q($Revision: 2.7 $);
   @ISA=qw(Exporter);
   my @PARAM_VARS=qw/$ENCODING
 		    $QUERY_ENCODING
@@ -62,6 +62,7 @@ BEGIN {
 		    $LINE_NUMBERS
 		    $WARNINGS
 		    $MAXPRINTLENGTH
+		    $HISTFILE
 		    /;
   *XSH_NS=*XML::XSH2::xshNS;
   *XML::XSH2::Map::XSH_NS=*XML::XSH2::xshNS;
@@ -110,6 +111,7 @@ BEGIN {
   $WARNINGS=1;
   $BENCHMARK=0;
   $MAXPRINTLENGTH=256;
+  $HISTFILE="$ENV{HOME}/.xsh2_history";
   *XML::XSH2::Map::CURRENT_SCRIPT=\$RT_SCRIPT;
 
   $_newdoc=1;
@@ -1046,7 +1048,7 @@ sub cast_value_to_objects {
 # evaluate given XPath or Perl expression
 sub _ev {
   my $exp = $_[0];
-  utf8::upgrade($exp);
+  utf8::upgrade($exp) unless ref($exp);
   if (ref($exp) eq 'ARRAY') {
     return run_commands($exp,0,1);
   } elsif ($exp =~ /^<<(.)/) {
@@ -1368,7 +1370,9 @@ sub print_var {
 
 sub echo {
   my $opts = _ev_opts(shift);
-  out(join(" ",(map _ev_string($_),@_)),$opts->{nonl} ? () : "\n"); return 1;
+  my $val = join(" ",(map _ev_string($_),@_)).($opts->{nonl} ? "" : "\n");
+  $opts->{stderr} ? (print STDERR $val) : out($val);
+  return 1;
 }
 sub set_quiet { $QUIET=$_[0]; return 1; }
 sub set_debug { $DEBUG=$_[0]; return 1; }
@@ -2196,6 +2200,15 @@ sub xinclude_print {
   }
 }
 
+sub _xml_decl {
+  my ($doc,$version,$enc) = @_;
+  $version=($doc->can('getVersion') ? $doc->getVersion() : '1.0')
+    if ($doc and !defined $version);
+  $enc=($doc->can('getEncoding') ? $doc->getEncoding() : undef)
+    if ($doc and !defined $enc);
+  return "<?xml version='$version'".(defined($enc) ? " encoding='$enc'?>" : "?>");
+}
+
 sub save_xinclude_chunk {
   my ($doc,$nodes,$file,$parse,$enc)=@_;
 
@@ -2213,8 +2226,7 @@ sub save_xinclude_chunk {
       $F->print(fromUTF8($enc,literal_value($node->to_literal)));
     }
   } else {
-    my $version=$doc->can('getVersion') ? $doc->getVersion() : '1.0';
-    $F->print("<?xml version='$version' encoding='$enc'?>\n");
+    $F->print(_xml_decl($doc,undef,$enc),"\n");
     foreach my $node (@$nodes) {
       xinclude_print($doc,$F,$node,$enc);
     }
@@ -2225,12 +2237,18 @@ sub save_xinclude_chunk {
 
 # save a document
 sub save_doc {
-  my ($opts,$doc)=@_;
+  my ($opts,$exp)=@_;
   $opts = _ev_opts($opts);
-  $doc = _ev_doc($doc);
-  unless ($doc) {
-    die "No document to save\n";
+  my ($doc,$node);
+  if ($opts->{subtree}) {
+    $exp ||= '.';
+    ($node)=_ev_nodelist($exp)->pop();
+    $doc = $_xml_module->owner_document($node) if $node
+  } else {
+    $node = $doc = _ev_doc($exp);
   }
+  die "No document to save\n" unless ($node);
+
   $opts->{file} = _tilde_expand($opts->{file}) if exists($opts->{file});
   if (exists($opts->{file})+exists($opts->{pipe})+
       exists($opts->{print})+exists($opts->{string})>1) {
@@ -2267,6 +2285,8 @@ sub save_doc {
     $format = 'xinclude';
   }
 
+  die "'save --subtree' can't be used with HTML format\n" if ($format eq 'html' and $opts->{subtree});
+
   my ($target) = grep exists($opts->{$_}),qw(file pipe string print);
   $target = 'file' unless defined $target;
   my $file; $file = $opts->{$target} if $target;
@@ -2289,7 +2309,31 @@ sub save_doc {
     if ($target ne 'file') {
       die "Target '".uc($target)."' not supported with 'save --xinclude'\n";
     } else {
-      save_xinclude_chunk($doc,[$doc->childNodes()],$file,'xml',$enc);
+      if ($doc->{subtree}) {
+	save_xinclude_chunk($doc,[$node],$file,'xml',$enc);
+      } else {
+	save_xinclude_chunk($doc,[$doc->childNodes()],$file,'xml',$enc);
+      }
+    }
+  } elsif ($opts->{subtree}) {
+    die "Unsupported format '$format'\n" unless $format eq 'xml';
+    my $string =
+      _xml_decl($doc,undef,$enc)."\n".
+      (($target ne 'string' and lc($enc) =~ /^utf-?8$/i) ?
+      $node->toString($INDENT) : fromUTF8($enc,$node->toString($INDENT)))."\n";
+    if ($target eq 'file') {
+      open my $F, '>', $file || die "Cannot open file $file\n";
+      print {$F} ($string);
+      close $F;
+    } elsif ($target eq 'pipe') {
+      $file=~s/^\s*\|?//g;
+      open my $F,"| $file" || die "Cannot open pipe to $file\n";
+      print {$F} ($string);
+      close $F;
+    } elsif ($target eq 'string') {
+      return $string;
+    } elsif ($target eq 'print') {
+      out($string);
     }
   } else {
     if ($format eq 'xml') {
@@ -2351,7 +2395,7 @@ sub save_doc {
       die "Unknown format '$format'\n";
     }
   }
-  print STDERR "Document saved into $target '$file'.\n" unless ($@ or "$QUIET");
+  print STDERR "Document saved into $target '$file'.\n" unless ($@ or $target eq 'print' or "$QUIET");
   return 1;
 }
 
@@ -2418,10 +2462,7 @@ sub to_string {
 	    end_tag($node);
       } elsif ($_xml_module->is_document($node)) {
 	if ($node->can('getVersion') and $node->can('getEncoding')) {
-	  $result=
-	    '<?xml version="'.($node->getVersion() || '1.0').'"'.
-	      ($node->getEncoding() ne "" ? ' encoding="'.$node->getEncoding().'"' : '').
-		'?>'."\n";
+	  $result=_xml_decl($node,undef,undef)."\n";
 	}
 	$result.=
 	  join("\n",map { to_string($_,$depth-1,$folding,$fold_attrs) }
@@ -3595,19 +3636,30 @@ sub wrap {
   foreach my $node (@$ql) {
     my ($el) = create_nodes('element',$str,
 			    $_xml_module->owner_document($node),$ns);
-    if ($_xml_module->is_attribute($node)) {
-      my $parent=$node->ownerElement();
-      $parent->insertBefore($el,$parent->firstChild());
-      set_attr_ns($el,$node->namespaceURI(),
-		  $node->getName(),$node->getValue());
-      $node->unbindNode();
+    if ($opts->{inner}) {
+      if ($_xml_module->is_element($node)) {
+	my @children = $node->childNodes;
+	$node->appendChild($el);
+	foreach my $child (@children) {
+	  $child->unbindNode();
+	  $el->appendChild($child);
+	}
+      }
     } else {
-      my $parent = $node->parentNode();
-      if ($parent) {
-	safe_insert($el,$node,'replace');
-	$el->appendChild($node);
+      if ($_xml_module->is_attribute($node)) {
+	my $parent=$node->ownerElement();
+	$parent->insertBefore($el,$parent->firstChild());
+	set_attr_ns($el,$node->namespaceURI(),
+		    $node->getName(),$node->getValue());
+	$node->unbindNode();
       } else {
- 	die "Cannot wrap node: ".pwd($node)." (node has no parent)\n";
+	my $parent = $node->parentNode();
+	if ($parent) {
+	  safe_insert($el,$node,'replace');
+	  $el->appendChild($node);
+	} else {
+	  die "Cannot wrap node: ".pwd($node)." (node has no parent)\n";
+	}
       }
     }
     push @$rl, $el if defined $rl;
@@ -4640,6 +4692,30 @@ sub include {
 }
 
 # print help
+
+sub apropos {
+  my ($opts,$query)=@_;
+  $query = expand($query);
+  $opts=_ev_opts($opts);
+  if ($opts->{fulltext}) {
+    foreach my $k (sort keys %XML::XSH2::Help::HELP) {
+      if ($opts->{regexp}) {
+	out("$k\n") if ($XML::XSH2::Help::HELP{$k}->[0]=~/$query/i);
+      } else {
+	out("$k\n") if ($XML::XSH2::Help::HELP{$k}->[0]=~/\b\Q$query\E\b/i);
+      }
+    }
+  } else {
+    foreach my $k (sort keys %$XML::XSH2::Help::Apropos) {
+      if ($opts->{regexp}) {
+	out("$k\n") if (($k." - ".$XML::XSH2::Help::Apropos->{$k})=~/$query/i);
+      } else {
+	out("$k\n") if (($k." - ".$XML::XSH2::Help::Apropos->{$k})=~/\b\Q$query\E\b/i);
+      }
+    }
+  }
+}
+
 sub help {
   my ($command)=expand @_;
   if ($command) {

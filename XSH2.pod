@@ -1,6 +1,6 @@
 =for comment
   This file was automatically generated from src/xsh_grammar.xml
-  on Sat Dec  4 22:00:06 2004
+  on Sun Jan  9 22:10:05 2005
 
 =head1 NAME
 
@@ -9,7 +9,7 @@ XSH - scripting language for XPath-based editing of XML
 
 =head1 FILES/DOCUMENTS
 
-XSH2 is designed as an environment for querying and manipulating XML and HTML documents. Use B<open> or B<create> commands to load an XML or HTML document from a local file, external URL (such as http:E<sol>E<sol> or ftp:E<sol>E<sol>), string or pipe. XSH2 can optionally validate the document during parse process (see B<validation> and B<load-ext-dtd>). Parsed documents are stored in memory as DOM trees, that can be B<navigated> and B<manipulated> with XSH2 commands and XPath language, whose names and syntax make working with the DOM tree a favour of working in a UNIX filesystem.
+XSH2 is designed as an environment for querying and manipulating XML and HTML documents. Use B<open> or B<create> commands to load an XML or HTML document from a local file, external URL (such as http:E<sol>E<sol> or ftp:E<sol>E<sol>), string or pipe. XSH2 can optionally validate the document during parse process (see B<validation> and B<load-ext-dtd>). Parsed documents are stored in memory as DOM trees, that can be B<navigated> and B<manipulated> with XSH2 commands and XPath language, whose names and syntax make working with the DOM tree a flavour of working in a UNIX filesystem.
 
 A parsed document is usually stored in a variable. XSH2 shares varibles with the XPath engine, so if e.g. B<$doc> is a XSH2 variable holding a document (or, more generally any node-set), then B<$docE<sol>E<sol>sectionE<sol>title> is an XPath expression selecting all B<title> subelements of all B<section> elements within the (sub)tree of $doc.
 
@@ -28,7 +28,7 @@ backups, catalog, clone, close, create, documents, index, nobackups, open, proce
 
 =head1 TREE NAVIGATION
 
-With XSH2, it is possible to browse B<document trees> as if they were a local filesystem, except that B<XPath> expressions are used instead of ordinary UNIX paths.
+With XSH2, it is possible to browse a B<document tree> (XML data represented as a DOM-tree) as if it was a local f ilesystem, except that B<XPath> expressions are used instead of ordinary directory paths.
 
 To mimic the filesystem navigation as closely as possible, XSH2 contains several commands named by analogy of UNIX filesystem commands, such as B<cd>, B<ls> and B<pwd>.
 
@@ -163,7 +163,7 @@ Beside the possibility to browse the DOM tree and list some parts of it (as desc
 
 =head2 RELATED COMMANDS
 
-canonical, count, defs, doc-info, documents, dtd, enc, get, help, lineno, locate, ls, namespaces, print, pwd, settings, validate, variables, version
+apropos, canonical, count, defs, doc-info, documents, dtd, enc, get, help, lineno, locate, ls, namespaces, print, pwd, settings, validate, variables, version
 
 
 =head1 ARGUMENT TYPES
@@ -570,6 +570,30 @@ Example: sorting nodes
 
 
 =head1 COMMAND REFERENCE
+
+
+
+=head2 apropos
+
+
+
+=over 4
+
+
+
+=item Usage:
+
+apropos [--fulltext] [--regexp] B<expression>
+             
+
+
+=item Description:
+
+Print all help topics containing given expression in their short description. The B<--fulltext> flag forces the search to be performed over the full text of help. B<--fulltext> indicates, that the given B<expression> is a regular expression instead of a literal string.
+
+
+
+=back
 
 
 
@@ -2788,7 +2812,7 @@ iterate redo_command last_command next_command
 
 =item Usage:
 
-print [--nonlE<verbar>:n] B<expression> [B<expression> ...]
+print [--nonlE<verbar>:n] [--stderrE<verbar>:e] B<expression> [B<expression> ...]
              
 
 
@@ -2803,6 +2827,8 @@ echo
 Evaluate given expression(s) and print the results (separated by a single space character). Expressions not containing any special characters, such as brackets, quotes, $, or @ are considered as bare words and evaluate to themselves.
 
 B<--nonl> or B<:n> can be used to avoid printing a trailing new-line.
+
+B<--stderr> or B<:e> causes the command to print on standard error output.
 
 Example:
 
@@ -3309,6 +3335,7 @@ save [--formatE<verbar>:F htmlE<verbar>xml] [--xincludeE<verbar>:x]
            --pipeE<verbar>:p B<filename> E<verbar> 
            --stringE<verbar>:s E<verbar>
            --printE<verbar>:r ]
+          [--subtreeE<verbar>:S]
           [--indentE<verbar>:i E<verbar> --no-indentE<verbar>:I]
     [--skip-dtdE<verbar>:d E<verbar> --no-skip-dtdE<verbar>:D]
     [--skip-empty-tagsE<verbar>:t E<verbar> --no-skip-empty-tagsE<verbar>:T]
@@ -3335,6 +3362,8 @@ The above four options are mutually exclusive.
 B<--format> option may be used to specify the output format. It's argument should be either B<xml>, B<html> or an expression evaluating to one of these. If not specified, XML output is assumed. Note, that a document should be saved as HTML only if it actually is a HTML document, the result would be an unparsable instance. Note also, that the optional encoding parameter only forces character conversion; it is up to the user to declare the document encoding in the appropriate HTML E<lt>METAE<gt> tag, if needed.
 
 B<--xinclude> automatically implies XML format and can be used to force XSH2 to save all already expanded XInclude sections back to their original files while replacing them with E<lt>xi:includeE<gt> tags in the main XML file. Moreover, all material included within E<lt>includeE<gt> elements from the http:E<sol>E<sol>www.w3.orgE<sol>2001E<sol>XInclude namespace is saved to separate files too according to the B<href> attribute, leaving only empty E<lt>includeE<gt> element in the root file. This feature may be used to split the document to a new set of XInclude fragments.
+
+If the B<--subtree> (B<:S>) flag is used, only the subtree of the specified node is saved instead of the complete document (this flag cannot be used with B<--html> format).
 
 B<--indent> (B<:i>) and B<--no-indent> (B<:n>) may be used to enforceE<sol>suppress indentation, overriding current global setting of B<indent>.
 
@@ -4215,7 +4244,7 @@ Example: The commands in this example do the same thing
 
 =item Usage:
 
-wrap B<expression> [namespace B<expression>] B<xpath>
+wrap [--namespace B<expression>] [--inner] B<expression> B<xpath>
              
 
 
@@ -4223,19 +4252,21 @@ wrap B<expression> [namespace B<expression>] B<xpath>
 
 For each node matching B<xpath>, this command creates a new element node according to a given B<expression> (in the same way as B<xinsert> does) to replace the matching node and moves the matching node into the newly created element. If namespace B<expression> is given, the namespace is applied on the created element. The command returns a node-list consisting of the elements created.
 
+With B<--inner> (or B<:i>) flag the command wraps children nodes of the matching node rather than the node it self the following sense: for each matching node a new element node is created, but this time it is placed into the matching node and all previous children of the matching node are moved into the newly created node. In this mode, all non-element matching nodes are ignored.
+
 Example:
 
-  xsh scratch:/> ls /;
+  $scratch/> ls /;
   <?xml version="1.0" encoding="utf-8"?>
   <scratch/>
   
-  xsh scratch:/> wrap 'foo' *;
-  xsh scratch:/> insert attribute 'bar=baz' into /foo;
-  xsh scratch:/> insert text 'some text' into //scratch;
-  xsh scratch:/> wrap 'a:A' namespace 'http://foo/bar' //@*;
-  xsh scratch:/> $wrapper := wrap 'text aaa="bbb"' //text();
-  xsh scratch:/> wrap '<elem ccc=ddd>' //*;
-  xsh scratch:/> ls /;
+  $scratch/> wrap 'foo' *;
+  $scratch/> insert attribute 'bar=baz' into /foo;
+  $scratch/> insert text 'some text' into //scratch;
+  $scratch/> wrap 'a:A' namespace 'http://foo/bar' //@*;
+  $scratch/> $wrapper := wrap 'text aaa="bbb"' //text();
+  $scratch/> wrap '<elem ccc=ddd>' //*;
+  $scratch/> ls /;
   <?xml version="1.0" encoding="utf-8"?>
   <elem ccc="ddd">
     <foo xmlns:a="http://foo/bar">
@@ -4252,8 +4283,29 @@ Example:
     </foo>
   </elem>
   
-  xsh scratch:/> ls $wrapper;
+  $scratch/> ls $wrapper;
   <text aaa="bbb">some text</text>
+  
+  
+  $scratch/> wrap --inner bar //foo
+  $scratch/> ls /;
+  <?xml version="1.0" encoding="utf-8"?>
+  <elem ccc="ddd">
+    <foo xmlns:a="http://foo/bar">
+      <bar>
+        <elem ccc="ddd">
+          <scratch>
+            <elem ccc="ddd">
+              <text aaa="bbb">some text</text>
+            </elem>
+          </scratch>
+        </elem>
+        <elem ccc="ddd">
+          <a:A xmlns:a="http://foo/bar" bar="baz"/>
+        </elem>
+      </bar>
+    </foo>
+  </elem>
   
 
 
@@ -4689,7 +4741,7 @@ Variable names start with a dollar-sign (B<$>) followed by an identifier. The id
 
 XSH2 command consists of a command name and possibly command parameters separated by whitespace. Individual B<XSH2 commands> are separated with a semicolon. A command may optinally be followed by an output redirection directive (see B<binding_shell> for output redirection to a command and B<Variables> for output redirection to variable). Most commands have aliases, so for example B<remove> command may also be invoked as B<del> or B<rm>.
 
-XSH2 recognizes the following commands (not including aliases): assign, backups, call, canonical, catalog, cd, clone, close, copy, count, create, debug, def, defs, do, doc-info, documents, dtd, edit, edit-string, empty-tags, enc, encoding, eval, exec, exit, fold, foreach, get, help, if, ifinclude, include, indent, index, insert, iterate, keep-blanks, last, lcd, lineno, load-ext-dtd, local, locate, ls, map, move, my, namespaces, next, nobackups, nodebug, normalize, open, parser-completes-attributes, parser-expands-entities, parser-expands-xinclude, pedantic-parser, perl, prev, print, process-xinclude, pwd, query-encoding, quiet, recovering, redo, register-function, register-namespace, register-xhtml-namespace, register-xsh-namespace, remove, rename, return, run-mode, save, set-dtd, set-enc, set-standalone, settings, skip-dtd, sort, stream, strip-whitespace, switch-to-new-documents, test-mode, throw, try, undef, unfold, unless, unregister-function, unregister-namespace, validate, validation, variables, verbose, version, while, wrap, wrap-span, xcopy, xinsert, xmove, xpath-axis-completion, xpath-completion, xpath-extensions, xslt, xupdate
+XSH2 recognizes the following commands (not including aliases): apropos, assign, backups, call, canonical, catalog, cd, clone, close, copy, count, create, debug, def, defs, do, doc-info, documents, dtd, edit, edit-string, empty-tags, enc, encoding, eval, exec, exit, fold, foreach, get, help, if, ifinclude, include, indent, index, insert, iterate, keep-blanks, last, lcd, lineno, load-ext-dtd, local, locate, ls, map, move, my, namespaces, next, nobackups, nodebug, normalize, open, parser-completes-attributes, parser-expands-entities, parser-expands-xinclude, pedantic-parser, perl, prev, print, process-xinclude, pwd, query-encoding, quiet, recovering, redo, register-function, register-namespace, register-xhtml-namespace, register-xsh-namespace, remove, rename, return, run-mode, save, set-dtd, set-enc, set-standalone, settings, skip-dtd, sort, stream, strip-whitespace, switch-to-new-documents, test-mode, throw, try, undef, unfold, unless, unregister-function, unregister-namespace, validate, validation, variables, verbose, version, while, wrap, wrap-span, xcopy, xinsert, xmove, xpath-axis-completion, xpath-completion, xpath-extensions, xslt, xupdate
 
 
 

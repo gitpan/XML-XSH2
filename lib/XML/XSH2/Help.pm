@@ -1,9 +1,9 @@
 # This file was automatically generated from src/xsh_grammar.xml on 
-# Sat Dec  4 22:00:05 2004
+# Sun Jan  9 22:10:05 2005
 
 package XML::XSH2::Help;
 use strict;
-use vars qw($HELP %HELP);
+use vars qw($HELP %HELP $Apropos);
 
 
 $HELP=<<'END';
@@ -61,9 +61,9 @@ Help items:
 
   XSH Commands:
 
-    assign, backups, call, canonical, catalog, cd, clone, close, copy,
-    count, create, debug, def, defs, do, doc-info, documents, dtd, edit,
-    edit-string, empty-tags, enc, encoding, eval, exec, exit, fold,
+    apropos, assign, backups, call, canonical, catalog, cd, clone, close,
+    copy, count, create, debug, def, defs, do, doc-info, documents, dtd,
+    edit, edit-string, empty-tags, enc, encoding, eval, exec, exit, fold,
     foreach, get, help, if, ifinclude, include, indent, index, insert,
     iterate, keep-blanks, last, lcd, lineno, load-ext-dtd, local, locate,
     ls, map, move, my, namespaces, next, nobackups, nodebug, normalize,
@@ -110,8 +110,8 @@ description:
 	     invoked as 'del' or 'rm'.
 
 	     XSH2 recognizes the following commands (not including
-	     aliases): assign, backups, call, canonical, catalog, cd,
-	     clone, close, copy, count, create, debug, def, defs, do,
+	     aliases): apropos, assign, backups, call, canonical, catalog,
+	     cd, clone, close, copy, count, create, debug, def, defs, do,
 	     doc-info, documents, dtd, edit, edit-string, empty-tags, enc,
 	     encoding, eval, exec, exit, fold, foreach, get, help, if,
 	     ifinclude, include, indent, index, insert, iterate,
@@ -864,6 +864,19 @@ END
 
 $HELP{'.'}=$HELP{'include'};
 
+$HELP{'apropos'}=[<<'END'];
+usage:       apropos [--fulltext] [--regexp] [expression]
+             
+description:
+	     Print all help topics containing given expression in their
+	     short description. The '--fulltext' flag forces the search to
+	     be performed over the full text of help. '--fulltext'
+	     indicates, that the given [expression] is a regular expression
+	     instead of a literal string.
+
+END
+
+
 $HELP{'help'}=[<<'END'];
 usage:       help [command]|argument-type|xsh:xpath-function
              
@@ -1100,7 +1113,7 @@ END
 $HELP{'add'}=$HELP{'insert'};
 
 $HELP{'wrap'}=[<<'END'];
-usage:       wrap [expression] [namespace [expression]] [xpath]
+usage:       wrap [--namespace [expression]] [--inner] [expression] [xpath]
              
 description:
 	     For each node matching [xpath], this command creates a new
@@ -1111,18 +1124,26 @@ description:
 	     element. The command returns a node-list consisting of the
 	     elements created.
 
+	     With '--inner' (or ':i') flag the command wraps children nodes
+	     of the matching node rather than the node it self the
+	     following sense: for each matching node a new element node is
+	     created, but this time it is placed into the matching node and
+	     all previous children of the matching node are moved into the
+	     newly created node. In this mode, all non-element matching
+	     nodes are ignored.
+
 Example:
-             xsh scratch:/> ls /;
+             $scratch/> ls /;
              <?xml version="1.0" encoding="utf-8"?>
              <scratch/>
              
-             xsh scratch:/> wrap 'foo' *;
-             xsh scratch:/> insert attribute 'bar=baz' into /foo;
-             xsh scratch:/> insert text 'some text' into //scratch;
-             xsh scratch:/> wrap 'a:A' namespace 'http://foo/bar' //@*;
-             xsh scratch:/> $wrapper := wrap 'text aaa="bbb"' //text();
-             xsh scratch:/> wrap '<elem ccc=ddd>' //*;
-             xsh scratch:/> ls /;
+             $scratch/> wrap 'foo' *;
+             $scratch/> insert attribute 'bar=baz' into /foo;
+             $scratch/> insert text 'some text' into //scratch;
+             $scratch/> wrap 'a:A' namespace 'http://foo/bar' //@*;
+             $scratch/> $wrapper := wrap 'text aaa="bbb"' //text();
+             $scratch/> wrap '<elem ccc=ddd>' //*;
+             $scratch/> ls /;
              <?xml version="1.0" encoding="utf-8"?>
              <elem ccc="ddd">
                <foo xmlns:a="http://foo/bar">
@@ -1139,8 +1160,29 @@ Example:
                </foo>
              </elem>
              
-             xsh scratch:/> ls $wrapper;
+             $scratch/> ls $wrapper;
              <text aaa="bbb">some text</text>
+             
+             
+             $scratch/> wrap --inner bar //foo
+             $scratch/> ls /;
+             <?xml version="1.0" encoding="utf-8"?>
+             <elem ccc="ddd">
+               <foo xmlns:a="http://foo/bar">
+                 <bar>
+                   <elem ccc="ddd">
+                     <scratch>
+                       <elem ccc="ddd">
+                         <text aaa="bbb">some text</text>
+                       </elem>
+                     </scratch>
+                   </elem>
+                   <elem ccc="ddd">
+                     <a:A xmlns:a="http://foo/bar" bar="baz"/>
+                   </elem>
+                 </bar>
+               </foo>
+             </elem>
 
 see also:     xinsert insert move xmove
 
@@ -1594,7 +1636,7 @@ $HELP{'delete'}=$HELP{'remove'};
 $HELP{'del'}=$HELP{'remove'};
 
 $HELP{'print'}=[<<'END'];
-usage:       print [--nonl|:n] [expression] [[expression] ...]
+usage:       print [--nonl|:n] [--stderr|:e] [expression] [[expression] ...]
              
 aliases:     echo
 
@@ -1606,6 +1648,9 @@ description:
 
 	     '--nonl' or ':n' can be used to avoid printing a trailing
 	     new-line.
+
+	     '--stderr' or ':e' causes the command to print on standard
+	     error output.
 
 Example:
              print foo   bar;  # prints "foo bar"
@@ -1900,6 +1945,7 @@ usage:       save [--format|:F html|xml] [--xinclude|:x]
            --pipe|:p [filename] | 
            --string|:s |
            --print|:r ]
+          [--subtree|:S]
           [--indent|:i | --no-indent|:I]
     [--skip-dtd|:d | --no-skip-dtd|:D]
     [--skip-empty-tags|:t | --no-skip-empty-tags|:T]
@@ -1949,6 +1995,10 @@ description:
 	     files too according to the 'href' attribute, leaving only
 	     empty <include> element in the root file. This feature may be
 	     used to split the document to a new set of XInclude fragments.
+
+	     If the '--subtree' (':S') flag is used, only the subtree of
+	     the specified node is saved instead of the complete document
+	     (this flag cannot be used with '--html' format).
 
 	     '--indent' (':i') and '--no-indent' (':n') may be used to
 	     enforce/suppress indentation, overriding current global
@@ -3734,7 +3784,7 @@ Files/Documents
   process (see [validation] and [load-ext-dtd]). Parsed documents are
   stored in memory as DOM trees, that can be [navigated] and [manipulated]
   with XSH2 commands and XPath language, whose names and syntax make
-  working with the DOM tree a favour of working in a UNIX filesystem.
+  working with the DOM tree a flavour of working in a UNIX filesystem.
 
   A parsed document is usually stored in a variable. XSH2 shares varibles
   with the XPath engine, so if e.g. '$doc' is a XSH2 variable holding a
@@ -3765,9 +3815,9 @@ $HELP{'Navigation'}=[<<'END'];
 Tree navigation
 ---------------
 
-  With XSH2, it is possible to browse [document trees] as if they were a
-  local filesystem, except that [XPath] expressions are used instead of
-  ordinary UNIX paths.
+  With XSH2, it is possible to browse a [document tree] (XML data
+  represented as a DOM-tree) as if it was a local f ilesystem, except that
+  [XPath] expressions are used instead of ordinary directory paths.
 
   To mimic the filesystem navigation as closely as possible, XSH2 contains
   several commands named by analogy of UNIX filesystem commands, such as
@@ -3951,9 +4001,9 @@ Retrieving more information
 
 
 Related help items:
-  canonical, count, defs, doc-info, documents, dtd, enc, get, help, lineno,
-  locate, ls, namespaces, print, pwd, settings, validate, variables,
-  version
+  apropos, canonical, count, defs, doc-info, documents, dtd, enc, get,
+  help, lineno, locate, ls, namespaces, print, pwd, settings, validate,
+  variables, version
 
 END
 
@@ -4617,6 +4667,167 @@ Example: sorting nodes
 END
 
 $HELP{'commands'}=$HELP{'command'};
+$Apropos = {
+             'verbose' => 'make XSH2 print many messages',
+             'insert' => 'create a node in on a given target location',
+             'xsh:map' => undef,
+             'documents' => 'display a list of open documents',
+             'xsh:new-comment' => undef,
+             'my' => 'Create a new lexically scoped variable',
+             'print' => 'print stuff on standard or standard error output',
+             'if' => 'if statement',
+             'xsh:new-element-ns' => undef,
+             'xsh:join' => undef,
+             'save' => 'save a document as XML or HTML',
+             'rename' => 'quickly rename nodes with in-line Perl code',
+             'parser-completes-attributes' => 'turn on/off parser\'s ability to fill default attribute values',
+             'wrap' => 'wrap given nodes into elements',
+             'apropos' => 'search the documentation',
+             'run-mode' => 'switch into normal execution mode (quit [test-mode])',
+             'skip-dtd' => 'turn on/off serialization of DTD DOCTYPE declaration',
+             'count' => 'calculate a [expression] and enumerate node-lists',
+             'canonical' => 'serialize nodes as to canonical XML',
+             '$variable' => undef,
+             'strip-whitespace' => 'strip leading and trailing whitespace',
+             'xsh:min' => undef,
+             'undef' => 'undefine sub-routine or variable',
+             'indent' => 'turn on/off pretty-printing',
+             'set-standalone' => 'set document\'s standalone flag',
+             'xmove' => 'move nodes (in the all-to-every mode)',
+             'xsh:lc' => undef,
+             'open' => 'load an XML, HTML, or Docbook SGML document from a file, pipe or URI',
+             'defs' => 'list all user-defined subroutines',
+             'xsh:lcfirst' => undef,
+             'assign' => 'variable assignment',
+             'pedantic-parser' => 'make the parser more pedantic',
+             'namespaces' => 'List namespaces in current scope (or in scope of given nodes)',
+             'node-type' => 'node type specification (such as element, attribute, etc.)',
+             'ls' => 'list a given part of a document as XML',
+             'xcopy' => 'copy nodes (in the all-to-every mode)',
+             'def' => 'sub-routine declaration',
+             'process-xinclude' => 'load and insert XInclude sections',
+             'validate' => 'validate a document against a DTD, RelaxNG, or XSD schemas',
+             'command' => 'List of XSH2 commands and their general syntax',
+             'perl-code' => 'in-line code in Perl programming language',
+             'throw' => 'throw an exception',
+             'version' => 'show version information',
+             'last' => 'immediately exit an enclosing loop',
+             'xpath-extensions' => 'map predefined XSH2 XPath extension functions to no or other namespace',
+             'recovering' => 'turn on/off parser\'s ability to fix broken XML',
+             'xpath' => 'XPath expression',
+             'perl' => 'evaluate in-line Perl code',
+             'index' => 'index a static document for faster XPath lookup',
+             'sort' => 'sort a given node-list by given criteria',
+             'xsh:doc' => undef,
+             'filename' => 'specifying filenames',
+             'next' => 'start the next iteration of an enclosing loop',
+             'remove' => 'remove given nodes',
+             'exit' => 'exit XSH2 shell',
+             'copy' => 'copy nodes (in the one-to-one mode)',
+             'xsh:split' => undef,
+             'ifinclude' => 'conditionally include another XSH2 source in current position',
+             'xinsert' => 'create nodes on all target locations',
+             'debug' => 'display many annoying debugging messages',
+             'nodebug' => 'turn off debugging messages',
+             'parser-expands-xinclude' => 'turn on/off transparent XInclude insertion by parser',
+             'locate' => 'show a given node location (as a cannonical XPath)',
+             'xsh:new-text' => undef,
+             'xsh:uc' => undef,
+             'fold' => 'mark elements to be folded by list command',
+             'stream' => 'process selected elements from an XML stream (EXPERIMENTAL)',
+             'nobackups' => 'turn off backup file creation',
+             'xsh:new-element' => undef,
+             'pwd' => 'show current context node location (as a cannonical XPath)',
+             'xupdate' => 'apply XUpdate commands on a document',
+             'type' => undef,
+             'xsh:path' => undef,
+             'include' => 'include another XSH2 source in current position',
+             'xsh:reverse' => undef,
+             'xsh:parse' => undef,
+             'foreach' => 'loop iterating over a node-list or a perl array',
+             'xsh:sum' => undef,
+             'close' => 'close document (without saving)',
+             'get' => 'calculate a given expression and return the result.',
+             'unfold' => 'unfold elements folded with fold command',
+             'quiet' => 'turn off many XSH2 messages',
+             'cd' => 'change current context node',
+             'unless' => 'negated if statement',
+             'test-mode' => 'do not execute any command, only check the syntax',
+             'query-encoding' => 'declare the charset of XSH2 source files and terminal input',
+             'while' => 'simple while loop',
+             'xsh:if' => undef,
+             'wrap-span' => 'wrap spans of nodes into elements',
+             'subroutine' => 'name of a sub-routine',
+             'move' => 'move nodes (in the one-to-one mode)',
+             'validation' => 'turn on/off validation in XML parser',
+             'map' => 'quickly modify node value/data using Perl code',
+             'xsh:strmax' => undef,
+             'lineno' => 'print line-numbers corresponding to matching nodes',
+             'encoding' => 'choose output charset',
+             'iterate' => 'iterate a block over current subtree',
+             'dtd' => 'show document\'s DTD',
+             'register-xsh-namespace' => 'register a prefix for the XSH2 namespace',
+             'unregister-function' => 'undefine extension function (EXPERIMENTAL)',
+             'catalog' => 'use a catalog file during all parsing processes',
+             'do' => 'execute a given block of commands',
+             'variables' => 'list global variables',
+             'enc' => 'show document\'s original character encoding',
+             'register-xhtml-namespace' => 'register a prefix for the XHTML namespace',
+             'xsh:var' => undef,
+             'local' => 'temporarily assign new value to a variable',
+             'edit-string' => 'Edit a string or variable in a text editor.',
+             'edit' => 'Edit parts of a XML document in a text editor.',
+             'lcd' => 'change system working directory',
+             'xsh:same' => undef,
+             'create' => 'make a new document from a given XML fragment',
+             'keep-blanks' => 'turn on/off ignorable whitespace preservation',
+             'xsh:strmin' => undef,
+             'set-dtd' => 'set document\'s DTD declaration',
+             'xpath-completion' => 'turn on/off TAB completion for xpath expressions in the interactive mode',
+             'xsh:matches' => undef,
+             'xsh:subst' => undef,
+             'xsh:current' => undef,
+             'load-ext-dtd' => 'turn on/off external DTD fetching',
+             'try' => 'try/catch statement',
+             'register-namespace' => 'register namespace prefix to use XPath expressions',
+             'xsh:times' => undef,
+             'empty-tags' => 'turn on/off serialization of empty tags',
+             'switch-to-new-documents' => 'set on/off changing current document to newly open/created files',
+             'xsh:sprintf' => undef,
+             'xsh:new-chunk' => undef,
+             'document' => 'specifying documents',
+             'xslt' => 'compile a XSLT stylesheet and/or transform a document with XSLT',
+             'xsh:substr' => undef,
+             'redo' => 'restart the innermost enclosing loop block',
+             'backups' => 'turn on backup file creation',
+             'clone' => 'clone a given document',
+             'unregister-namespace' => 'unregister namespace prefix',
+             'expression' => 'expression argument type',
+             'exec' => 'execute a shell command',
+             'xsh:ucfirst' => undef,
+             'location' => 'relative destination specification (such as after, before, etc.)',
+             'nodename' => 'specifying names of DOM nodes',
+             'doc-info' => 'displays various information about a document',
+             'xsh:id2' => undef,
+             'register-function' => 'define XPath extension function (EXPERIMENTAL)',
+             'normalize' => 'normalizes adjacent textnodes',
+             'parser-expands-entities' => 'turn on/off parser\'s tendency to expand entities',
+             'xsh:max' => undef,
+             'xsh:new-cdata' => undef,
+             'xpath-axis-completion' => 'sets TAB completion for axes in xpath expressions in the interactive mode',
+             'help' => 'on-line documentation',
+             'call' => 'indirect call to a user-defined routine (macro)',
+             'eval' => 'evaluate given expression as XSH commands',
+             'prev' => 'restart an iteration on a previous node',
+             'xsh:new-attribute' => undef,
+             'xsh:new-pi' => undef,
+             'command-or-block' => 'single XSH2 command or a block of XSH2 commands',
+             'settings' => 'list current settings using XSH2 syntax',
+             'return' => 'return from a subroutine',
+             'xsh:grep' => undef,
+             'xsh:serialize' => undef,
+             'set-enc' => 'set document\'s charset (encoding)'
+           };
 
 1;
 __END__
