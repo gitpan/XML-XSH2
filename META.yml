@@ -1,0 +1,17 @@
+# http://module-build.sourceforge.net/META-spec.html
+#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
+name:         XML-XSH2
+version:      2.0.1
+version_from: lib/XML/XSH2/Functions.pm
+installdirs:  site
+requires:
+    Parse::RecDescent:             1.94
+    XML::LibXML:                   1.56
+    XML::LibXML::Common:           0.13
+    XML::LibXML::Iterator:         0
+    XML::LibXML::XPathContext:     0.06
+    XML::LibXSLT:                  1.53
+    XML::XUpdate::LibXML:          0.4.0
+
+distribution_type: module
+generated_by: ExtUtils::MakeMaker version 6.17
