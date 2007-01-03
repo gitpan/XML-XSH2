@@ -1,5 +1,5 @@
 # This file was automatically generated from src/xsh_grammar.xml on 
-# Sun Jan  9 22:10:04 2005
+# Wed Jan  3 14:21:19 2007
 
 
 package XML::XSH2::Grammar;
@@ -15,54 +15,55 @@ $grammar=<<'_EO_GRAMMAR_';
   command:
 	    /(?=\s*[}{;]|\s*\Z)/ <commit> <reject>
 	  | /assign\b|(?:local\b|my\b)?(?=\s*\$[a-zA-Z_][a-zA-Z0-9_]*\s*\s*(?:[\-\+\*\/%x.]|\|\||\&\&)?:?=)/ <commit> variable
-	  ( /(?:[\-\+\*\/%x.]|\|\||\&\&)?=/ <commit> exp
-		{ [\&XML::XSH2::Functions::xpath_assign,$item[3],$item[1]] }
+	  ( /(?:[\-\+\*\/%x.]|\|\||\&\&)?=/ <commit> loose_exp
+		{ ['xpath_assign',$item[3],$item[1]] }
   	
 	  | /\s*(?:[\-\+\*\/%x.]|\|\||\&\&)?:=/ command
-		{ [\&XML::XSH2::Functions::command_assign,$item[2],$item[1]] }
+		{ ['command_assign',$item[2],$item[1]] }
   	
 	   )
 		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,@{$item[4]},$item[1],$item[3]] }
   	
 	  | /(my)\b/ variable(s)
-		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,\&XML::XSH2::Functions::store_lex_variables,0,@{$item[2]}] }
+		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,'store_lex_variables',0,@{$item[2]}] }
   	
 	  | /(local)\b/ variable(s)
-		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,\&XML::XSH2::Functions::make_local,@{$item[2]}] }
+		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,'make_local',@{$item[2]}] }
   	
 	  | /(do)\b/ <commit> block
-		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,\&XML::XSH2::Functions::run_commands,$item[3],0] }
+		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,'run_commands',$item[3],0] }
   	
 	  | /(if)\b/ <commit> exp command
-		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,\&XML::XSH2::Functions::if_statement,[$item[3],[$item[4]]]] }
+		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,'if_statement',[$item[3],[$item[4]]]] }
   	
 	  | /(unless)\b/ <commit> exp command
-		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,\&XML::XSH2::Functions::unless_statement,$item[3],[$item[4]]] }
+		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,'unless_statement',$item[3],[$item[4]]] }
   	
 	  | /(while)\b/ <commit> exp command
-		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,\&XML::XSH2::Functions::while_statement,$item[3],[$item[4]]] }
+		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,'while_statement',$item[3],[$item[4]]] }
   	
 	  | /(foreach|for)\b/ <commit> local_var_in(?) exp command
-		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,\&XML::XSH2::Functions::foreach_statement,$item[4],[$item[5]],@{$item[3]}] }
+		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,'foreach_statement',$item[4],[$item[5]],@{$item[3]}] }
   	
 	  | /(stream)\b/ <commit>
 	  (( /--input-file|:f/ filename { [ 'string/input-file' => $item[2] ] }
 	   | /--input-pipe|:p/ filename { [ 'string/input-pipe' => $item[2] ] }
 	   | /--input-string|:s/ exp { [ 'exp/input-string' => $item[2] ] }
 	   | /--output-file|:F/ filename { [ 'string/output-file' => $item[2] ] }
+	   | /--output-encoding|:E/ enc_string { [ 'string/output-encoding' => $item[2] ] }
 	   | /--output-pipe|:P/ filename { [ 'string/output-pipe' => $item[2] ] }
 	   | /--output-string|:S/ { [ '/output-string' => 1 ] }
 	   )(s?) { [ map { @$_ } @{$item[1]} ] }
 	  )
  stream_select(s)
-		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,\&XML::XSH2::Functions::stream_process,$item[3],$item[4]] }
+		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,'stream_process',$item[3],$item[4]] }
   	
 	  | /(undef|undefine)\b/ <commit> /\$?[a-zA-Z_][a-zA-Z0-9_]*/
 		{ 
-	  [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,\&XML::XSH2::Functions::undefine,$item[3]];
+	  [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,'undefine',$item[3]];
 	 }
   	
-	  | /(use)\b/ <commit> /XML::XSH2::Inline/
+	  | /(use)\b/ <commit> /XML::XSH2::(?:Inline|Compile)/
 		{ 1 }
   	
 	  | /(test-mode|test_mode)/
@@ -82,28 +83,28 @@ $grammar=<<'_EO_GRAMMAR_';
   statement:
 	    /(?=\s*[}{;])/ <commit> <reject>
 	  | /(if)\b/ <commit> exp block elsif_block else_block
-		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,\&XML::XSH2::Functions::if_statement,[$item[3],$item[4]],@{$item[5]},@{$item[6]}] }
+		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,'if_statement',[$item[3],$item[4]],@{$item[5]},@{$item[6]}] }
   	
 	  | /(unless)\b/ <commit> exp block else_block(?)
-		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,\&XML::XSH2::Functions::unless_statement,$item[3],$item[4],@{$item[5]}] }
+		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,'unless_statement',$item[3],$item[4],@{$item[5]}] }
   	
 	  | /(while)\b/ <commit> exp block
-		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,\&XML::XSH2::Functions::while_statement,$item[3],$item[4]] }
+		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,'while_statement',$item[3],$item[4]] }
   	
 	  | /(foreach|for)\b/ <commit> local_var_in(?) exp block
-		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,\&XML::XSH2::Functions::foreach_statement,@item[4,5],@{$item[3]}] }
+		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,'foreach_statement',@item[4,5],@{$item[3]}] }
   	
 	  | /(try)\b/ <commit> block 'catch' local_var(?) block
-		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,\&XML::XSH2::Functions::try_catch,$item[3],$item[6],@{$item[5]}] }
+		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,'try_catch',$item[3],$item[6],@{$item[5]}] }
   	
 	  | /(iterate)\b/ <commit> xpstep block
-		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,\&XML::XSH2::Functions::iterate,$item[4],@{$item[3]}] }
+		{ [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,'iterate',$item[4],@{$item[3]}] }
   	
 	  | /(def|define)\b/ <commit> ID
 		{ XML::XSH2::Functions::is_command($item[3])?undef:1 }
   	 variable(s?) block
 		{ 
-	  [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,\&XML::XSH2::Functions::def,$item[3],$item[6],$item[5]]
+	  [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,'def',$item[3],$item[6],$item[5]]
 	 }
   	
 
@@ -114,9 +115,9 @@ $grammar=<<'_EO_GRAMMAR_';
 		{ 
 	  if (scalar(@{$item[4]})) {
 	    if ($item[4][0][0] eq 'pipe') {
-  	      $return=[$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,\&XML::XSH2::Functions::pipe_command,[$item[2]],$item[4][0][1]]
+  	      $return=[$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,'pipe_command',[$item[2]],$item[4][0][1]]
 	    } else {
-   	      $return=[$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,\&XML::XSH2::Functions::string_pipe_command,[$item[2]],$item[4][0][1]]
+   	      $return=[$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,'string_pipe_command',[$item[2]],$item[4][0][1]]
 	    }
           } else {
             $return=$item[2]
@@ -127,9 +128,9 @@ $grammar=<<'_EO_GRAMMAR_';
 		{ 
 	  if (scalar(@{$item[3]})) {
 	    if ($item[3][0][0] eq 'pipe') {
-  	      $return=[$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,\&XML::XSH2::Functions::pipe_command,[$item[1]],$item[3][0][1]]
+  	      $return=[$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,'pipe_command',[$item[1]],$item[3][0][1]]
 	    } else {
-   	      $return=[$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,\&XML::XSH2::Functions::string_pipe_command,[$item[1]],$item[3][0][1]]
+   	      $return=[$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,'string_pipe_command',[$item[1]],$item[3][0][1]]
 	    }
           } else {
             $return=$item[1]
@@ -252,7 +253,7 @@ $grammar=<<'_EO_GRAMMAR_';
   	
 
   xps:
-	    /(?: [^\$\[\]()'"]+ |
+	    /(?: [^\$\[\]()'"};]+ |
               \$(?!\{) |
               \$\{ (?:\$?[a-zA-Z_][a-zA-Z0-9_]* |
                        \{.*?\} |
@@ -296,6 +297,18 @@ $grammar=<<'_EO_GRAMMAR_';
           }
 	  } }
   	
+
+  loose_exp:
+	    /^(?={)/ perl_block
+		{ $item[2] }
+  	
+	  | '&' block
+		{ $item[2] }
+  	
+	  | /^(?=<<)/ inline_doc
+		{ $item[2] }
+  	
+	  | xpinter
 
   exp:
 	    /^(?={)/ perl_block
@@ -352,7 +365,7 @@ $grammar=<<'_EO_GRAMMAR_';
 
   shell:
 	    /!\s*/ <commit> /.*/
-		{ [[$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,\&XML::XSH2::Functions::sh_noev,$item[3]]] }
+		{ [[$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,'sh_noev',$item[3]]] }
   	
 	  | <error?:Parse error near: "! }.substr($text,0,40).qq{ ..."> <reject>
 
@@ -388,7 +401,7 @@ $grammar=<<'_EO_GRAMMAR_';
   undef:
 	    /(undef|undefine)\b/ <commit> /\$?[a-zA-Z_][a-zA-Z0-9_]*/
 		{ 
-	  [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,\&XML::XSH2::Functions::undefine,$item[3]];
+	  [$thisline,$thiscolumn,$thisoffset,$XML::XSH2::Functions::SCRIPT,'undefine',$item[3]];
 	 }
   	
 
@@ -424,7 +437,7 @@ $grammar=<<'_EO_GRAMMAR_';
 	    /[-a-z]+::/
 
   xpnodetest:
-	    /node\(\)|text\(\)|comment\(\)|processing-instruction\(\)|[^\(\[\/\"\'\&\;\s]+/
+	    /node\(\)|text\(\)|comment\(\)|processing-instruction\(\s*(?:"[^"]*"\s*|'[^'*]'\s*)?\)|[^\(\[\/\"\'\&\;\s]+/
 
   xplocationstep:
 	    xpaxis(?) xpnodetest

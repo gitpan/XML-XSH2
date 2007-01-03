@@ -1,5 +1,5 @@
 # -*- cperl -*-
-# $Id: LibXMLCompat.pm,v 2.2 2004/12/09 08:41:14 pajas Exp $
+# $Id: LibXMLCompat.pm,v 2.4 2007/01/02 22:03:22 pajas Exp $
 
 package XML::XSH2::LibXMLCompat;
 
@@ -7,6 +7,9 @@ use strict;
 use XML::LibXML;
 use XML::LibXML::Iterator;
 use XML::LibXML::NodeList;
+use vars qw($VERSION);
+
+  $VERSION='2.1.0'; # VERSION TEMPLATE
 
 sub module {
   return "XML::LibXML";
@@ -114,7 +117,6 @@ sub parse_html_file {
 sub parse_html_fh {
   my ($class,$parser,$fh)=@_;
   $class->init_parser($parser);
-  print STDERR ("$parser $fh\n");
   my $doc=$parser->parse_html_fh($fh);
   return $doc;
 }

@@ -5,7 +5,6 @@ use vars qw(@XSH_COMMANDS @XSH_NOXPATH_COMMANDS);
 
 @XSH_COMMANDS=qw(
 .
-?
 add
 apropos
 assign
@@ -14,6 +13,8 @@ call
 canonical
 catalog
 cd
+change-ns-prefix
+change-ns-uri
 chdir
 chxpath
 clone
@@ -25,6 +26,7 @@ count
 cp
 create
 debug
+declare-ns
 def
 define
 defs
@@ -55,6 +57,7 @@ for
 foreach
 function
 get
+hash
 help
 if
 ifinclude
@@ -128,11 +131,13 @@ rm
 run-mode
 run_mode
 save
-sed
+set
 set-dtd
 set-enc
+set-ns
 set-standalone
 set_dtd
+set_filename
 settings
 skip-dtd
 skip_dtd

@@ -1,12 +1,12 @@
-# $Id: Inline.pm,v 2.1 2004/12/02 19:26:37 pajas Exp $
+# $Id: Inline.pm,v 2.3 2007/01/02 22:03:22 pajas Exp $
 
 package XML::XSH2::Inline;
 
 use vars qw($VERSION $terminator);
 
 use strict;
-use XML::XSH2 qw();
-$VERSION = '0.1';
+use XML::XSH2 qw(xsh_init);
+  $VERSION='2.1.0'; # VERSION TEMPLATE
 $terminator = undef;
 
 use Filter::Simple;
@@ -17,6 +17,8 @@ sub filter {
   $_="XML::XSH2::xsh(<<'$t');\n".$_."$t\n";
   $_;
 };
+
+xsh_init();
 
 FILTER(\&filter);
 

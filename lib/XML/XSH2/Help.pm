@@ -1,5 +1,5 @@
 # This file was automatically generated from src/xsh_grammar.xml on 
-# Sun Jan  9 22:10:05 2005
+# Wed Jan  3 14:21:20 2007
 
 package XML::XSH2::Help;
 use strict;
@@ -53,31 +53,35 @@ Help items:
     Flow - Flow control
     Information - Retrieving more information
     Manipulation - Tree modification
+    Namespaces - Namespaces in XML and XPath
     Navigation - Tree navigation
     Perl_shell - Interacting with Perl and Shell
+    Prompt - Prompt in the interactive shell
     Redirection - Command output redirection
     Variables - Variables
     xsh2delta - Changes since XSH 1.x
 
   XSH Commands:
 
-    apropos, assign, backups, call, canonical, catalog, cd, clone, close,
-    copy, count, create, debug, def, defs, do, doc-info, documents, dtd,
-    edit, edit-string, empty-tags, enc, encoding, eval, exec, exit, fold,
-    foreach, get, help, if, ifinclude, include, indent, index, insert,
-    iterate, keep-blanks, last, lcd, lineno, load-ext-dtd, local, locate,
-    ls, map, move, my, namespaces, next, nobackups, nodebug, normalize,
-    open, parser-completes-attributes, parser-expands-entities,
+    apropos, assign, backups, call, canonical, catalog, cd,
+    change-ns-prefix, change-ns-uri, clone, close, copy, count, create,
+    debug, declare-ns, def, defs, do, doc-info, documents, dtd, edit,
+    edit-string, empty-tags, enc, encoding, eval, exec, exit, fold,
+    foreach, get, hash, help, if, ifinclude, include, indent, index,
+    insert, iterate, keep-blanks, last, lcd, lineno, load-ext-dtd, local,
+    locate, ls, map, move, my, namespaces, next, nobackups, nodebug,
+    normalize, open, parser-completes-attributes, parser-expands-entities,
     parser-expands-xinclude, pedantic-parser, perl, prev, print,
     process-xinclude, pwd, query-encoding, quiet, recovering, redo,
     register-function, register-namespace, register-xhtml-namespace,
-    register-xsh-namespace, remove, rename, return, run-mode, save,
-    set-dtd, set-enc, set-standalone, settings, skip-dtd, sort, stream,
-    strip-whitespace, switch-to-new-documents, test-mode, throw, try,
-    undef, unfold, unless, unregister-function, unregister-namespace,
-    validate, validation, variables, verbose, version, while, wrap,
-    wrap-span, xcopy, xinsert, xmove, xpath-axis-completion,
-    xpath-completion, xpath-extensions, xslt, xupdate
+    register-xsh-namespace, remove, rename, return, run-mode, save, set,
+    set-dtd, set-enc, set-ns, set-standalone, set_filename, settings,
+    skip-dtd, sort, stream, strip-whitespace, switch-to-new-documents,
+    test-mode, throw, try, undef, unfold, unless, unregister-function,
+    unregister-namespace, validate, validation, variables, verbose,
+    version, while, wrap, wrap-span, xcopy, xinsert, xmove,
+    xpath-axis-completion, xpath-completion, xpath-extensions, xslt,
+    xupdate
 
   XSH Argument Types:
 
@@ -86,13 +90,14 @@ Help items:
 
   XPath Extension Functions:
 
-    xsh:current, xsh:doc, xsh:grep, xsh:id2, xsh:if, xsh:join, xsh:lc,
-    xsh:lcfirst, xsh:map, xsh:matches, xsh:max, xsh:min, xsh:new-attribute,
-    xsh:new-cdata, xsh:new-chunk, xsh:new-comment, xsh:new-element,
-    xsh:new-element-ns, xsh:new-pi, xsh:new-text, xsh:parse, xsh:path,
-    xsh:reverse, xsh:same, xsh:serialize, xsh:split, xsh:sprintf,
-    xsh:strmax, xsh:strmin, xsh:subst, xsh:substr, xsh:sum, xsh:times,
-    xsh:uc, xsh:ucfirst, xsh:var
+    xsh:current, xsh:doc, xsh:document, xsh:documents, xsh:evaluate,
+    xsh:filename, xsh:grep, xsh:id2, xsh:if, xsh:join, xsh:lc, xsh:lcfirst,
+    xsh:lookup, xsh:map, xsh:match, xsh:matches, xsh:max, xsh:min,
+    xsh:new-attribute, xsh:new-cdata, xsh:new-chunk, xsh:new-comment,
+    xsh:new-element, xsh:new-element-ns, xsh:new-pi, xsh:new-text,
+    xsh:parse, xsh:path, xsh:reverse, xsh:same, xsh:serialize, xsh:split,
+    xsh:sprintf, xsh:strmax, xsh:strmin, xsh:subst, xsh:substr, xsh:sum,
+    xsh:times, xsh:uc, xsh:ucfirst, xsh:var
 
 END
 
@@ -102,7 +107,7 @@ command
 description:
 	     XSH2 command consists of a command name and possibly command
 	     parameters separated by whitespace. Individual [XSH2 commands]
-	     are separated with a semicolon. A command may optinally be
+	     are separated with a semicolon. A command may optionally be
 	     followed by an output redirection directive (see
 	     [binding_shell] for output redirection to a command and
 	     [Variables] for output redirection to variable). Most commands
@@ -111,9 +116,10 @@ description:
 
 	     XSH2 recognizes the following commands (not including
 	     aliases): apropos, assign, backups, call, canonical, catalog,
-	     cd, clone, close, copy, count, create, debug, def, defs, do,
-	     doc-info, documents, dtd, edit, edit-string, empty-tags, enc,
-	     encoding, eval, exec, exit, fold, foreach, get, help, if,
+	     cd, change-ns-prefix, change-ns-uri, clone, close, copy,
+	     count, create, debug, declare-ns, def, defs, do, doc-info,
+	     documents, dtd, edit, edit-string, empty-tags, enc, encoding,
+	     eval, exec, exit, fold, foreach, get, hash, help, if,
 	     ifinclude, include, indent, index, insert, iterate,
 	     keep-blanks, last, lcd, lineno, load-ext-dtd, local, locate,
 	     ls, map, move, my, namespaces, next, nobackups, nodebug,
@@ -123,13 +129,14 @@ description:
 	     query-encoding, quiet, recovering, redo, register-function,
 	     register-namespace, register-xhtml-namespace,
 	     register-xsh-namespace, remove, rename, return, run-mode,
-	     save, set-dtd, set-enc, set-standalone, settings, skip-dtd,
-	     sort, stream, strip-whitespace, switch-to-new-documents,
-	     test-mode, throw, try, undef, unfold, unless,
-	     unregister-function, unregister-namespace, validate,
-	     validation, variables, verbose, version, while, wrap,
-	     wrap-span, xcopy, xinsert, xmove, xpath-axis-completion,
-	     xpath-completion, xpath-extensions, xslt, xupdate
+	     save, set, set-dtd, set-enc, set-ns, set-standalone,
+	     set_filename, settings, skip-dtd, sort, stream,
+	     strip-whitespace, switch-to-new-documents, test-mode, throw,
+	     try, undef, unfold, unless, unregister-function,
+	     unregister-namespace, validate, validation, variables,
+	     verbose, version, while, wrap, wrap-span, xcopy, xinsert,
+	     xmove, xpath-axis-completion, xpath-completion,
+	     xpath-extensions, xslt, xupdate
 
 see also:     command-or-block
 
@@ -225,7 +232,7 @@ $HELP{'filename'}=[<<'END'];
 Filename argument type
 
 description:
-	     An [expression] which evaulates to a valid filename or URL. As
+	     An [expression] which evaluates to a valid filename or URL. As
 	     long as the expression contains no whitespace, no brackets of
 	     any type, quotes, double-quotes, '$' character nor '@'
 	     character, it is treated as a literal token which evaluates to
@@ -238,7 +245,7 @@ $HELP{'nodename'}=[<<'END'];
 Node-name argument type
 
 description:
-	     An [expression] which evaulates to a valid name of an element,
+	     An [expression] which evaluates to a valid name of an element,
 	     attribute or processing-instruction node. As long as the
 	     expression contains no whitespace, no brackets of any type,
 	     quotes, double-quotes, '$' character, nor '@' character, it is
@@ -269,25 +276,29 @@ description:
 	     should in XSH2 be written as either of
 
              /foo/bar[ @baz = "bar" ]
-	     avoiding any white-space outside the squere brackets, or
+	     avoiding any white-space outside the square brackets, or
 	     completely enclosed in brackets as in
 
              ( / foo / bar [ @baz = "bar" ] ).
-	     XSH2 provides a number of powerfull XPath extension functions,
-	     listed below and described in separate sections, see
-	     xsh:current, xsh:doc, xsh:grep, xsh:id2, xsh:if, xsh:join,
-	     xsh:lc, xsh:lcfirst, xsh:map, xsh:matches, xsh:max, xsh:min,
-	     xsh:new-attribute, xsh:new-cdata, xsh:new-chunk,
-	     xsh:new-comment, xsh:new-element, xsh:new-element-ns,
-	     xsh:new-pi, xsh:new-text, xsh:parse, xsh:path, xsh:reverse,
-	     xsh:same, xsh:serialize, xsh:split, xsh:sprintf, xsh:strmax,
-	     xsh:strmin, xsh:subst, xsh:substr, xsh:sum, xsh:times, xsh:uc,
-	     xsh:ucfirst, xsh:var. XPath extension functions by default
-	     belong to XSH2 namespace 'http://xsh.sourceforge.net/xsh/'
-	     with a namespace prefix set to 'xsh'. A program may however
-	     call the [xpath-extensions] command to map XSH2 XPath
-	     extension functions into the default namespace, so that they
-	     may be used directly without any prefix.
+	     XSH2 provides a number of powerful XPath extension functions,
+	     listed below and described in separate sections. XPath
+	     extension functions by default belong to XSH2 namespace
+	     'http://xsh.sourceforge.net/xsh/' with a namespace prefix set
+	     to 'xsh'. A program may however call the [xpath-extensions]
+	     command to map XSH2 XPath extension functions into the default
+	     namespace, so that they may be used directly without any
+	     prefix.
+
+	     XPath extension functions defined in XSH2: xsh:current,
+	     xsh:doc, xsh:document, xsh:documents, xsh:evaluate,
+	     xsh:filename, xsh:grep, xsh:id2, xsh:if, xsh:join, xsh:lc,
+	     xsh:lcfirst, xsh:lookup, xsh:map, xsh:match, xsh:matches,
+	     xsh:max, xsh:min, xsh:new-attribute, xsh:new-cdata,
+	     xsh:new-chunk, xsh:new-comment, xsh:new-element,
+	     xsh:new-element-ns, xsh:new-pi, xsh:new-text, xsh:parse,
+	     xsh:path, xsh:reverse, xsh:same, xsh:serialize, xsh:split,
+	     xsh:sprintf, xsh:strmax, xsh:strmin, xsh:subst, xsh:substr,
+	     xsh:sum, xsh:times, xsh:uc, xsh:ucfirst, xsh:var
 
 Example:     Open a document and count all sections containing a subsection
 
@@ -312,11 +323,11 @@ description:
 	       foo / bar' is a valid XPath expression matching element
 	       named bar under root element foo, in XSH2 this expression
 	       must be written as '/foo/bar' or '(/ foo / bar)' or
-	       '(/foo/bar)' etc. The reason for this resttriction is
-	       simple: XSH2, like most shell languages, uses whitespace as
-	       argument delimiter so it must be able to determine
-	       expression boundaries (otherwise, '/ bar / foo' could be
-	       anything between one and four expressions).
+	       '(/foo/bar)' etc. The reason for this restriction is simple:
+	       XSH2, like most shell languages, uses whitespace as argument
+	       delimiter so it must be able to determine expression
+	       boundaries (otherwise, '/ bar / foo' could be anything
+	       between one and four expressions).
 
 	       2. In certain contexts, usually when a filename or a node
 	       name is expected as an argument, bareword (otherwise XPath)
@@ -332,7 +343,7 @@ description:
 	       [open] command, 'open file' or 'open "file"' both open a
 	       file whose name is 'file' (literally) whereas 'open (file)'
 	       or 'open @file' compute the file name by evaluating '(file)'
-	       or '@file' respectivelly, as XPath expressions.
+	       or '@file' respectively, as XPath expressions.
 
 	       3. Perl blocks. These are enclosed in braces like: '{
 	       perl-code }'. Perl expressions can be used to evaluate more
@@ -349,9 +360,9 @@ description:
 	       [xslt].
 
 	       5. Large blocks of literal data can be passed to commands
-	       via "inplace document" expressions '<<EOF', '<<'EOF'',
+	       via "here document" expressions '<<EOF', '<<'EOF'',
 	       <<"EOF"'', where 'EOF' is an arbitrary 'ID' string. '<<EOF'
-	       and '<<"EOF"' are equivallent, and are subject to
+	       and '<<"EOF"' are equivalent, and are subject to
 	       interpolation of '${...}' constructs, where as '<<'EOF''
 	       does not. The result of evaluation of these three is the
 	       literal content (with '${...}' possibly interpolated) of the
@@ -370,12 +381,15 @@ description:
 	     with the value of the variable named '$id'.
 
 	     Interpolators of the form '${{' and '}}' evaluate their
-	     contents as a Perl expresson (in very much the same way as the
-	     [perl] command) and interpolate to the resulting value.
+	     contents as a Perl expression (in very much the same way as
+	     the [perl] command) and interpolate to the resulting value.
 
 	     Interpolators of the form '${(' and ')}' evaluate their
 	     contents as an XPath expression and interpolates to a string
 	     value of the result.
+
+	     Substrings of the form '\${' interpolate to '${' (as a means
+	     for escaping '${...}' in an expression).
 
 	     Expressions are evaluated by XSH2 commands themselves, so the
 	     exact value an expression evaluates to, is also
@@ -445,7 +459,7 @@ usage:       try [command-or-block] catch [[local|my] [$variable]] [command-or-b
              
 description:
 	     Execute the [command-or-block] following the 'try' keyword. If
-	     an error or exception occures during the evaluation, execute
+	     an error or exception occurs during the evaluation, execute
 	     the 'catch' [command-or-block]. If the 'catch' keyword is
 	     followed by a variable (possibly localized for the following
 	     block using [my] or [local]) and the 'try' block fails with an
@@ -568,8 +582,8 @@ $HELP{'eval'}=[<<'END'];
 usage:       eval [expression]
              
 description:
-	     NOTE: This command has very different behavior from XSH1 eval
-	     alias for [perl].
+	     NOTE: This command has very different behavior from XSH1,
+	     where it used to be an alias for [perl].
 
 	     This command first evaluates a given [expression] to obtain a
 	     string, then evaluates this string as XSH2 code in the current
@@ -721,8 +735,7 @@ $HELP{'define'}=$HELP{'def'};
 $HELP{'assign'}=[<<'END'];
 usage:       [assign] [$variable] = [expression]
              [assign] [$variable] := [command]
-             [assign] [$variable] [-= | += | *= | /= | %= | x= | .= | ||= |
- &&= ] [expression]
+             [assign] [$variable] [-= | += | *= | /= | %= | x= | .= | ||= | &&= ] [expression]
              [assign] [$variable] [-:= | +:= | *:= | /:= | %:= | x:= | .:= | ||:= | &&:= ] [command]
              
 description:
@@ -758,7 +771,7 @@ Example:     Command result assignment
 
              xsh> $doc := open "file.xml" # open a document
              xsh> $copies := xcopy //foo into //bar # copy elements and store the copies
-             xsh> $wrappers := wrap "warapper" $copies # wrap each node from $copies to a new element "wrapper" and store the wrapping elements
+             xsh> $wrappers := wrap "wrapper" $copies # wrap each node from $copies to a new element "wrapper" and store the wrapping elements
 
 see also:     variables
 
@@ -795,7 +808,7 @@ description:
 	     Note, that the variable itself remains global in the sense
 	     that it is still visible to any subroutine called subsequently
 	     from the same block. Unlike [my] declaration, it does not
-	     create a new lexicaly scoped variable.
+	     create a new lexically scoped variable.
 
 	     Hint for Perl programmers: 'local' in XSH2 works exactly as
 	     'local' in Perl.
@@ -811,6 +824,10 @@ usage:       settings
 description:
 	     List current values of all XSH2 settings (such as validation
 	     flag or query-encoding).
+
+	     '--variables' or ':v' flag enforces syntax which makes use of
+	     variable assignments. Otherwise, settings are listed in the
+	     form of XSH commands.
 
 Example:     Store current settings in your .xshrc
 
@@ -880,8 +897,6 @@ END
 $HELP{'help'}=[<<'END'];
 usage:       help [command]|argument-type|xsh:xpath-function
              
-aliases:     ?
-
 description:
 	     Print help on a given command, argument type or XPath
 	     extension function (use 'xsh:' as a prefix to XPath extensions
@@ -889,7 +904,6 @@ description:
 
 END
 
-$HELP{'?'}=$HELP{'help'};
 
 $HELP{'exec'}=[<<'END'];
 usage:       exec [expression] [[expression] ...]
@@ -927,7 +941,7 @@ description:
 	     ':p' - see '--compile' above).
 
 	     If '--compile' or ':c' is used, compile a given XSLT
-	     stylesshet and return a compiled XSLT stylesheet object. This
+	     stylesheet and return a compiled XSLT stylesheet object. This
 	     object can be later passed as a XSLT stylesheet to 'xslt
 	     --precompiled'.
 
@@ -960,7 +974,7 @@ $HELP{'xsltproc'}=$HELP{'xslt'};
 $HELP{'process'}=$HELP{'xslt'};
 
 $HELP{'documents'}=[<<'END'];
-usage:       files
+usage:       documents
              
 aliases:     files docs
 
@@ -974,6 +988,21 @@ END
 
 $HELP{'files'}=$HELP{'documents'};
 $HELP{'docs'}=$HELP{'documents'};
+
+$HELP{'set_filename'}=[<<'END'];
+usage:       set_filename [expression] [[document]]
+             
+description:
+	     Changes filename or URL associated with a given document (or
+	     the current document, if only one argument is specified).
+	     Document filename is initialized by the [open] command and
+	     used e.g. by [save]. It can be queried in XPath expressions
+	     using the [xsh:filename] function.
+
+see also:     open save xsh:filename
+
+END
+
 
 $HELP{'variables'}=[<<'END'];
 usage:       variables
@@ -1035,10 +1064,10 @@ description:
 	     detail.
 
 	     Note that XSH2 refuses to create multiple top-level elements
-	     using 'copy', [move] and smilar commands.
+	     using 'copy', [move] and similar commands.
 
 Example:     Replace living-thing elements in the document b with copies of
-	     the coresponding creature elements from the document $a.
+	     the corresponding creature elements from the document $a.
 
              xsh> copy $a//creature replace $b//living-thing
 
@@ -1055,7 +1084,7 @@ END
 $HELP{'cp'}=$HELP{'copy'};
 
 $HELP{'xcopy'}=[<<'END'];
-usage:       xcopy [--respective|:r] [expression] [location] [expression]
+usage:       xcopy [--respective|:r] [--preserve-order|:p] [expression] [location] [expression]
              
 aliases:     xcp
 
@@ -1069,6 +1098,13 @@ description:
 	     If '--respective|:r' option is used, then the target node-list
 	     [expression] is evaluated in the context of the source node
 	     being copied.
+
+	     The '--preserve-order|:p' option can be used to ensure that
+	     the copied nodes are in the same relative order as the
+	     corresponding source nodes. Otherwise, if [location] is
+	     'after' or 'prepend', the relative order of the copied nodes
+	     will be reversed, because source nodes are placed to the
+	     target location one by one.
 
 Example:     Copy all middle-earth creatures within the document $a into
 	     every world of the document $b.
@@ -1113,16 +1149,19 @@ END
 $HELP{'add'}=$HELP{'insert'};
 
 $HELP{'wrap'}=[<<'END'];
-usage:       wrap [--namespace [expression]] [--inner] [expression] [xpath]
+usage:       wrap [--namespace [expression]] 
+    [ [--inner] | [--while|:W [expression]] [--until|:U [expression]]
+      [--skip-whitespace|:w] [--skip-comments|:c] [--skip-pi|:p] ]
+    [expression] [xpath]
              
 description:
-	     For each node matching [xpath], this command creates a new
-	     element node according to a given [expression] (in the same
-	     way as [xinsert] does) to replace the matching node and moves
-	     the matching node into the newly created element. If namespace
-	     [expression] is given, the namespace is applied on the created
-	     element. The command returns a node-list consisting of the
-	     elements created.
+	     For each node matching the [xpath] argument, this command
+	     creates a new element node according to a given [expression]
+	     (in the same way as [xinsert] does) which replaces the
+	     matching node, and moves the matching node into this newly
+	     created element. If namespace [expression] is given, the
+	     namespace is applied on the created element. The command
+	     returns a node-list consisting of the elements created.
 
 	     With '--inner' (or ':i') flag the command wraps children nodes
 	     of the matching node rather than the node it self the
@@ -1130,7 +1169,37 @@ description:
 	     created, but this time it is placed into the matching node and
 	     all previous children of the matching node are moved into the
 	     newly created node. In this mode, all non-element matching
-	     nodes are ignored.
+	     nodes are ignored. This flag cannot be used together with
+	     '--while' and '--until', which we describe next.
+
+	     '--while' (':W') and/or '--until' (':U') arguments can be
+	     provided in order to move a sequence of adjacent siblings
+	     following the matching node into the newly created element. In
+	     this way the newly created element wraps not just the matching
+	     node itself but a range of nodes starting at the matching node
+	     and ending either before a first following node matching the
+	     expression of '--until', or before a first following node not
+	     matching the expression of '--while', or at the last sibling
+	     if neither of the prior apply. Both these expressions are
+	     evaluated in the context of the currently tested sibling and
+	     prior to the creation of the wrapping element. The context
+	     position for these expressions is 1 at the first sibling
+	     following the matching node and increases with each tested
+	     sibling; the context size is the number of all siblings
+	     following the matching node. It is important to mention that
+	     siblings wrapped in this way are excluded from further
+	     processing by [wrap] even if included in the node-list
+	     produced by the [xpath] argument. This allows to easily wrap
+	     certain adjacent elements without worrying about some elements
+	     being wrapped multiple times (for example, 'wrap :W x y //x'
+	     wraps each sequence of adjacent elements '<x>' in a '<y>').
+
+	     '--skip-whitespace' (':w'), '--skip-comments' (':c'), and
+	     '--skip-pi' (':p') can be used in combination with '--while'
+	     (':W') and/or '--until' (':U') to skip testing the expressions
+	     on white-space text nodes, comments, and/or processing
+	     instruction, respectively. Such nodes are only included in the
+	     wrapped range if followed by a sibling that is to be wrapped.
 
 Example:
              $scratch/> ls /;
@@ -1140,7 +1209,7 @@ Example:
              $scratch/> wrap 'foo' *;
              $scratch/> insert attribute 'bar=baz' into /foo;
              $scratch/> insert text 'some text' into //scratch;
-             $scratch/> wrap 'a:A' namespace 'http://foo/bar' //@*;
+             $scratch/> wrap --namespace 'http://foo/bar' 'a:A' //@*;
              $scratch/> $wrapper := wrap 'text aaa="bbb"' //text();
              $scratch/> wrap '<elem ccc=ddd>' //*;
              $scratch/> ls /;
@@ -1183,6 +1252,40 @@ Example:
                  </bar>
                </foo>
              </elem>
+
+Example:     Wrapping a range of adjacent nodes
+
+             # prepare the test document
+             $scratch/> rm /scratch/node(); # cleanup the document
+             $scratch/> set /scratch/li[5]; # create 5 <li> elements
+             $scratch/> set /scratch/li[3]/following-sibling::li; # add <br/> after the 3rd <li>
+             $scratch/> for //li set . position(); # number the <li> elements 
+             $scratch/> ls /
+             <?xml version="1.0" encoding="utf-8"?>
+             <scratch>
+               <li>1</li>
+               <li>2</li>
+               <li>3</li>
+               <br/>
+               <li>4</li>
+               <li>5</li>
+             </scratch>
+             # wrap adjacent elements <li> into an <ol>
+             $scratch/> wrap --skip-whitespace --while self::li ol //li;
+             $scratch/> ls /
+             <?xml version="1.0" encoding="utf-8"?>
+             <scratch>
+               <ol>
+                 <li>1</li>
+                 <li>2</li>
+                 <li>3</li>
+               </ol>
+               <br/>
+               <ol>
+                 <li>4</li>
+                 <li>5</li>
+               </ol>
+             </scratch>
 
 see also:     xinsert insert move xmove
 
@@ -1271,7 +1374,8 @@ description:
 	     the name of the element or attribute being inserted must have
 	     a prefix.
 
-	     The command returns a node-list consiting of nodes it created.
+	     The command returns a node-list consisting of nodes it
+	     created.
 
 	     Note, that instead of 'xinsert', you can alternatively use one
 	     of [xsh:new-attribute], [xsh:new-cdata], [xsh:new-chunk],
@@ -1373,7 +1477,7 @@ aliases:     mv
 
 description:
 	     'move' command acts exactly like [copy], except that it
-	     removes the source nodes after a succesfull copy. Remember
+	     removes the source nodes after a successful copy. Remember
 	     that the moved nodes are actually different nodes from the
 	     original ones (which may not be obvious when moving nodes
 	     within a single document into locations that do not require
@@ -1381,7 +1485,7 @@ description:
 	     belong to any document and are automatically destroyed unless
 	     some variable still contains to them.
 
-	     This command returns a node-list consisiting of nodes it
+	     This command returns a node-list consisting of nodes it
 	     created on the target locations.
 
 	     See [copy] for more details on how the copies of the moved
@@ -1394,13 +1498,13 @@ END
 $HELP{'mv'}=$HELP{'move'};
 
 $HELP{'xmove'}=[<<'END'];
-usage:       xmove [--respective|:r] [xpath] [location] [xpath]
+usage:       xmove [--respective|:r] [--preserve-order|:p] [xpath] [location] [xpath]
              
 aliases:     xmv
 
 description:
 	     Like [xcopy], except that 'xmove' removes the source nodes
-	     after a succesfull copy. Remember that the moved nodes are
+	     after a successful copy. Remember that the moved nodes are
 	     actually different nodes from the original ones (which may not
 	     be obvious when moving nodes within a single document into
 	     locations that do not require type conversion). So, after the
@@ -1408,8 +1512,19 @@ description:
 	     automatically destroyed unless still contained in some
 	     variable.
 
-	     This command returns a node-list consisiting of all nodes it
+	     This command returns a node-list consisting of all nodes it
 	     created on the target locations.
+
+	     If '--respective|:r' option is used, then the target node-list
+	     [expression] is evaluated in the context of the source node
+	     being copied.
+
+	     The '--preserve-order|:p' option can be used to ensure that
+	     the copied nodes are in the same relative order as the
+	     corresponding source nodes. Otherwise, if [location] is
+	     'after' or 'prepend', the relative order of the copied nodes
+	     will be reversed, because source nodes are placed to the
+	     target location one by one.
 
 	     See [xcopy] for more details on how the copies of the moved
 	     nodes are created.
@@ -1474,7 +1589,7 @@ END
 
 
 $HELP{'strip-whitespace'}=[<<'END'];
-usage:       strip [expression]
+usage:       strip-whitespace [expression]
              
 aliases:     strip_whitespace
 
@@ -1568,6 +1683,154 @@ see also:     get
 END
 
 
+$HELP{'change-ns-uri'}=[<<'END'];
+usage:       change-ns-uri [expression] [[expression]]
+             
+description:
+	     This command takes one or two arguments. The first argument is
+	     a new namespace URI and the second, optional, argument is a
+	     namespace prefix. It changes the URI value of a namespace
+	     declaration of the context node to the new value. If no prefix
+	     is given, the change applies to a declaration on the context
+	     node whose prefix equals to the prefix of the context node,
+	     otherwise the change applies to a declaration with the given
+	     prefix.
+
+see also:     change-ns-prefix set-ns declare-ns namespaces
+
+END
+
+
+$HELP{'change-ns-prefix'}=[<<'END'];
+usage:       change-ns-prefix [expression] [[expression]]
+             
+description:
+	     This command takes one or two arguments. The first argument is
+	     a new prefix and the second, optional, argument is an old
+	     namespace prefix. It changes the prefix of a namespace
+	     declaration of the context node to the new value. If no old
+	     prefix is given, the change applies to a declaration on the
+	     context node whose prefix equals to the prefix of the context
+	     node, otherwise the command changes the declaration with the
+	     given old prefix.
+
+	     The command throws an exception if the new prefix is already
+	     taken by some other declaration in the scope.
+
+see also:     change-ns-uri set-ns declare-ns namespaces
+
+END
+
+
+$HELP{'set-ns'}=[<<'END'];
+usage:       set-ns [:p|--prefix [expression]] [expression]
+             
+description:
+	     This command takes one argument, the namespace URI, possibly
+	     accompanied by a prefix provided in the option '--prefix'
+	     ':p'; both these expressions are evaluated as names. The
+	     command changes the namespace of the current element to a
+	     given namespace URI. The current node must be in the scope of
+	     a namespace declaration associating the namespace URI with a
+	     prefix; if prefix option is given, then one of such
+	     declarations must associate the particular given prefix with
+	     the namespace URI. If this condition is not met or the current
+	     node is neither element nor attribute, an error is issued. The
+	     command also changes the prefix of the current element
+	     accordingly.
+
+see also:     declare-ns change-ns-uri change-ns-prefix namespaces
+
+END
+
+
+$HELP{'declare-ns'}=[<<'END'];
+usage:       declare-ns [expression] [expression]
+             
+description:
+	     This command takes one or two arguments: prefix and URI, both
+	     evaluated as names. It creates a namespace declaration of the
+	     form 'xmlns:prefix="URI"' on the current node. The command
+	     produces an error if the prefix is already declared in the
+	     scope of the current node with a different namespace URI.
+
+see also:     set-ns change-ns-uri change-ns-prefix namespaces
+
+END
+
+
+$HELP{'set'}=[<<'END'];
+usage:       set [xpath] [[xpath]]
+             
+description:
+	     This command provides very easy way to create or modify
+	     content of a document. It takes two XPath expressions. The
+	     first one should be a node location path which specifies the
+	     target node, the second is optional and provides new content
+	     for the target node. If a node matches the first XPath
+	     expression, then its content is replaced with the given value.
+	     If no node matches, then XSH2 tries to magically extend the
+	     current document by adding nodes in order to add missing steps
+	     of the location path so as to make the expression match a
+	     node. This node is then populated with a copy of the content
+	     value (either text or, if the content [xpath] results in a
+	     node-list and the target node is an element, nodes).
+
+Example:     Try the following on an empty scratch document
+
+             $scratch/> ls /
+             <scratch/>
+             $scratch/> set scratch/@say "hallo world"
+             <scratch say="hello world"/>
+             
+             $scratch/> set scratch/foo[2]/../foo[1]/following-sibling::bar/baz[3] "HALLO"
+             $scratch/> ls /
+             <?xml version="1.0" encoding="utf-8"?>
+             <scratch say="hello world">
+               <foo/>
+                 <bar>
+                   <baz/>
+                   <baz/>
+                   <baz>HALLO</baz>
+                 </bar>
+               <foo/>
+             <scratch/>
+
+	     Only a limited subset of XPath is currently supported by this
+	     command. Namely, the XPath expression must be a location path
+	     consisting of a /-separated sequence of one or more location
+	     steps and new nodes can only be magically created along the
+	     child, sibling, or attribute axes. The node-test part of the
+	     expression can neither be a wildcard ('*', '@*', 'prefix:*',
+	     ...), nor the 'node()' function. If a namespace prefix is
+	     used, then either the namespace must already be declared in
+	     the document or registered with XSH.
+
+	     Location steps may contain arbitrary predicates (filters),
+	     however, only a limited subset is supported for magically
+	     created nodes. In particular, if a filter predicate of a
+	     location step specifies a position of a node (e.g. with '[4]',
+	     or '[position()>3]', etc), then the parser tries to
+	     automatically create empty siblings nodes until it finally
+	     creates one with for which the predicate is true.
+
+	     Note, that this command only processes one location step at a
+	     time and always picks the first matching node. So, expressions
+	     like '/root/a/b' are treated as '/root/a[1]/b[1]'. This means
+	     that an expression '/root/a/b' will magically create element
+	     '<b>' in a first matching '<a>' even if some following '<a>'
+	     already contains a '<b>'.
+
+	     To prevent this, either explicitly state that 'b' must exist
+	     with e.g. '/root/a[b]/b' or make the corresponding element
+	     '<a>' the context node and use a relative location path:
+
+Example:
+             for /root/a/b set b 'foo'
+
+END
+
+
 $HELP{'get'}=[<<'END'];
 usage:       get [expression]
              
@@ -1636,7 +1899,7 @@ $HELP{'delete'}=$HELP{'remove'};
 $HELP{'del'}=$HELP{'remove'};
 
 $HELP{'print'}=[<<'END'];
-usage:       print [--nonl|:n] [--stderr|:e] [expression] [[expression] ...]
+usage:       print [--nonl|:n] [--nospace|:s] [--stderr|:e] [expression] [[expression] ...]
              
 aliases:     echo
 
@@ -1648,6 +1911,9 @@ description:
 
 	     '--nonl' or ':n' can be used to avoid printing a trailing
 	     new-line.
+
+	     '--nospace' or ':s' suppresses printing additional spaces
+	     between individual arguments.
 
 	     '--stderr' or ':e' causes the command to print on standard
 	     error output.
@@ -1677,7 +1943,7 @@ description:
 	     used.
 
 	     '--numeric|:n' specifies, that keys should be compared by
-	     their numerial values (the default is string comparison).
+	     their numerical values (the default is string comparison).
 
 	     '--descending|:d' specifies, that the result should be ordered
 	     in descending order (default is ascending).
@@ -1713,67 +1979,158 @@ Example:     Reorder creature elements by name attribute in ascending order
 
 Example:     Sort a node-list by a pre-computed score (Perl-based sort)
 
-             $results := sort --numeric --descendant --key { $scores{literal('@name')} } $players;
+             $results := sort --numeric --descending --key { $scores{literal('@name')} } $players;
 
 END
 
 
 $HELP{'map'}=[<<'END'];
-usage:       map [perl-code] [expression]
+usage:       map [expression] [expression]
              
-aliases:     sed
-
 description:
-	     This command provides an easy way to modify node's data
-	     (content) using arbitrary Perl code.
+	     NOTE: THE SEMANTICS OF COMMAND HAS CHANGED IN 2.1.0
 
-	     The [expression] in the second argument is evaluated to a
-	     node-list whose each node passes its data to the [perl-code]
-	     via the '$_' variable and loads back the (possibly modified)
-	     data from the same variable.
+	     This command provides an easy way to transform node's data
+	     (content) using arbitrary expression. It takes two arguments:
+	     a mapping expression and a node-list.
 
-	     Since element nodes do not actually bear any data (they are
-	     just containers for other nodes), their names (tag) is used
-	     instead. Note, however, that there is a dedicated command
-	     [rename] with a very similar syntax to 'map', that should be
-	     used for renaming nodes like elements, attributes, and
-	     processing instructions.
+	     First the second argument is evaluated to a node-list. For
+	     each of the nodes, the mapping expression is evaluated and the
+	     result is used to replace the original content of the node.
+	     The node is made the context node for the time of evaluation
+	     of the mapping expression. Moreover, if the expression is a
+	     Perl code, it gets the original text content in the variable
+	     '$_'.
 
-Example:     Capitalises all hobbit names
+	     Note that if the processed node is an element than the mapping
+	     expression may even produce nodes which are then copied into
+	     the element discarding any previous content of the element.
 
-             xsh> map { $_=ucfirst($_) } //hobbit/@name
+	     If the mapping expression returns an undefined value for a
+	     node, then its content is kept untouched.
 
-Example:     Changes goblins to orcs in all hobbit tales (\b matches word
+	     '--in-place' (':i') flag: if the expression is a Perl code,
+	     then it is sometimes convenient to change the value in place.
+	     In that case use this flag to indicate that the result should
+	     to be taken from the '$_' variable rather than from the value
+	     of the expression itself. Without this flag, '$_' is
+	     read-only.
+
+	     '--reverse' (':r') flag instruct the map to process the
+	     nodelist in reversed order.
+
+Example:     Capitalizes all hobbit names
+
+             map { ucfirst($_) } //hobbit/@name;
+
+Example:     Changes Goblins to Orcs in all hobbit tales (\b matches word
 	     boundary).
 
-             xsh> map { s/\bgoblin\b/orc/gi } //hobbit/tale/text()
+             map :i { s/\bgoblin\b/orc/gi } //hobbit/tale/text();
+
+Example:     Recompute column sums in the last row of row-oriented table
+
+             map sum(/table/row[position()<last()]/
+             cell[count(xsh:current()/preceding-sibling::cell)+1])
+             /table/row[last()]/cell;
+
+Example:     The following commands do all about the same:
+
+             wrap --inner Z //*;
+             map --reverse xsh:parse(concat("<Z>",xsh:serialize(node()),"</Z>")) //*;
+             map xsh:parse(concat("<Z>",xsh:serialize(node()),"</Z>")) { reverse xpath('//*') };
+
+	     Note that in the last example we use ':r' (or Perl 'reverse'
+	     function) to reverse the node list order so that child nodes
+	     get processed before their parents. Otherwise, the child nodes
+	     would be replaced by parent's new content before the
+	     processing could reach them.
+
+see also:     rename
 
 END
 
-$HELP{'sed'}=$HELP{'map'};
 
 $HELP{'rename'}=[<<'END'];
-usage:       rename [perl-code] [expression]
+usage:       rename [nodename] [expression]
              
 description:
+	     NOTE: THE SEMANTICS OF COMMAND HAS CHANGED IN 2.1.0
+
 	     This command is very similar to the [map] command, except that
-	     it operates on nodes' names rather than their data/values. For
-	     every element, attribute or processing-instruction contained
-	     in the node-list specified by a given [expression], the
-	     following procedure is used: 1) the name of the node is stored
-	     into Perl's '$_' variable, 2) the [perl-code] is evaluated,
-	     and 3) the (posibly modified) content of the '$_' variable is
-	     used as a new name for the node.
+	     it operates on nodes' names rather than their content. It
+	     changes name of every element, attribute or
+	     processing-instruction contained in the node-list specified in
+	     the second argument [expression], according to the value of
+	     the [nodename] expression, which is evaluated in the context
+	     of each node in turn.
 
-Example:     Renames all hobbits to halflings
+	     If the [nodename] is a Perl expression, then the name of the
+	     node is also stored into Perl's '$_' variable prior to
+	     evaluation.
 
-             xsh> map $_='halfling' //hobbit
+	     The flag '--in-place' (':i') can be used to indicate that the
+	     new name should be collected from the '$_' variable rather
+	     than from the result of the expression itself.
+
+	     The '--namespace' (':n') argument may be used to provide
+	     namespace for the renamed nodes.
+
+	     '--reverse' (':r') flag instruct the map to process the
+	     nodelist in reversed order.
+
+	     Note: if the expression [nodename] returns an undefined value
+	     for a particular node, the node's original name and namespace
+	     are preserved.
+
+Example:     Renames all Hobbits to Halflings
+
+             xsh> rename halfling //hobbit
 
 Example:     Make all elements and attributes uppercase (yack!)
 
-             xsh> map { $_=uc($_) } (//*|//@*)
+             xsh> rename { uc } (//*|//@*)
+
+Example:     Substitute dashes with underscores in all node names
+
+             xsh> rename :i { s/-/_/g } (//*|//@*)
+
+Example:     Make all elements start with the name of their parents
+
+             xsh> rename concat(local-name(parent::*),'.',local-name(.)) //*[parent::*]
 
 see also:     map
+
+END
+
+
+$HELP{'hash'}=[<<'END'];
+usage:       $hash := hash [expression] [expression]
+             
+description:
+	     This command takes two arguments: an expression computing a
+	     key from a given node (1st argument) and a node-set (2nd
+	     argument). For each node in the node-set, the key value is
+	     computed and the node is stored under the given key in the
+	     resulting hash. For a given key, the value stored in the hash
+	     table is a node-list consisting of all nodes for which the 1st
+	     expression evaluated to an object string-wise equal to the
+	     key. It is therefore possible to index more than one node
+	     under the same key.
+
+	     The XPath function 'xsh:lookup(varname,key)' can be used to
+	     retrieve values from hashes in XPath expressions.
+
+Example:     Index books by author
+
+             my $books_by_author := hash concat(author/firstname," ",author/surname) //book;
+
+Example:     Lookup books by Jack London.
+
+             ls { $books_by_author->{'Jack London'} };
+             ls xsh:lookup('books_by_author','Jack London');
+
+see also:     xsh:lookup
 
 END
 
@@ -1803,7 +2160,7 @@ description:
 	     faster on large documents (with thousands of nodes). The
 	     command should only be used on documents which don't change;
 	     modifying an indexed document might possibly lead to
-	     non-conformant behaviour of later XPath queries on the
+	     non-conformant behavior of later XPath queries on the
 	     document.
 
 END
@@ -1980,8 +2337,8 @@ description:
 	     It's argument should be either 'xml', 'html' or an expression
 	     evaluating to one of these. If not specified, XML output is
 	     assumed. Note, that a document should be saved as HTML only if
-	     it actually is a HTML document, the result would be an
-	     unparsable instance. Note also, that the optional encoding
+	     it actually is a HTML document, otherwise the result would be
+	     an invalid XML instance. Note also, that the optional encoding
 	     parameter only forces character conversion; it is up to the
 	     user to declare the document encoding in the appropriate HTML
 	     <META> tag, if needed.
@@ -2146,8 +2503,8 @@ description:
 	     RelaxNG grammars are supported.
 
 	     '--schema' or ':S' forces W3C XML Schema validation (XSD).
-	     Support for schema validation may still be inclomplete (see
-	     libxml2 homepage for more details).
+	     Support for schema validation may still be incomplete (see
+	     libxml2 home page for more details).
 
 	     A DTD subset can be specified by its PUBLIC identifier (with
 	     '--public'), by its SYSTEM identifier (with '--file'), or as a
@@ -2162,8 +2519,8 @@ description:
 
 Example:
              $mydoc := open "test.xml"
-             # in all examples below, mydoc can be ommited
-             validate --yesno $mydoc; # validate against the documet's DOCTYPE
+             # in all examples below, mydoc can be omitted
+             validate --yesno $mydoc; # validate against the document's DOCTYPE
              validate --public "-//OASIS//DTD DocBook XML V4.1.2//EN" $mydoc
              validate --file "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" $mydoc
 
@@ -2200,7 +2557,7 @@ END
 $HELP{'quit'}=$HELP{'exit'};
 
 $HELP{'process-xinclude'}=[<<'END'];
-usage:       process_xinclude [[document]]
+usage:       process-xinclude [[document]]
              
 aliases:     process_xinclude process-xincludes process_xincludes xinclude xincludes load_xincludes load-xincludes load_xinclude load-xinclude
 
@@ -2237,11 +2594,19 @@ END
 $HELP{'chxpath'}=$HELP{'cd'};
 
 $HELP{'pwd'}=[<<'END'];
-usage:       pwd
+usage:       pwd [--id|:i]
              
 description:
 	     Print XPath leading to the current context node (equivalent to
 	     'locate .').
+
+	     If flag '--id' (':i') is used then ID-based shortcut is
+	     allowed in the resulting location path. That means that if the
+	     current node or some of its ancestors has an ID attribute
+	     (either 'xml:id' or one specified in a DTD) then the
+	     corresponding segment of the canonical location path is
+	     replaced by the 'id()' function which jumps directly to an
+	     element based on its ID.
 
 see also:     locate xsh:path
 
@@ -2249,11 +2614,19 @@ END
 
 
 $HELP{'locate'}=[<<'END'];
-usage:       locate [xpath]
+usage:       locate [--id|:i] [xpath]
              
 description:
 	     Print canonical XPaths leading to nodes matched by a given
 	     [xpath].
+
+	     If flag '--id' (':i') is used then ID-based shortcuts are
+	     allowed in the resulting location paths. That means that if
+	     the node or some of its ancestors has an ID attribute (either
+	     'xml:id' or one specified in a DTD) then the corresponding
+	     segment of the canonical location path is replaced by the
+	     'id()' function which jumps directly to an element based on
+	     its ID.
 
 see also:     pwd
 
@@ -2270,7 +2643,7 @@ description:
 	     the XML Update Language, aims to be a language for updating
 	     XML documents.
 
-	     XUpdate langauge is described in XUpdate Working Draft at
+	     XUpdate language is described in XUpdate Working Draft at
 	     http://xmldb-org.sourceforge.net/xupdate/xupdate-wd.html.
 
 	     XUpdate output can be generated for example by Python xmldiff
@@ -2397,7 +2770,7 @@ END
 
 
 $HELP{'parser-expands-entities'}=[<<'END'];
-usage:       parser_expands_entities [expression]
+usage:       parser-expands-entities [expression]
              
 aliases:     parser_expands_entities
 
@@ -2416,7 +2789,7 @@ END
 $HELP{'parser_expands_entities'}=$HELP{'parser-expands-entities'};
 
 $HELP{'keep-blanks'}=[<<'END'];
-usage:       keep_blanks [expression]
+usage:       keep-blanks [expression]
              
 aliases:     keep_blanks
 
@@ -2435,7 +2808,7 @@ END
 $HELP{'keep_blanks'}=$HELP{'keep-blanks'};
 
 $HELP{'pedantic-parser'}=[<<'END'];
-usage:       pedantic_parser [expression]
+usage:       pedantic-parser [expression]
              
 aliases:     pedantic_parser
 
@@ -2480,7 +2853,7 @@ description:
 	     text node.
 
 	     Note, that since the underlying C library (libxml2) uses a
-	     hardcoded indentation of 2 space characters per indentation
+	     hard-coded indentation of 2 space characters per indentation
 	     level, the amount of whitespace used for indentation can not
 	     be altered at runtime.
 
@@ -2526,13 +2899,13 @@ END
 $HELP{'skip_dtd'}=$HELP{'skip-dtd'};
 
 $HELP{'parser-expands-xinclude'}=[<<'END'];
-usage:       parser_expands_xinclude [expression]
+usage:       parser-expands-xinclude [expression]
              
 aliases:     parser_expands_xinclude
 
 description:
 	     If the [expression] is non-zero, the parser is allowed to
-	     expand XIinclude tags imidiatly while parsing the document.
+	     expand XInclude tags immediately while parsing the document.
 
 	     This command is equivalent to setting the
 	     '$PARSER_EXPANDS_XINCLUDE' variable.
@@ -2544,7 +2917,7 @@ END
 $HELP{'parser_expands_xinclude'}=$HELP{'parser-expands-xinclude'};
 
 $HELP{'load-ext-dtd'}=[<<'END'];
-usage:       load_ext_dtd [expression]
+usage:       load-ext-dtd [expression]
              
 aliases:     load_ext_dtd
 
@@ -2793,10 +3166,10 @@ $HELP{'return'}=[<<'END'];
 usage:       return [[expression]]
              
 description:
-	     This command immediatelly stops the execution of a procedure
-	     it occurs in and returns the execution to the place of the
-	     script from which the subroutine was called. Optional argument
-	     may be used as a return value for the subroutine call.
+	     This command immediately stops the execution of a procedure it
+	     occurs in and returns the execution to the place of the script
+	     from which the subroutine was called. Optional argument may be
+	     used as a return value for the subroutine call.
 
 	     Using this command outside a subroutine causes an immediate
 	     run-time error.
@@ -2813,7 +3186,7 @@ description:
 	     This command throws and exception containing error message
 	     given by the obligatory [expression] argument. If the
 	     exception is not handled by some surrounding [try] block, the
-	     execution is stopped immediatelly and the error message is
+	     execution is stopped immediately and the error message is
 	     printed.
 
 see also:     try
@@ -2827,7 +3200,7 @@ usage:       catalog [filename]
 description:
 	     Make use of a given XML file as a catalog during all parsing
 	     processes. Using a catalog may significantly speed up parsing
-	     processes if many external ressources are loaded into the
+	     processes if many external resources are loaded into the
 	     parsed documents (such as DTDs or XIncludes).
 
 END
@@ -2859,7 +3232,7 @@ description:
 	     nodes, but your milage may vary) while [foreach] wins on
 	     smaller node-lists.
 
-	     The following two examples give equivallent results. However,
+	     The following two examples give equivalent results. However,
 	     the one using 'iterate' may be faster if the number of nodes
 	     being counted is huge and document order isn't indexed.
 
@@ -2971,7 +3344,7 @@ usage:       unregister-function [expression]
 aliases:     unregfunc
 
 description:
-	     EXPERIMENTAL! Unregiseter XPath extension function of a given
+	     EXPERIMENTAL! Unregister XPath extension function of a given
 	     name previously registered using [register-function].
 
 END
@@ -2992,14 +3365,14 @@ description:
 	     EXPERIMENTAL! This command provides a memory efficient (though
 	     slower) way to process selected parts of an XML document with
 	     XSH2. A streaming XML parser (SAX parser) is used to parse the
-	     input. The parser has two states which will be refered to as A
-	     and B below. The initial state of the parser is A.
+	     input. The parser has two states which will be referred to as
+	     A and B below. The initial state of the parser is A.
 
 	     In the state A, only a limited vertical portion of the DOM
-	     tree is built. All XML data comming from the input stream
-	     other than start-tags are immediatelly copied to the output
-	     stream. If a new start-tag of an element arrives, a new node
-	     is created in the tree. All siblings of the newly created node
+	     tree is built. All XML data coming from the input stream other
+	     than start-tags are immediately copied to the output stream.
+	     If a new start-tag of an element arrives, a new node is
+	     created in the tree. All siblings of the newly created node
 	     are removed. Thus, in the state A, there is exactly one node
 	     on every level of the tree. After a node is added to the tree,
 	     all the [xpath] expressions following the 'select' keyword are
@@ -3065,19 +3438,26 @@ END
 
 
 $HELP{'namespaces'}=[<<'END'];
-usage:       namespaces [[expression]]
+usage:       namespaces [--registered|:r] [[expression]]
              
 description:
 	     For each node in a given node-list lists all namespaces that
 	     are valid the scope of the node. Namespaces are listed in the
-	     form of 'xmlns:prefix="uri"' declarations. If no [xpath] is
+	     form of 'xmlns:prefix="uri"' declarations, preceded by a
+	     canonical xpath of the corresponding node on a separate line.
+
+	     If '--registered' or ':r' flag is used, list also namespaces
+	     registered with the [register-namespace] command in XSH
+	     syntax.
+
+	     If called without the '--registered' flag and no [xpath] is
 	     given, lists namespaces in the scope of the current node.
 
 END
 
 
 $HELP{'xpath-completion'}=[<<'END'];
-usage:       xpath_completion [expression]
+usage:       xpath-completion [expression]
              
 aliases:     xpath_completion
 
@@ -3113,7 +3493,7 @@ description:
 	     If the [expression] evaluates to 'never', the TAB completion
 	     list for XPath expressions never includes axis names.
 
-	     The default value for this optio is 'always'.
+	     The default value for this option is 'always'.
 
 	     This command is equivalent to setting the
 	     '$XPATH_AXIS_COMPLETION' variable.
@@ -3188,7 +3568,7 @@ description:
 	     text, and when the editor exits, read and return the result.
 	     The '--editor' (':E') parameter can be used to provide an
 	     editor command, whereas '--encoding' (':e') can be used to
-	     specify character encoding used for communicatoin with the
+	     specify character encoding used for communication with the
 	     editor. If the result is empty, the interactive XSH2 shell
 	     asks user for confirmation before returning the result in
 	     order to prevent data loss due to some unexpected error. To
@@ -3204,14 +3584,14 @@ usage:       edit [--editor|:E [filename]]
              
 description:
 	     This command may be used to interactively edit parts of a XML
-	     document directly in your favourite editor.
+	     document directly in your favorite editor.
 
 	     A given [expression] is evaluated to a node-list and the first
 	     the first resulting node is opened in an external editor as a
 	     XML fragment. When the editor exits, the (possibly modified)
 	     fragment is parsed and returned to the original document.
 	     Unless '--no-comment' (':q') flag is used, the XML fragment is
-	     preceded with a XML comment specifying cannonical XPath of the
+	     preceded with a XML comment specifying canonical XPath of the
 	     node being edited.
 
 	     The command returns a node-list consisting of nodes that
@@ -3234,7 +3614,7 @@ description:
 
 	     If the result saved by the editor is empty, the interactive
 	     XSH2 shell asks user to confirm this was correct. This
-	     confirmation can be supressed using '--allow-empty' or ':0'
+	     confirmation can be suppressed using '--allow-empty' or ':0'
 	     (zero) options.
 
 	     The '--encoding' or ':e' parameter can be used to specify
@@ -3258,6 +3638,18 @@ description:
 END
 
 
+$HELP{'xsh:filename'}=[<<'END'];
+usage:       node-set xsh:filename(node-set?)
+             
+description:
+	     Returns filename (URL) of the document containing the first
+	     node in the given node-set. If called without arguments, or if
+	     the node-set is empty, returns filename of the document
+	     containing the current node.
+
+END
+
+
 $HELP{'xsh:var'}=[<<'END'];
 usage:       node-set xsh:var(string NAME)
              
@@ -3274,6 +3666,18 @@ usage:       boolean xsh:matches(string STR,string PATTERN)
 description:
 	     Returns 'true' if 'STR' matches the regular expression
 	     'PATTERN'. Otherwise returns 'false'.
+
+END
+
+
+$HELP{'xsh:match'}=[<<'END'];
+usage:       boolean xsh:match(string STR,string PATTERN,options STR)
+             
+description:
+	     Searches a given string for a pattern match specified by a
+	     regular expression 'PATTERN' and returns a node-set consisting
+	     of '<xsh:string>' elements containing portions of the string
+	     matched by the pattern subexpressions enclosed in parentheses.
 
 END
 
@@ -3524,7 +3928,7 @@ $HELP{'xsh:path'}=[<<'END'];
 usage:       string xsh:path(node-set NODE)
              
 description:
-	     This function returns a string containing cannonical XPath
+	     This function returns a string containing canonical XPath
 	     leading to 'NODE'.
 
 see also:     pwd
@@ -3699,7 +4103,68 @@ description:
 	     evaluating the expression for the relevant node to a string as
 	     with the string function.
 
-see also:     pwd
+see also:     xsh:evaluate
+
+END
+
+
+$HELP{'xsh:evaluate'}=[<<'END'];
+usage:       node-set xsh:evaluate(string XPATH)
+             
+description:
+	     This function is very similar to EXSLT 'dynamic:evaluate'
+	     function. The description below is almost literally taken from
+	     the EXSLT specification.
+
+	     The 'xsh:evaluate' function evaluates a string as an XPath
+	     expression and returns the resulting value, which might be a
+	     boolean, number, string, node set, result tree fragment or
+	     external object. The sole argument is the string to be
+	     evaluated.
+
+	     The string is always evaluated exactly as if it had been
+	     literally included in place of the call to the 'xsh:evaluate'
+	     function.
+
+	     In other words, the context information used when evaluating
+	     the XPath expression passed as the argument to the
+	     'xsh:evaluate' function is exactly the same as the context
+	     information used when evaluating the 'xsh:evaluate' function.
+	     This context information includes:
+
+	       1. the context node, such that paths are evaluated relative
+	       to the context node at the point where the 'xsh:evaluate'
+	       function is called
+
+	       2. the context position, such that the expression can
+	       contain calls to the position function
+
+	       3. the context size, such that the expression can contain
+	       calls to the last function
+
+	       4. variable bindings, such that the expression can contain
+	       variable references
+
+	       5. function library, such that the expression can contain
+	       calls to extension functions
+
+	       6. namespace declarations, such that paths can contain
+	       prefixes the current node, such that the expression can
+	       contain calls to the current function
+
+	     If the expression string passed as the second argument is an
+	     invalid XPath expression (including an empty string), this
+	     function returns an empty node set.
+
+	     You should only use this function if the expression must be
+	     constructed dynamically - otherwise it is much more efficient
+	     to use the expression literally. For expressions that simply
+	     give an element or attribute's name (to select a child element
+	     or attribute), it is more efficient to use an expression in
+	     the style:
+
+             *[name() = $expression]
+see also:     xsh:map
 
 END
 
@@ -3708,13 +4173,14 @@ $HELP{'xsh:split'}=[<<'END'];
 usage:       node-set xsh:split(string PATTERN, string STRING)
              
 description:
-	     This function provides direct access to the very powerfull
-	     Perl function 'split'. It splits 'STRING' to a list of fields.
-	     'PATTERN' is a regular expression specifing strings delimiting
-	     individual fields of 'STRING'. If 'PATTERN' is empty, 'STRING'
-	     is split to individual characters. If the regular expression
-	     in 'PATTERN' is enclosed in brackets, then strings matching
-	     'PATTERN' are also included in the resulting list.
+	     This function provides direct access to the very powerful Perl
+	     function 'split'. It splits 'STRING' to a list of fields.
+	     'PATTERN' is a regular expression specifying strings
+	     delimiting individual fields of 'STRING'. If 'PATTERN' is
+	     empty, 'STRING' is split to individual characters. If the
+	     regular expression in 'PATTERN' is enclosed in brackets, then
+	     strings matching 'PATTERN' are also included in the resulting
+	     list.
 
 	     The function returns a node-set consisting of newly created
 	     '<xsh:string>' elements containing individual strings of the
@@ -3747,11 +4213,57 @@ description:
 END
 
 
+$HELP{'xsh:lookup'}=[<<'END'];
+usage:       node-set xsh:lookup(string VARNAME, string KEY)
+             
+description:
+	     This function is similar to XSLT 'key()' function. It returns
+	     a node-set stored in a hash VARNAME under the key KEY. The
+	     VARNAME must be a name of a lexical or global XSH variable
+	     containing a Perl hash reference.
+
+see also:     hash
+
+END
+
+
+$HELP{'xsh:document'}=[<<'END'];
+usage:       node-set xsh:document(string URL)
+             
+description:
+	     Looks up among the currently open document the one whose
+	     filename is same as the given URL and returns the
+	     corresponding document node. If no document's filename matches
+	     exactly the given URL, then several heuristic matches are
+	     tried: if the URI is a relative filename, it is tilde-expanded
+	     and resolved (using the current working directory as a base)
+	     and the lookup is restarted with the absolute filename;
+	     finally, a lookup identifying filenames with URLs of the
+	     file:// protocol is attempted. If the lookup fails completely,
+	     an empty node set is returned.
+
+see also:     hash
+
+END
+
+
+$HELP{'xsh:documents'}=[<<'END'];
+usage:       node-set xsh:documents()
+             
+description:
+	     Returns a node-set consisting of the document nodes of all
+	     currently open documents.
+
+see also:     hash
+
+END
+
+
 $HELP{'call'}=[<<'END'];
 usage:       call [expression] [[expression] ...]
              
 description:
-	     Call a subroutine whose name is computed by evauluating the
+	     Call a subroutine whose name is computed by evaluating the
 	     first argument [expression]. All other expressions are
 	     evaluated too and the results are passed to the subroutine as
 	     arguments.
@@ -3784,9 +4296,9 @@ Files/Documents
   process (see [validation] and [load-ext-dtd]). Parsed documents are
   stored in memory as DOM trees, that can be [navigated] and [manipulated]
   with XSH2 commands and XPath language, whose names and syntax make
-  working with the DOM tree a flavour of working in a UNIX filesystem.
+  working with the DOM tree a flavor of working in a UNIX filesystem.
 
-  A parsed document is usually stored in a variable. XSH2 shares varibles
+  A parsed document is usually stored in a variable. XSH2 shares variables
   with the XPath engine, so if e.g. '$doc' is a XSH2 variable holding a
   document (or, more generally any node-set), then '$doc//section/title' is
   an XPath expression selecting all 'title' subelements of all 'section'
@@ -3807,7 +4319,8 @@ Example: Store a XSH2 document on a remote machine using the Secure Shell
 
 Related help items:
   backups, catalog, clone, close, create, documents, index, nobackups,
-  open, process-xinclude, save, stream, switch-to-new-documents
+  open, process-xinclude, save, set_filename, stream,
+  switch-to-new-documents
 
 END
 
@@ -3816,7 +4329,7 @@ Tree navigation
 ---------------
 
   With XSH2, it is possible to browse a [document tree] (XML data
-  represented as a DOM-tree) as if it was a local f ilesystem, except that
+  represented as a DOM-tree) as if it was a local filesystem, except that
   [XPath] expressions are used instead of ordinary directory paths.
 
   To mimic the filesystem navigation as closely as possible, XSH2 contains
@@ -3854,9 +4367,8 @@ Example: XSH2 shell
 
 
 Related help items:
-  canonical, cd, fold, locate, ls, pwd, register-function,
-  register-namespace, register-xhtml-namespace, register-xsh-namespace,
-  unfold, unregister-function, unregister-namespace
+  canonical, cd, fold, locate, ls, pwd, register-function, unfold,
+  unregister-function
 
 END
 
@@ -3914,7 +4426,7 @@ Example:
   never converted into text, attribute or any other textual node. There are
   many combinations here, so try yourself and see the results.
 
-  You may even use some more sofisticated way to convert between node
+  You may even use some more sophisticated way to convert between node
   types, as shown in the following example, where an element is first
   commented out and than again uncommented. Note, that the particular
   approach used for resurrecting the commented XML material works only for
@@ -3969,8 +4481,9 @@ Example: Using string variables to convert between different types of nodes
 
 
 Related help items:
-  clone, copy, edit, edit-string, insert, map, move, normalize,
-  process-xinclude, remove, rename, set-dtd, set-enc, set-standalone, sort,
+  change-ns-prefix, change-ns-uri, clone, copy, declare-ns, edit,
+  edit-string, hash, insert, map, move, normalize, process-xinclude,
+  remove, rename, set, set-dtd, set-enc, set-ns, set-standalone, sort,
   strip-whitespace, wrap, wrap-span, xcopy, xinsert, xmove, xslt, xupdate
 
 END
@@ -4007,11 +4520,92 @@ Related help items:
 
 END
 
+$HELP{'Namespaces'}=[<<'END'];
+Namespaces in XML and XPath
+---------------------------
+
+  Namespaces provide a simple method for qualifying element and attribute
+  names in XML documents. Namespaces are represented by a namespace URI
+  but, since the URI can be very long, element and attribute names are
+  associated with a namespace using a namespace prefix (see the W3C
+  recommendation for details). In an XML document, a prefix can be
+  associated with a namespace URI using a declaration which takes form of
+  special attribute of the form 'xmlns:prefix="namespace uri"' on an
+  element. The scope of the namespace declaration is then the subtree of
+  the element carrying the special 'xmlns:prefix' attribute (and includes
+  attributes of the element). Moreover, a default namespace can be declared
+  using just 'xmlns="namespace uri"'. In that case all unprefixed element
+  names in the scope of such a declaration belong to the namespace. An
+  unprefixed element which is not in scope of a default namespace
+  declaration does not belong to any namespace. It is recommended not to
+  combine namespaced elements and non-namespaced elements in a single
+  document. Note that regardless of default namespace declarations,
+  unprefixed attributes do not belong to any namespace (because they are
+  uniquely determined by their name and the namespace and name of the the
+  element which carries them).
+
+  XSH2 tries to deal namespace declarations transparently (creating them if
+  necessary when nodes are copied between different documents or scopes of
+  namespace declarations). Most commands which create new elements or
+  attributes provide means to indicate a namespace. In addition, XSH2
+  provides commands [declare-ns], [set-ns], [change-ns-uri], and
+  [change-ns-prefix] to directly manipulate XML namespace declarations on
+  the current node.
+
+  Since XSH2 is heavily XPath-based, it is important to remember that XPath
+  1.0 maps prefixes to namespaces independently of the declarations in the
+  current document. The mapping is instead provided via so called XPath
+  context. Namespaces can be tested in XPath either using the built-in
+  'namespace-uri()' function, but it is more convenient to use namespace
+  prefixes associated with namespace URIs in the XPath context. This
+  association is independent of the documents to which the XPath expression
+  is applied and can be established using the command [register-namespace].
+  Additional, XSH2 automatically propagates the namespace association in
+  the scope of the current node to the XPath context, so that per-document
+  prefixes in the current scope can also be used.
+
+  IMPORTANT: XPath 1.0 has no concept of a default namespace. Unprefixed
+  names in XPath only match names which have no namespace. So, if the
+  document uses a default namespace, it is required to associate a
+  non-empty prefix with the default namespace via [register-namespace] and
+  add that prefix to names in XPath expressions intended to match nodes in
+  the default namespace.
+
+Example: Manipulating nodes in XHTML documents
+
+  open "index.xhtml";
+  $xhtmlns = "http://www.w3.org/1999/xhtml";
+  register-namespace x $xhtmlns;
+  wrap --namespace $xhtmlns '<font color="blue">' //x:a[@href];
+  # or 
+  wrap '<x:font color="blue">' //x:a[@href];
+
+  In the preceding example we associate the (typically default) namespace
+  of XHTML documents with the prefix 'x'. We than use this prefix to match
+  all links ('a' elements) in the document. Note that we do not write
+  '@x:href' to match the '@href' attribute because unprefixed attributes do
+  not belong to the default namespace. The [wrap] command is used to create
+  new containing elements for the nodes matched by the XPath expression. We
+  may either specify the namespace of the containing element explicitly,
+  using '--namespace' option, or implicitly, by using a prefix associated
+  with the namespace in the XPath context. In the latter case, XSH2 chooses
+  a suitable prefix declared for the namespace in the document scope (in
+  this case the default, i.e. no, prefix), adding a new namespace
+  declaration if necessary.
+
+
+Related help items:
+  change-ns-prefix, change-ns-uri, declare-ns, namespaces,
+  register-namespace, register-xhtml-namespace, register-xsh-namespace,
+  set-ns, unregister-namespace
+
+END
+
 $HELP{'Argtypes'}=[<<'END'];
 Argument Types
 --------------
 
-  XSH2 commands accept argumtens of various types, usually expressed as
+  XSH2 commands accept arguments of various types, usually expressed as
   Perl or XPath [expression]s. Unlike in most languages, individual XSH2
   commands may evaluate the same expression differently, usually to enforce
   a result of a certain type (such as a node-list, a string, a number, a
@@ -4108,7 +4702,7 @@ Example:
   # same as the above is
   xsh> foreach {@$creature} print @name;
 
-  XSH2 variables are either globaly or lexically scoped. Global variables
+  XSH2 variables are either globally or lexically scoped. Global variables
   need not to be declared (they can be directly assigned to), whereas
   lexical variables must be declared using the command [my]. Global
   variable assignment may also be made temporal for the enclosing block,
@@ -4117,7 +4711,7 @@ Example:
 Example:
   $var1 = "foo";           # a global variable requires no declaration
   local $var1 $var2 $var3; # localizes global variables
-  $var1 = "bar";           # asignment to a localized variable is temporary
+  $var1 = "bar";           # assignment to a localized variable is temporary
   local $var4 = "foo";     # localized assignment
   my $var1 $var $var3;     # declares lexical variables
   my $var1 = "foo";        # lexical variable declaration with assignment
@@ -4125,7 +4719,7 @@ Example:
   Lexical variables are only defined in the scope of current block or
   subroutine. There is no way to refer to a lexical variable form outside
   of the block it was declared in, nor from within a nested subroutine
-  call. Of course, lexical variables can be refered to from nested blocks
+  call. Of course, lexical variables can be referred to from nested blocks
   or Perl expressions (where they behave just like Perl's lexical
   variables).
 
@@ -4137,9 +4731,9 @@ Example:
   same).
 
   Localizing a variable using the 'local' keyword makes all assignments to
-  it ocurring in the enclosing block temporary. The variable itself remains
-  global, only its original value is restored at the end of the block that
-  localized it.
+  it occurring in the enclosing block temporary. The variable itself
+  remains global, only its original value is restored at the end of the
+  block that localized it.
 
   In all above cases, it is possible to arbitrarily intermix XSH2 and Perl
   assignments:
@@ -4165,7 +4759,7 @@ Example:
     perl { $races->{$race}++ };
   }
   print "Middle-Earth Population (race/number of creatures)"
-  print { map "$_/$races->{$_}\n" sort ($a cmp $b), keys(%$races); };
+  print { map "$_/$races->{$_}\n" keys(%$races); };
 
 
 Related help items:
@@ -4178,8 +4772,7 @@ Command output redirection
 --------------------------
 
   WARNING: XSH2 redirection syntax is not yet finished. It is currently the
-  same as in XSH1 but this may be drastically changed in the future
-  releases.
+  same as in XSH1 but this may be changed in the future releases.
 
   Output redirection can be used to pipe output of some XSH [command] to
   some external program, or to capture it to a variable. Redirection of
@@ -4190,13 +4783,13 @@ Command output redirection
   --------------------------------------
 
     The syntax for redirecting the output of a XSH command to an external
-    program, is'xsh-command | shell-command ;', where 'xsh-command' is any
+    program, is 'xsh-command | shell-command ;', where 'xsh-command' is any
     XSH2 command and 'shell-command' is any command (or code) recognized by
     the default shell interpreter of the operating system (i.e. on UNIX
     systems by '/bin/sh' or '/bin/csh', on Windows systems by 'cmd'). The
     shell command may contain further redirections (as supported by the
     system shell interpreter), but should not contain semicolons, except
-    when the whole shell command is encosed in brackets.
+    when the whole shell command is enclosed in brackets.
 
 Example: Use well-known UNIX commands to filter XPath-based XML listing
     from a document and count the results
@@ -4220,12 +4813,12 @@ $HELP{'Configuration'}=[<<'END'];
 Global settings
 ---------------
 
-  The commands listed below can be used to modify the default behaviour of
+  The commands listed below can be used to modify the default behavior of
   the XML parser or XSH2 itself. Some of the commands switch between two
   different modes according to a given expression (which is expected to
   result either in zero or non-zero value). Other commands also working as
   a flip-flop have their own explicit counterparts (e.g. [verbose] and
-  [quiet] or [debug] and [nodebug]). This misconsistency is due to
+  [quiet] or [debug] and [nodebug]). This inconsistency is due to
   historical reasons.
 
   The [encoding] and [query-encoding] settings allow to specify character
@@ -4261,8 +4854,8 @@ Interacting with Perl and Shell
   borrows XSH2 its great expressive power. Perl is a language optimized for
   scanning arbitrary text files, extracting information from those text
   files, and printing reports based on that information. It has built-in
-  regular expressions and powerfull yet easy to learn data structures
-  (salars, arrays, hash tables). It's also a good language for many system
+  regular expressions and powerful yet easy to learn data structures
+  (scalars, arrays, hash tables). It's also a good language for many system
   management tasks. XSH2 itself is written in Perl (except for the XML
   engine, which uses libxml2 library written in C by Daniel Veillard).
 
@@ -4272,12 +4865,12 @@ Interacting with Perl and Shell
     Perl [expressions or blocks of code] can either be used as arguments to
     any XSH2 command. One of them is [perl] command which simply evaluates
     the given Perl block. Other commands, such as [map], even require Perl
-    expression argument and allow quicky change DOM node content. Perl
+    expression argument and allow quickly change DOM node content. Perl
     expressions may also provide lists of strings to iterate over with a
     [foreach] loop, or serve as conditions for [if], [unless], and [while]
     statements.
 
-    To prevent conflict between XSH2 internals and the evaluated Oerl code,
+    To prevent conflict between XSH2 internals and the evaluated Perl code,
     XSH2 runs such code in the context of a special namespace
     'XML::XSH2::Map'. As described in the section [Variables], XSH2 string
     variables may be accessed and possibly assigned from Perl code in the
@@ -4315,11 +4908,11 @@ Interacting with Perl and Shell
     'type(string|object)' - if passed a string, it first evaluates the
     string as XSH2 expression to obtain a node-list object. It returns a
     list of strings representing the types of nodes in the node-list
-    (ordered in the cannonical document order). The returned type strings
+    (ordered in the canonical document order). The returned type strings
     are: 'element', 'attribute', 'text', 'cdata', 'pi', 'entity_reference',
     'document', 'chunk', 'comment', 'namespace', 'unknown'.
 
-    'nodelist(string|object,...)' - coverts it's arguments to objects if
+    'nodelist(string|object,...)' - converts its arguments to objects if
     necessary and returns a node-list consisting of the objects.
 
     'xpath(string, node?)' - evaluates a given string as an XPath
@@ -4379,8 +4972,7 @@ Example: The same code as a single Perl block
     types. The implementation may use general Perl functions as well as
     'XML::LibXML' methods to process the arguments and return the result.
     Documentation for the 'XML::LibXML' Perl module can be found for
-    example at
-    http://search.cpan.org/author/PHISH/XML-LibXML-1.54/LibXML.pm.
+    example at http://search.cpan.org/~pajas/XML-LibXML/.
 
     Extension functions SHOULD NOT MODIFY the document DOM tree. Doing so
     could not only confuse the XPath engine but possibly even result in an
@@ -4392,7 +4984,7 @@ Example: The same code as a single Perl block
     can be of one of the following types: simple scalar (a number or
     string), 'XML::LibXML::Boolean' object reference (result is a boolean
     value), 'XML::LibXML::Literal' object reference (result is a string),
-    'XML::LibXML::Number' object reference (resulat is a float),
+    'XML::LibXML::Number' object reference (result is a float),
     'XML::LibXML::Node' (or derived) object reference (result is a node-set
     consisting of a single node), or 'XML::LibXML::NodeList' (result is a
     node-set). For convenience, simple (non-blessed) array references
@@ -4451,7 +5043,70 @@ Example: The same on Windows 2000/XP systems
 
 
 Related help items:
-  exec, lcd, map, perl, rename
+  exec, hash, lcd, map, perl, rename
+
+END
+
+$HELP{'Prompt'}=[<<'END'];
+Prompt in the interactive shell
+-------------------------------
+
+  Like many other shells, XSH2 provides means for customizing the format of
+  its interactive shell prompt. The prompt is displayed according to the
+  content of the variable '$PROMPT' on which the following substitutions
+  and interpolations are performed (in this order):
+
+  1. Prompt-string replacements
+
+  %% - percent sign
+  %p - XPath location of the current node
+  %P - like %p but without an initial document variable
+  %l - XPath location of the current node with ID-shortcuts
+  %L - like %l but without an initial document variable
+  %n - name of the current node
+  %N - local name of the current node
+  %c - canonical XPath name of the current node
+  %y - type of the current node (element,attribute,...)
+  %i - ID of the current node
+  %d - current document variable
+  %h - the hostname up to the first '.'
+  %H - the hostname
+  %s - XSH shell name (basename of $0)
+  %t - the current time in 24-hour HH:MM:SS format
+  %T - the current time in 12-hour HH:MM:SS format
+  %@ - the current time in 12-hour am/pm format
+  %A - the current time in 24-hour HH:MM format
+  %u - the username of the current user
+  %v - the version of XSH2 (e.g., 2.1.0)
+  %V - the revision number of XML::XSH2::Functions (e.g. 2.40)
+  %w - current working directory (on the local filesystem)
+  %W - basename of %w
+  2. Variable, XPath and Perl interpolations
+
+  Substrings of the forms '${variable}', '${{...perl...}}' and
+  '${(...xpath...)}' are interpolated as in XSH2 [expressions].
+
+  3. Special character substitution
+
+  \n - newline character
+  \r - line-feed character
+  \t - tab character
+  \a - bell character
+  \b - backspace character
+  \f - form feed character
+  \e - escape character (\033)
+  \\ - backslash character
+  \nnn - the character corresponding to the octal number nnn
+  (useful for non-printable terminal control characters)
+  The default value of '$PROMPT' is '"%p>"'.
+
+  Note that you must escape '${...}' interpolators like '\${...}' if you
+  want them to be evaluated at each prompt rather than at the time of the
+  assignment to '$PROMPT'. For example:
+
+Example: Let `uname` be computed once, `date` at every prompt
+
+  $PROMPT="[${{ chomp($u=`uname`);$u }} \${{ chomp($d=`date`);$d }}] %p>"
 
 END
 
@@ -4505,7 +5160,7 @@ Changes since XSH 1.x
       $filter = "[ . = $var[@test=1]/any ]";
       ls //baz${filter};
       4. XSH2 equally supports XPath and Perl [expressions] (written in
-      braces { ... }). Unfortunatelly, Perl expressions can't be embeded in
+      braces { ... }). Unfortunately, Perl expressions can't be embedded in
       XPath [expressions], but one can still use variables as an agent:
 
       perl { use MIME::Base64 };
@@ -4533,11 +5188,11 @@ Changes since XSH 1.x
       insert element my_document into .;
       insert text "foo" into my_document;
       
-      $doc := open my_docment;         # opens file named "my_document"
-      $doc := open "my_docment";       # same
-      $doc := open (my_docment);       # opens file named "foo"
-      $doc := open string(my_docment); # same
-      7. In XSH2, XML documents have no ID. They are refered to using
+      $doc := open my_document;         # opens file named "my_document"
+      $doc := open "my_document";       # same
+      $doc := open (my_document);       # opens file named "foo"
+      $doc := open string(my_document); # same
+      7. In XSH2, XML documents have no ID. They are referred to using
       variables (which fits in well with the unified variable concept):
 
       $doc1 := open "foo1.xml";
@@ -4548,7 +5203,7 @@ Changes since XSH 1.x
       ls xsh:id2($doc2, 'intro'); # finds ID intro in $doc2
       8. XSH2 commands have options and flags instead of many optional
       (positional) arguments. Options/flags usually have both long forms
-      (like --flag) and equivalent short forms (like :f) (colon is borowed
+      (like --flag) and equivalent short forms (like :f) (colon is borrowed
       from Scheme, because dash is reserved for XPath minus).
 
       $doc := open --format html "version1.html";
@@ -4673,6 +5328,7 @@ $Apropos = {
              'xsh:map' => undef,
              'documents' => 'display a list of open documents',
              'xsh:new-comment' => undef,
+             'xsh:lookup' => undef,
              'my' => 'Create a new lexically scoped variable',
              'print' => 'print stuff on standard or standard error output',
              'if' => 'if statement',
@@ -4696,11 +5352,12 @@ $Apropos = {
              'xmove' => 'move nodes (in the all-to-every mode)',
              'xsh:lc' => undef,
              'open' => 'load an XML, HTML, or Docbook SGML document from a file, pipe or URI',
+             'hash' => 'index selected nodes by some key value',
              'defs' => 'list all user-defined subroutines',
              'xsh:lcfirst' => undef,
              'assign' => 'variable assignment',
              'pedantic-parser' => 'make the parser more pedantic',
-             'namespaces' => 'List namespaces in current scope (or in scope of given nodes)',
+             'namespaces' => 'List namespaces available in a context of a given nodes',
              'node-type' => 'node type specification (such as element, attribute, etc.)',
              'ls' => 'list a given part of a document as XML',
              'xcopy' => 'copy nodes (in the all-to-every mode)',
@@ -4730,14 +5387,14 @@ $Apropos = {
              'debug' => 'display many annoying debugging messages',
              'nodebug' => 'turn off debugging messages',
              'parser-expands-xinclude' => 'turn on/off transparent XInclude insertion by parser',
-             'locate' => 'show a given node location (as a cannonical XPath)',
+             'locate' => 'show a given node location (as a canonical XPath)',
              'xsh:new-text' => undef,
              'xsh:uc' => undef,
              'fold' => 'mark elements to be folded by list command',
              'stream' => 'process selected elements from an XML stream (EXPERIMENTAL)',
              'nobackups' => 'turn off backup file creation',
              'xsh:new-element' => undef,
-             'pwd' => 'show current context node location (as a cannonical XPath)',
+             'pwd' => 'show current context node location (as a canonical XPath)',
              'xupdate' => 'apply XUpdate commands on a document',
              'type' => undef,
              'xsh:path' => undef,
@@ -4747,6 +5404,7 @@ $Apropos = {
              'foreach' => 'loop iterating over a node-list or a perl array',
              'xsh:sum' => undef,
              'close' => 'close document (without saving)',
+             'declare-ns' => 'create a special attribute declaring an XML namespace (EXPERIMENTAL)',
              'get' => 'calculate a given expression and return the result.',
              'unfold' => 'unfold elements folded with fold command',
              'quiet' => 'turn off many XSH2 messages',
@@ -4760,7 +5418,7 @@ $Apropos = {
              'subroutine' => 'name of a sub-routine',
              'move' => 'move nodes (in the one-to-one mode)',
              'validation' => 'turn on/off validation in XML parser',
-             'map' => 'quickly modify node value/data using Perl code',
+             'map' => 'transform node value/data using Perl or XPath expression',
              'xsh:strmax' => undef,
              'lineno' => 'print line-numbers corresponding to matching nodes',
              'encoding' => 'choose output charset',
@@ -4768,17 +5426,20 @@ $Apropos = {
              'dtd' => 'show document\'s DTD',
              'register-xsh-namespace' => 'register a prefix for the XSH2 namespace',
              'unregister-function' => 'undefine extension function (EXPERIMENTAL)',
+             'xsh:filename' => undef,
              'catalog' => 'use a catalog file during all parsing processes',
              'do' => 'execute a given block of commands',
+             'xsh:evaluate' => undef,
+             'xsh:var' => undef,
              'variables' => 'list global variables',
              'enc' => 'show document\'s original character encoding',
              'register-xhtml-namespace' => 'register a prefix for the XHTML namespace',
-             'xsh:var' => undef,
+             'edit' => 'Edit parts of a XML document in a text editor.',
              'local' => 'temporarily assign new value to a variable',
              'edit-string' => 'Edit a string or variable in a text editor.',
-             'edit' => 'Edit parts of a XML document in a text editor.',
              'lcd' => 'change system working directory',
              'xsh:same' => undef,
+             'set' => 'create or modify document content (EXPERIMENTAL)',
              'create' => 'make a new document from a given XML fragment',
              'keep-blanks' => 'turn on/off ignorable whitespace preservation',
              'xsh:strmin' => undef,
@@ -4795,14 +5456,17 @@ $Apropos = {
              'switch-to-new-documents' => 'set on/off changing current document to newly open/created files',
              'xsh:sprintf' => undef,
              'xsh:new-chunk' => undef,
+             'set_filename' => 'change filename or URL associated with a document',
              'document' => 'specifying documents',
-             'xslt' => 'compile a XSLT stylesheet and/or transform a document with XSLT',
              'xsh:substr' => undef,
+             'xslt' => 'compile a XSLT stylesheet and/or transform a document with XSLT',
              'redo' => 'restart the innermost enclosing loop block',
+             'change-ns-prefix' => 'change namespace prefix (EXPERIMENTAL)',
              'backups' => 'turn on backup file creation',
              'clone' => 'clone a given document',
              'unregister-namespace' => 'unregister namespace prefix',
              'expression' => 'expression argument type',
+             'xsh:document' => undef,
              'exec' => 'execute a shell command',
              'xsh:ucfirst' => undef,
              'location' => 'relative destination specification (such as after, before, etc.)',
@@ -4810,9 +5474,13 @@ $Apropos = {
              'doc-info' => 'displays various information about a document',
              'xsh:id2' => undef,
              'register-function' => 'define XPath extension function (EXPERIMENTAL)',
+             'change-ns-uri' => 'change namespace URI (EXPERIMENTAL)',
              'normalize' => 'normalizes adjacent textnodes',
+             'xsh:match' => undef,
+             'xsh:documents' => undef,
              'parser-expands-entities' => 'turn on/off parser\'s tendency to expand entities',
              'xsh:max' => undef,
+             'set-ns' => 'set namespace of the current node (EXPERIMENTAL)',
              'xsh:new-cdata' => undef,
              'xpath-axis-completion' => 'sets TAB completion for axes in xpath expressions in the interactive mode',
              'help' => 'on-line documentation',

@@ -1,5 +1,44 @@
+Release 2.1.0:
+Feature enhancements.
+
+Changes since 2.0.2:
+--------------------
+Incompatible Changes:
+  - commands 'rename' and 'map' have new syntax and semantics:
+
+     OLD (XSH 2.0.2)              | NEW (XSH 2.1.0)
+     -----------------------------+-----------------------------------
+     map { $_=uc } //text();      | map { uc } //text();
+     map { s/foo/bar/ } //text(); | map :i { s/foo/bar/ } //text();
+     map { $_='link' } //ref;     | rename link //ref;
+
+New Features:
+  - XSH scripts can be "compiled" (xsh -D) into Perl scripts
+    which start faster (see xsh --help for details)
+  - XML::XSH2::Compile module allows efficient embedding of
+    XSH2 scripts into Perl modules (see the module's manpage)
+  - new command 'set' simplifies creating and modifying nodes
+  - new command 'hash' simplifies hashing/grouping nodes by arbitrary keys
+  - new commands 'change-ns-prefix' and 'change-ns-uri' add full control
+    over namespace declarations
+  - XPath functions xsh:match() (regexp matching),
+    xsh:filename() (introspection), and xsh:lookup() (hash retrieval),
+    xsh:document() (get open document by filename), and xsh:documents()
+    (get all open documents)
+  - the interactive shell has a customizable prompt
+
+Enhancements:
+  - the mapping expression of 'rename' and 'map' can be XPath
+  - added save --output-encoding flag
+  - added echo --no-space (:n) flag
+  - pwd and locate can return paths based on a nearest (ancestor-or-self) ID 
+  - completion for default, xsh, and user-defined XPath functions
+  - improved namespace handling
+  - filenames of documents parsed from a file are absolute
+  - many bugfixes
+
 Release 2.0.2:
-Minor fixes.
+Minor feature enhancements and bug fixes.
 
 Changes since 2.0.1:
 -------------------

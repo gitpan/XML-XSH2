@@ -1,17 +1,14 @@
 #!/usr/bin/env perl
 # -*- cperl -*-
 
-# $Id: xsh,v 2.2 2005/01/09 16:54:09 pajas Exp $
-
-use FindBin;
-use lib ("$FindBin::RealBin", "$FindBin::RealBin/../lib",
-         "$FindBin::Bin","$FindBin::Bin/../lib",
-	 "$FindBin::Bin/lib", "$FindBin::RealBin/lib"
-	);
+# $Id: xsh,v 2.8 2007/01/02 22:03:23 pajas Exp $
 
 package main;
-
 use strict;
+
+use FindBin;
+use lib ("$FindBin::RealBin", "$FindBin::RealBin/../lib", "$FindBin::Bin","$FindBin::Bin/../lib", "$FindBin::Bin/lib", "$FindBin::RealBin/lib" );
+
 
 #use Getopt::Std;
 use Getopt::Long;
@@ -19,14 +16,13 @@ use Pod::Usage;
 use vars qw($opt_q $opt_w $opt_i $help $opt_V $opt_E $opt_e $opt_d
             $opt_c $opt_s $opt_f $opt_g $opt_v $opt_t $opt_T $opt_a
             $opt_l $opt_n $opt_p $opt_P $usage $manpage $opt_HTML
-            $opt_XML $input $output $process $format $opt_C);
-use vars qw($VERSION $REVISION);
+            $opt_XML $input $output $process $format $opt_C $opt_D $REVISION);
 
 use IO::Handle;
 
 use XML::XSH2 qw(&xsh_set_output &xsh_get_output &xsh &xsh_init
 		&xsh_pwd &set_quiet &set_debug &xsh_context_var
-		&set_compile_only_mode &xsh_set_script);
+		&set_compile_only_mode &xsh_set_script &xsh_context_node);
 
 BEGIN {
   my $optparser=new Getopt::Long::Parser(config => ["bundling"]);
@@ -39,6 +35,7 @@ BEGIN {
 			 "format" => \$format,
 			 "no-validation|w" => \$opt_w,
 			 "debug|d" => \$opt_d,
+			 "dump|D=s" => \$opt_D,
 			 "no-init|f" => \$opt_f,
 			 "help|h" => \$help,
 			 "version|V" => \$opt_V,
@@ -60,8 +57,7 @@ BEGIN {
 			 "man"        => \$manpage,
 			) or $usage=1;
 #  getopts('atscqvwdfhVinTE:e:l:pP');
-  $VERSION='0.12';
-   $REVISION=q($Revision: 2.2 $);
+  $REVISION=q($Revision: 2.8 $);
   $ENV{PERL_READLINE_NOWARN}=1;
 }
 
@@ -118,11 +114,12 @@ require Term::ReadLine if $opt_i;
 
 if ($opt_V) {
   my $rev=$REVISION;
-  $rev=~s/\s*\$//g;
+  $rev=~s/Revision:\s*|\s*\$//g;
   my $funcrev=$XML::XSH2::Functions::REVISION;
-  $funcrev=~s/\s*\$//g;
-  print "xsh $VERSION ($rev)\n";
-  print "XML::XSH2::Functions $XML::XSH2::Functions::VERSION ($funcrev)\n";
+  $funcrev=~s/Revision:\s*|\s*\$//g;
+  print "XSH2 $XML::XSH2::Functions::VERSION\n".
+    " - XML::XSH2::Functions revision $funcrev\n".
+    " - Interactive XSH Shell revision $rev\n";
   exit 1;
 }
 
@@ -142,10 +139,14 @@ XML::XSH2::Functions::set_encoding($opt_e) if $opt_e;
 XML::XSH2::Functions::set_qencoding($opt_E) if $opt_E;
 set_quiet($opt_q);
 set_debug($opt_d);
+$XML::XSH2::Functions::DUMP = $opt_D;
 set_compile_only_mode($opt_c);
 
-my $doc=XML::XSH2::Functions::create_doc('$scratch',"scratch",'xml');
+my $doc=XML::XSH2::Functions::create_doc('$scratch',"scratch",'xml','scratch.xml');
 XML::XSH2::Functions::set_local_xpath('/');
+
+# recode arguments using query encoding
+$_=XML::XSH2::Functions::toUTF8($XML::XSH2::Functions::QUERY_ENCODING,$_) for (@ARGV,@XML::XSH2::Map::ARGV);
 
 # XPath variant of perlish {@ARGV} ($ARGV[1] is the first arg though)
 $XML::XSH2::Map::ARGV = XML::LibXML::NodeList->new(map { XML::XSH2::Functions::cast_value_to_objects($_) } @XML::XSH2::Map::ARGV);
@@ -194,7 +195,7 @@ if ($opt_i) {
   unless ($opt_q) {
     my $rev=$REVISION;
     $rev=~s/\s*\$//g;
-    $rev=" xsh - XML Editing Shell version $XML::XSH2::Functions::VERSION/$VERSION ($rev)\n";
+    $rev=" xsh - XML Editing Shell version $XML::XSH2::Functions::VERSION\n";
     print STDERR "-"x length($rev),"\n";
     print STDERR $rev;
     print STDERR "-"x length($rev),"\n\n";
@@ -287,7 +288,6 @@ if ($opt_i) {
     $readline::rl_completion_function = 'XML::XSH2::Completion::perl_complete';
     $readline::rl_completer_word_break_characters = " =\t\n\r\"'`;|&})[{(]";
   }
-
   xsh_set_output($term->OUT) if ($term->OUT);
   unless ("$opt_q") {
     print STDERR "Using terminal type: ",$term->ReadLine,"\n";
@@ -341,14 +341,183 @@ sub get_line {
       return $retonint;
     } else {
       print STDERR $@,"\n";
-      return undef;
+      return;
     }
   }
   return $line;
 }
 
+
+# \n - newline
+# \r - linefeed
+# \\ - backslash
+# \nnn - octal character number
+# (may include non-printable control chars for terminal control)
+
+# %% percent sign
+# %h short hostname
+# %H long hostname
+
+# %s shell name (basename of $0)
+# %t     the current time in 24-hour HH:MM:SS format
+# %T     the current time in 12-hour HH:MM:SS format
+# %@     the current time in 12-hour am/pm format
+# %A     the current time in 24-hour HH:MM format
+
+# %u     the username of the current user
+# %v     the version of XSH (e.g., 2.1.0)
+# %V     the revision number of XSH
+
+# %w    working directory (in the filesystem)
+# %W    basename of %w
+
+# %p    XPath location of the current node
+# %P    XPath location of the current node without a document variable
+# %l    XPath location of the current node with ID-shortucts
+# %L    XPath location of the current node with ID-shortucts but without a document variable
+# %n    name of the current node
+# %N    local name of the current node
+# %c    cannonical XPath name of the current node
+# %y    type of the current node (element,attribute,...)
+# %i    ID of the current node
+# %d    current document variable
+
+BEGIN {
+  our %prompt_char = (
+    n => "\n",
+    "\\" => "\\",  
+    t => "\t",
+    r => "\r",
+    f => "\f",
+    b => "\b",
+    a => "\a",
+    e => "\e" 
+   );
+};
 sub prompt {
-  return xsh_context_var().xsh_pwd().'> ';
+  my $prompt = $XML::XSH2::Functions::PROMPT;
+
+  $prompt =~ s{%(.)}{
+    if ($1 eq '%') {
+      '%'
+    }
+    elsif ($1 eq 'P') {
+      xsh_pwd(undef,0);
+    } 
+    elsif ($1 eq 'L') {
+      xsh_pwd(undef,1);
+    } 
+    elsif ($1 eq 'p') {
+      my $pwd = xsh_pwd(undef,0);
+      my $var = xsh_context_var();
+      $var.$pwd;
+    } 
+    elsif ($1 eq 'l') {
+      my $pwd = xsh_pwd(undef,1);
+      my $var = xsh_context_var();
+      if ( $var ne "" and $pwd =~ s{^id\(}{xsh:id2($var,} ) {
+	$pwd
+      } else {
+	$var.$pwd;
+      }
+    } 
+    elsif ($1 eq 'i') {
+      XML::XSH2::Functions::node_id(xsh_context_node());
+    } 
+    elsif ($1 eq 'd') {
+      xsh_context_var();
+    }
+    elsif ($1 eq 'n') {
+      my $node = xsh_context_node();
+      if ($node and $node->can('getName')) {
+	eval { $node->getName };
+      } else {
+	'';
+      }
+    } 
+    elsif ($1 eq 'N') {
+      my $node = xsh_context_node();
+      if ($node and $node->can('localname')) {
+        $node->localname;
+      } else {
+        '';
+      }
+    }
+    elsif ($1 eq 'c') {
+      XML::XSH2::Functions::node_address(undef,1);
+    } 
+    elsif ($1 eq 'y') {
+      XML::XSH2::Functions::node_type(xsh_context_node());
+    }
+    elsif ($1 eq 'h') {
+       require Sys::Hostname;
+       my $host = Sys::Hostname::hostname();
+       $host=~s/^.*\.//;
+       $host;
+    } 
+    elsif ($1 eq 'H') {
+       require Sys::Hostname;
+       Sys::Hostname::hostname();      
+    }
+    elsif ($1 eq 's') {
+      my $shell = $0;
+      $shell=~s{^.*/}{};
+      $shell;
+    }
+    elsif ($1 eq 't') {
+      my ($s,$m,$h)= localtime(time);
+      sprintf("%02d:%02d:%02d",$h,$m,$s);
+    }
+    elsif ($1 eq 'T') {
+      my ($s,$m,$h)=localtime(time);
+      sprintf("%02d:%02d:%02d",($h < 13 ? $h : $h-12), $m, $s);
+    }
+    elsif ($1 eq 'A') {
+      my ($s,$m,$h)=localtime(time);
+      sprintf("%02d:%02d",$h, $m);
+    }
+    elsif ($1 eq '@') {
+      my ($s,$m,$h)=localtime(time);
+      sprintf("%02d:%02d",($h < 13 ? $h : $h-12), $m);
+	($h>12 ? 'pm' : 'am');
+    }
+    elsif ($1 eq 'u') {
+      scalar getpwuid($<)
+    }
+    elsif ($1 eq 'v') {
+      $XML::XSH2::Functions::VERSION;
+    }
+    elsif ($1 eq 'V') {
+      my $rev = $XML::XSH2::Functions::REVISION;
+      $rev =~ s{.*:\s*|\s*\$\E}{}g;
+      $rev;
+    }
+    elsif ($1 eq 'w') {
+      require Cwd;
+      Cwd::getcwd();
+    }
+    elsif ($1 eq 'W') {
+      require Cwd;
+      my $cwd = Cwd::getcwd();
+      $cwd =~ s{.*/}{};
+      $cwd;
+    } else {
+      '%'.$1;
+    }
+  }eg;
+  $prompt = eval { XML::XSH2::Functions::_expand($prompt) };
+  if ($@) {
+    my $err = $@;
+    chomp $err;
+    $err =~ s/ at .*//;
+    warn $err."\n";
+    return 'prompt-error>';
+  }
+  $prompt =~ s{\\(\d{3})|\\(.)}{
+    defined($1) ? chr(oct($1)) :
+      ($::prompt_char{$2}||'\\'.$2)
+    }eg;
+  return $prompt;
 }
 
 
@@ -367,6 +536,7 @@ xsh - XML Editing Shell
   xsh [options] -p commands < input.xml > output.xml
   xsh [options] -I input.xml -O output.xml commands
   xsh [options] -P file.xml commands
+  xsh [options] -cD compiled_script.pl ...
 
   xsh -u          for usage
   xsh -h          for help
@@ -382,14 +552,20 @@ interpreter for batch processing of XML files.
 
 =head1 XSH COMMANDS
 
-Please see L<http://xsh.sourceforge.net/doc/frames/index.html> or
-L<XSH> for a complete XSH language reference.
+See L<XSH2 manual page|XSH2> or
+L<http://xsh.sourceforge.net/documentation.html> for a complete
+XSH language reference.
 
 For a quick help, type C<xsh help> (just C<help> on xsh prompt).
 
 Type C<xsh help commands> to get list of available XSH commands and
 C<xsh help B<command>> with B<command> replaced by a XSH command name
 to get help on a particular command.
+
+=head1 SHELL PROMPT
+
+Run C<xsh help Prompt> to get information on how to setup the XSH2
+shell prompt.
 
 =head1 OPTIONS
 
@@ -420,6 +596,24 @@ XSH commands in the standard input.
 
 Compile the XSH source and report errors, only. No commands are
 actually executed.
+
+=item B<--dump|-D> output_filename.pl
+
+Compiles XSH source(s) into a stand-alone Perl script which can 
+be executed simply with 
+
+  perl output_filename.pl [script-arguments ... ]
+
+The compiled Perl script still requires XML::XSH2 modules to
+be installed, but since it is already precompiled and also because
+loading of XSH grammar parser is not required, it starts almost
+instantly, compared to its XSH source.
+
+Note that the compiled script includes init file (unless C<-f> flag
+was used), and it also preserves run-time flag settings used during
+the compilation.
+
+Use C<-c> to suppress execution of the compiled script.
 
 =item B<--quiet|-q>
 
@@ -526,3 +720,8 @@ Petr Pajas <pajas@matfyz.cz>
 
 Copyright 2000-2003 Petr Pajas, All rights reserved.
 
+=head1 SEE ALSO
+
+L<XSH2>, L<XML::XSH2>, L<XML::XSH2::Compile>, L<XML::LibXML>, L<XML::XUpdate>, L<http://xsh.sourceforge.net/doc>
+
+=cut

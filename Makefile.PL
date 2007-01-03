@@ -1,4 +1,4 @@
-# $Id: Makefile.PL,v 2.3 2004/12/04 21:15:57 pajas Exp $
+# $Id: Makefile.PL,v 2.7 2007/01/02 22:03:23 pajas Exp $
 
 use strict;
 
@@ -11,17 +11,26 @@ WriteMakefile(
     'VERSION_FROM' => 'lib/XML/XSH2/Functions.pm',
     'EXE_FILES' => ['xsh'],
     'PREREQ_PM' => {
-		    'XML::LibXML' => 1.56,
-		    'XML::LibXML::Common' => 0.13,
-		    'XML::LibXSLT' => 1.53,
+		    'IO::Scalar' => 0,
+		    'XML::LibXML' => "1.60",
+		    'XML::LibXML::Common' => "0.13",
+		    'XML::LibXSLT' => "1.60",
 		    'XML::LibXML::Iterator' => 0,
-		    'Parse::RecDescent' => 1.94,
-		    'XML::XUpdate::LibXML' => "0.4.0",
-		    'XML::LibXML::XPathContext' => 0.06,
+		    'Parse::RecDescent' => "1.94",
+		    'XML::XUpdate::LibXML' => "0.6.0",
+		    'XML::LibXML::XPathContext' => "0.07",
+		    'XML::SAX::Writer' => "0.44",
+		    'XML::Filter::DOMFilter::LibXML' => "0.02",
 		   },
      AUTHOR       => 'Petr Pajas (pajas@matfyz.cz)',
      ABSTRACT     => 'XML Editing Shell',
-     MAN3PODS     => { 'XSH2.pod' => 'blib/man3/XSH2.3' },
+     MAN3PODS     => {
+		      'XSH2.pod' => 'blib/man3/XSH2.3',
+		       'lib/XML/XSH2.pm' => 'blib/man3/XML::XSH2.3',
+                       'lib/XML/XSH2/XPathToXML.pm' => 'blib/man3/XML::XSH2::XPathToXML.3',
+                       'lib/XML/XSH2/Inline.pm' => 'blib/man3/XML::XSH2::Inline.3',
+                       'lib/XML/XSH2/Compile.pm' => 'blib/man3/XML::XSH2::Compile.3'
+		     },
     'dist' => {
          COMPRESS  => 'gzip',
          SUFFIX    => 'gz',
@@ -59,6 +68,10 @@ docs: all
 
 winppd: ppd
 	$(PERL) -i~ -pe 's/OS NAME=".*"/OS NAME="MSWin32"/; s/ARCHITECTURE NAME=".*"/ARCHITECTURE NAME="MSWin32-x86-multi-thread"/; s/CODEBASE HREF=".*"/CODEBASE HREF="XML-XSH2.tar.gz"/;' XML-XSH2.ppd
+
+# used to update version numbers in all modules
+version:
+	$(PERL) tools/update_version.pl $(VERSION_FROM) xsh $(TO_INST_PM)
 
 EOF
 

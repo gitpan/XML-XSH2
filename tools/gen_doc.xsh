@@ -81,7 +81,7 @@ foreach my $__ in { qw(cmd type function) } {
     } else {
       add chunk concat("<title>",string(@name),"</title>") into $section;
     }
-    map { s/\s+argument\s+type//i; $_=lcfirst } $section/title/text();
+    map :i { s/\s+argument\s+type//i; $_=lcfirst } $section/title/text();
 
     #USAGE
     if (./documentation/usage) {
@@ -89,7 +89,7 @@ foreach my $__ in { qw(cmd type function) } {
 	add chunk "<simplesect role='usage'><title>Usage</title><para></para></simplesect>"
 	into $section;
       xcopy ./documentation/usage into $us/para;
-      rename { $_='literal' } $us/para/usage;
+      rename 'literal' $us/para/usage;
     }
 
     #ALIASES
@@ -130,12 +130,12 @@ CHUNK
   }
 };
 
-map { s/^[ \t]+//; s/\n[ \t]+/\n/g; } $d//code/descendant::text();
+map :i { s/^[ \t]+//; s/\n[ \t]+/\n/g; } $d//code/descendant::text();
 foreach $d//tab {
   insert text {"  " x literal('@count')} replace .;
 }
-map { $_='programlisting' } $d//code;
-map { $_='orderedlist' } $d//enumerate;
+rename 'programlisting' $d//code;
+rename 'orderedlist' $d//enumerate;
 
 foreach $d/descendant::typeref {
   my $sl := insert element "simplelist type='inline'" before .;
@@ -150,25 +150,31 @@ foreach $d/descendant::typeref {
 
 
 foreach $d//xref {
-  map { $_='link' } .;
-  insert text xsh:if(xsh:id2($x,@linkend)/@name,
-		     xsh:id2($x,@linkend)/@name,
-		     xsh:id2($x,@linkend)/@id) into .;
+  rename 'link' .;
+  my $target = xsh:id2($x,@linkend);
+  if ($target/@name or $target/@id) {
+    insert text xsh:if($target/@name,
+		       $target/@name,
+		       $target/@id) into .;
+  } else {
+    if ($target) {
+      die "Cannot find target ${(@linkend)}";
+    } else {
+      die "Cannot create label for  target ${(serialize($target))}";
+    }
+  }
 };
 
 foreach $d//variablelist {
-  my $termlength=1;
-  foreach varlistentry/term {
-    my $length=0;
-    map { $length+=length($_) } descendant::text();
-    perl { $termlength = $termlength < $length ? $length : $termlength };
-  }
+  my $termlength= xsh:max(
+    xsh:map(varlistentry/term,'string-length(normalize-space(.))')
+  );
   copy xsh:new-attribute('termlength',$termlength) into .;
 }
 
 indent 1;
-rename {$_='informalexample'} //example[not(title)]; # for validity sake
+rename 'informalexample' //example[not(title)]; # for validity sake
 for { 1..5 } {
-  rename {$_='sect'.$__} //section[not(ancestor::section)]; # for validity sake
+  rename { 'sect'.$__ } //section[not(ancestor::section)]; # for validity sake
 }
 save --file 'doc/xsh_reference.xml' $d;
