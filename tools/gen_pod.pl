@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# $Id: gen_pod.pl,v 2.3 2007/01/02 22:03:21 pajas Exp $
+# $Id: gen_pod.pl,v 2.3 2007-01-02 22:03:21 pajas Exp $
 
 use strict;
 use vars qw(%enc);

@@ -1,5 +1,5 @@
 # -*- cperl -*-
-# $Id: LibXMLCompat.pm,v 2.4 2007/01/02 22:03:22 pajas Exp $
+# $Id: LibXMLCompat.pm,v 2.5 2007-04-02 13:19:55 pajas Exp $
 
 package XML::XSH2::LibXMLCompat;
 
@@ -9,7 +9,7 @@ use XML::LibXML::Iterator;
 use XML::LibXML::NodeList;
 use vars qw($VERSION);
 
-  $VERSION='2.1.0'; # VERSION TEMPLATE
+  $VERSION='2.1.1'; # VERSION TEMPLATE
 
 sub module {
   return "XML::LibXML";
@@ -267,7 +267,7 @@ sub get_dtd {
     if ($node->nodeType == XML::LibXML::XML_DTD_NODE()) {
       if ($node->hasChildNodes()) {
 	$dtd=$node;
-      } elsif (get_load_ext_dtd()) {
+      } else {
 	my $str=$node->toString();
 	my $name=$node->getName();
 	my $public_id;
@@ -313,11 +313,8 @@ sub iterator {
   return $iter;
 }
 
-  package XML::LibXML::Namespace;
 
-sub parentNode {}
-
-  package XML::LibXML::SubTreeIterator;
+package XML::LibXML::SubTreeIterator;
 use strict;
 use base qw(XML::LibXML::Iterator);
 # (inheritance is not a real necessity here)
@@ -366,6 +363,9 @@ sub subtree_iterator {
 {
   local $^W=0;
   eval <<'EOF';
+  package XML::LibXML::Namespace;
+  sub parentNode {}
+
   package XML::LibXML::NodeList;
 
   use overload

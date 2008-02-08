@@ -1,6 +1,6 @@
 =for comment
   This file was automatically generated from src/xsh_grammar.xml
-  on Wed Jan  3 14:21:21 2007
+  on Fri Feb  8 11:40:47 2008
 
 =head1 NAME
 
@@ -3966,7 +3966,7 @@ avoiding any white-space outside the square brackets, or completely enclosed in 
 
 XSH2 provides a number of powerful XPath extension functions, listed below and described in separate sections. XPath extension functions by default belong to XSH2 namespace B<http:E<sol>E<sol>xsh.sourceforge.netE<sol>xshE<sol>> with a namespace prefix set to B<xsh>. A program may however call the B<xpath-extensions> command to map XSH2 XPath extension functions into the default namespace, so that they may be used directly without any prefix.
 
-XPath extension functions defined in XSH2: xsh:current, xsh:doc, xsh:document, xsh:documents, xsh:evaluate, xsh:filename, xsh:grep, xsh:id2, xsh:if, xsh:join, xsh:lc, xsh:lcfirst, xsh:lookup, xsh:map, xsh:match, xsh:matches, xsh:max, xsh:min, xsh:new-attribute, xsh:new-cdata, xsh:new-chunk, xsh:new-comment, xsh:new-element, xsh:new-element-ns, xsh:new-pi, xsh:new-text, xsh:parse, xsh:path, xsh:reverse, xsh:same, xsh:serialize, xsh:split, xsh:sprintf, xsh:strmax, xsh:strmin, xsh:subst, xsh:substr, xsh:sum, xsh:times, xsh:uc, xsh:ucfirst, xsh:var
+XPath extension functions defined in XSH2: xsh:context, xsh:current, xsh:doc, xsh:document, xsh:documents, xsh:evaluate, xsh:filename, xsh:grep, xsh:id2, xsh:if, xsh:join, xsh:lc, xsh:lcfirst, xsh:lineno, xsh:lookup, xsh:map, xsh:match, xsh:matches, xsh:max, xsh:min, xsh:new-attribute, xsh:new-cdata, xsh:new-chunk, xsh:new-comment, xsh:new-element, xsh:new-element-ns, xsh:new-pi, xsh:new-text, xsh:parse, xsh:path, xsh:reverse, xsh:same, xsh:serialize, xsh:span, xsh:split, xsh:sprintf, xsh:strmax, xsh:strmin, xsh:subst, xsh:substr, xsh:sum, xsh:times, xsh:uc, xsh:ucfirst, xsh:var
 
 Example: Open a document and count all sections containing a subsection
 
@@ -3978,6 +3978,20 @@ Example: Open a document and count all sections containing a subsection
 =back
 
 =head1 XPATH EXTENSION FUNCTION REFERENCE
+
+=head2 xsh:context
+
+=over 4
+
+=item Usage:
+
+node-set xsh:context(node-set NODE, float BEFORE, float AFTER)
+
+=item Description:
+
+Returns a node-set of sibling nodes surrounding NODE. The span consists of (up to) BEFORE-many nodes immediately preceding NODE, the NODE itself, and (up to) AFTER-many nodes immediately following NODE. If the AFTER is not given, AFTER is set equal to BEFORE.
+
+=back
 
 =head2 xsh:current
 
@@ -4199,6 +4213,20 @@ Returns the value of B<STR> with the first character lowercased.
 
 =back
 
+=head2 xsh:lineno
+
+=over 4
+
+=item Usage:
+
+node-set xsh:lineno(node-set)
+
+=item Description:
+
+Returns line number of the occurrence of the first node in the given node-set in its original XML document (if available).
+
+=back
+
 =head2 xsh:lookup
 
 =over 4
@@ -4257,11 +4285,11 @@ evaluate_function
 
 =item Usage:
 
-boolean xsh:match(string STR,string PATTERN,options STR)
+node-set xsh:match(string STR,string PATTERN,string OPTIONS)
 
 =item Description:
 
-Searches a given string for a pattern match specified by a regular expression B<PATTERN> and returns a node-set consisting of B<E<lt>xsh:stringE<gt>> elements containing portions of the string matched by the pattern subexpressions enclosed in parentheses.
+Searches a given string for a pattern match specified by a regular expression B<PATTERN> and returns a node-set consisting of B<E<lt>xsh:stringE<gt>> elements containing portions of the string matched by the pattern subexpressions enclosed in parentheses. The OPTIONS string may contain the following flags: B<c> - do not reset search position on a failed match when E<sol>g is in effect; B<g> - match globally, i.e. find all occurrences; B<i> - do case insensitive search; B<m> - treat string as multiple lines (change "^" and "$" from matching the start or end of the string to matching the start or end of any line anywhere within the string) B<o> - compile pattern only once; B<s> - treat string as single line (change "." to match any character whatsoever, even a newline, which normally it would not match); B<x> - extend your pattern's legibility by permitting whitespace and comments.
 
 =back
 
@@ -4493,6 +4521,20 @@ string xsh:serialize(node-set N,...)
 =item Description:
 
 Serializes nodes of given node-set(s) into XML strings and returns concatenation of those strings.
+
+=back
+
+=head2 xsh:span
+
+=over 4
+
+=item Usage:
+
+node-set xsh:span(node-set START,node-set END)
+
+=item Description:
+
+Returns a node-set which forms a span of sibling nodes starting at START node and ending at END node (only the first node of each of the nodesets is used). It is an error if the START node and END node are not siblings.
 
 =back
 

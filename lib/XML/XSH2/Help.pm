@@ -1,5 +1,5 @@
 # This file was automatically generated from src/xsh_grammar.xml on 
-# Wed Jan  3 14:21:20 2007
+# Fri Feb  8 11:40:47 2008
 
 package XML::XSH2::Help;
 use strict;
@@ -90,14 +90,15 @@ Help items:
 
   XPath Extension Functions:
 
-    xsh:current, xsh:doc, xsh:document, xsh:documents, xsh:evaluate,
-    xsh:filename, xsh:grep, xsh:id2, xsh:if, xsh:join, xsh:lc, xsh:lcfirst,
-    xsh:lookup, xsh:map, xsh:match, xsh:matches, xsh:max, xsh:min,
-    xsh:new-attribute, xsh:new-cdata, xsh:new-chunk, xsh:new-comment,
-    xsh:new-element, xsh:new-element-ns, xsh:new-pi, xsh:new-text,
-    xsh:parse, xsh:path, xsh:reverse, xsh:same, xsh:serialize, xsh:split,
-    xsh:sprintf, xsh:strmax, xsh:strmin, xsh:subst, xsh:substr, xsh:sum,
-    xsh:times, xsh:uc, xsh:ucfirst, xsh:var
+    xsh:context, xsh:current, xsh:doc, xsh:document, xsh:documents,
+    xsh:evaluate, xsh:filename, xsh:grep, xsh:id2, xsh:if, xsh:join,
+    xsh:lc, xsh:lcfirst, xsh:lineno, xsh:lookup, xsh:map, xsh:match,
+    xsh:matches, xsh:max, xsh:min, xsh:new-attribute, xsh:new-cdata,
+    xsh:new-chunk, xsh:new-comment, xsh:new-element, xsh:new-element-ns,
+    xsh:new-pi, xsh:new-text, xsh:parse, xsh:path, xsh:reverse, xsh:same,
+    xsh:serialize, xsh:span, xsh:split, xsh:sprintf, xsh:strmax,
+    xsh:strmin, xsh:subst, xsh:substr, xsh:sum, xsh:times, xsh:uc,
+    xsh:ucfirst, xsh:var
 
 END
 
@@ -289,16 +290,17 @@ description:
 	     namespace, so that they may be used directly without any
 	     prefix.
 
-	     XPath extension functions defined in XSH2: xsh:current,
-	     xsh:doc, xsh:document, xsh:documents, xsh:evaluate,
-	     xsh:filename, xsh:grep, xsh:id2, xsh:if, xsh:join, xsh:lc,
-	     xsh:lcfirst, xsh:lookup, xsh:map, xsh:match, xsh:matches,
-	     xsh:max, xsh:min, xsh:new-attribute, xsh:new-cdata,
-	     xsh:new-chunk, xsh:new-comment, xsh:new-element,
-	     xsh:new-element-ns, xsh:new-pi, xsh:new-text, xsh:parse,
-	     xsh:path, xsh:reverse, xsh:same, xsh:serialize, xsh:split,
-	     xsh:sprintf, xsh:strmax, xsh:strmin, xsh:subst, xsh:substr,
-	     xsh:sum, xsh:times, xsh:uc, xsh:ucfirst, xsh:var
+	     XPath extension functions defined in XSH2: xsh:context,
+	     xsh:current, xsh:doc, xsh:document, xsh:documents,
+	     xsh:evaluate, xsh:filename, xsh:grep, xsh:id2, xsh:if,
+	     xsh:join, xsh:lc, xsh:lcfirst, xsh:lineno, xsh:lookup,
+	     xsh:map, xsh:match, xsh:matches, xsh:max, xsh:min,
+	     xsh:new-attribute, xsh:new-cdata, xsh:new-chunk,
+	     xsh:new-comment, xsh:new-element, xsh:new-element-ns,
+	     xsh:new-pi, xsh:new-text, xsh:parse, xsh:path, xsh:reverse,
+	     xsh:same, xsh:serialize, xsh:span, xsh:split, xsh:sprintf,
+	     xsh:strmax, xsh:strmin, xsh:subst, xsh:substr, xsh:sum,
+	     xsh:times, xsh:uc, xsh:ucfirst, xsh:var
 
 Example:     Open a document and count all sections containing a subsection
 
@@ -3650,6 +3652,16 @@ description:
 END
 
 
+$HELP{'xsh:lineno'}=[<<'END'];
+usage:       node-set xsh:lineno(node-set)
+             
+description:
+	     Returns line number of the occurrence of the first node in the
+	     given node-set in its original XML document (if available).
+
+END
+
+
 $HELP{'xsh:var'}=[<<'END'];
 usage:       node-set xsh:var(string NAME)
              
@@ -3671,13 +3683,24 @@ END
 
 
 $HELP{'xsh:match'}=[<<'END'];
-usage:       boolean xsh:match(string STR,string PATTERN,options STR)
+usage:       node-set xsh:match(string STR,string PATTERN,string OPTIONS)
              
 description:
 	     Searches a given string for a pattern match specified by a
 	     regular expression 'PATTERN' and returns a node-set consisting
 	     of '<xsh:string>' elements containing portions of the string
 	     matched by the pattern subexpressions enclosed in parentheses.
+	     The OPTIONS string may contain the following flags: 'c' - do
+	     not reset search position on a failed match when /g is in
+	     effect; 'g' - match globally, i.e. find all occurrences; 'i' -
+	     do case insensitive search; 'm' - treat string as multiple
+	     lines (change "^" and "$" from matching the start or end of
+	     the string to matching the start or end of any line anywhere
+	     within the string) 'o' - compile pattern only once; 's' -
+	     treat string as single line (change "." to match any character
+	     whatsoever, even a newline, which normally it would not
+	     match); 'x' - extend your pattern's legibility by permitting
+	     whitespace and comments.
 
 END
 
@@ -4255,6 +4278,31 @@ description:
 	     currently open documents.
 
 see also:     hash
+
+END
+
+
+$HELP{'xsh:span'}=[<<'END'];
+usage:       node-set xsh:span(node-set START,node-set END)
+             
+description:
+	     Returns a node-set which forms a span of sibling nodes
+	     starting at START node and ending at END node (only the first
+	     node of each of the nodesets is used). It is an error if the
+	     START node and END node are not siblings.
+
+END
+
+
+$HELP{'xsh:context'}=[<<'END'];
+usage:       node-set xsh:context(node-set NODE, float BEFORE, float AFTER)
+             
+description:
+	     Returns a node-set of sibling nodes surrounding NODE. The span
+	     consists of (up to) BEFORE-many nodes immediately preceding
+	     NODE, the NODE itself, and (up to) AFTER-many nodes
+	     immediately following NODE. If the AFTER is not given, AFTER
+	     is set equal to BEFORE.
 
 END
 
@@ -5334,6 +5382,7 @@ $Apropos = {
              'if' => 'if statement',
              'xsh:new-element-ns' => undef,
              'xsh:join' => undef,
+             'xsh:lineno' => undef,
              'save' => 'save a document as XML or HTML',
              'rename' => 'quickly rename nodes with in-line Perl code',
              'parser-completes-attributes' => 'turn on/off parser\'s ability to fill default attribute values',
@@ -5365,6 +5414,7 @@ $Apropos = {
              'process-xinclude' => 'load and insert XInclude sections',
              'validate' => 'validate a document against a DTD, RelaxNG, or XSD schemas',
              'command' => 'List of XSH2 commands and their general syntax',
+             'xsh:context' => undef,
              'perl-code' => 'in-line code in Perl programming language',
              'throw' => 'throw an exception',
              'version' => 'show version information',
@@ -5427,6 +5477,7 @@ $Apropos = {
              'register-xsh-namespace' => 'register a prefix for the XSH2 namespace',
              'unregister-function' => 'undefine extension function (EXPERIMENTAL)',
              'xsh:filename' => undef,
+             'xsh:span' => undef,
              'catalog' => 'use a catalog file during all parsing processes',
              'do' => 'execute a given block of commands',
              'xsh:evaluate' => undef,

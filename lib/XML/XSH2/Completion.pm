@@ -1,4 +1,4 @@
-# $Id: Completion.pm,v 2.5 2007/01/02 22:03:22 pajas Exp $
+# $Id: Completion.pm,v 2.7 2007-05-06 19:32:12 pajas Exp $
 
 package XML::XSH2::Completion;
 
@@ -7,7 +7,7 @@ use XML::XSH2::Functions qw();
 use vars qw($VERSION);
 use strict;
 
-  $VERSION='2.1.0'; # VERSION TEMPLATE
+  $VERSION='2.1.1'; # VERSION TEMPLATE
 
 our @PATH_HASH;
 our $O=qr/:[[:alnum:]]|--[-_[:alnum:]]+/; # option
@@ -306,8 +306,11 @@ sub xpath_complete {
   my ($xp,$local) = xpath_complete_str($str,0);
 #  XML::XSH2::Functions::__debug("COMPLETING $_[0] local $local as $xp\n");
   return () if $xp eq "";
-  my $ql= eval { XML::XSH2::Functions::_ev_nodelist($xp) };
+  local $XML::XSH2::Functions::ERRORS;
+  local $XML::XSH2::Functions::WARNINGS;
+  my $ql= XML::XSH2::Functions::_ev_nodelist($xp);
   return () if $@;
+
   my %names;
   my $prefix = ($local=~/^(${NAMECHAR}+:)/) ? $1 : '';
   @names{ map { 
@@ -316,7 +319,7 @@ sub xpath_complete {
 						length($str)
 						-length($local)).
 					 $prefix.$_->nodeName(),$pos))
-  } @$ql}=();
+  } grep defined, @$ql}=();
 
   my @completions = sort { $a cmp $b } keys %names;
 #  print "completions so far: @completions\n";

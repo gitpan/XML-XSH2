@@ -1,4 +1,4 @@
-# $Id: XSH2.pm,v 2.3 2007/01/02 22:03:23 pajas Exp $
+# $Id: XSH2.pm,v 2.3 2007-01-02 22:03:23 pajas Exp $
 
 package XML::XSH2;
 
@@ -6,7 +6,7 @@ use strict;
 use vars qw(@EXPORT_OK @EXPORT @ISA $VERSION);
 
 BEGIN {
-  $VERSION='2.1.0'; # VERSION TEMPLATE
+  $VERSION='2.1.1'; # VERSION TEMPLATE
   @ISA       = qw(Exporter);
   @EXPORT = qw(&xsh);
   @EXPORT_OK = @XML::XSH2::Functions::EXPORT_OK;

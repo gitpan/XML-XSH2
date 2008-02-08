@@ -1,5 +1,5 @@
 # -*- cperl -*-
-# $Id: Functions.pm,v 2.42 2007/01/02 22:03:22 pajas Exp $
+# $Id: Functions.pm,v 2.49 2008-01-27 10:48:39 pajas Exp $
 
 package XML::XSH2::Functions;
 
@@ -27,7 +27,7 @@ use vars qw/@ISA @EXPORT_OK %EXPORT_TAGS $VERSION $REVISION $OUT
 	    %_files %_defs %_includes %_ns %_func %COMMANDS
 	    $ENCODING $QUERY_ENCODING
 	    $INDENT $BACKUPS $SWITCH_TO_NEW_DOCUMENTS $EMPTY_TAGS $SKIP_DTD
-	    $QUIET $DEBUG $TEST_MODE $WARNINGS
+	    $QUIET $DEBUG $TEST_MODE $WARNINGS $ERRORS
 	    $VALIDATION $RECOVERING $PARSER_EXPANDS_ENTITIES $KEEP_BLANKS
 	    $PEDANTIC_PARSER $LOAD_EXT_DTD $PARSER_COMPLETES_ATTRIBUTES
 	    $PARSER_EXPANDS_XINCLUDE $MAXPRINTLENGTH
@@ -39,8 +39,8 @@ use vars qw/@ISA @EXPORT_OK %EXPORT_TAGS $VERSION $REVISION $OUT
 	  /;
 
 BEGIN {
-  $VERSION='2.1.0'; # VERSION TEMPLATE
-  $REVISION=q($Revision: 2.42 $);
+  $VERSION='2.1.1'; # VERSION TEMPLATE
+  $REVISION=q($Revision: 2.49 $);
   @ISA=qw(Exporter);
   @PARAM_VARS=qw/$ENCODING
 		 $QUERY_ENCODING
@@ -115,6 +115,7 @@ BEGIN {
   $DEFAULT_FORMAT='xml';
   $LINE_NUMBERS=1;
   $WARNINGS=1;
+  $ERRORS=1;
   $BENCHMARK=0;
   $MAXPRINTLENGTH=256;
   $HISTFILE="$ENV{HOME}/.xsh2_history";
@@ -408,7 +409,7 @@ sub get_XPATH_extensions {
   lineno evaluate map matches match max min new-attribute
   new-cdata new-chunk new-comment new-element new-element-ns new-pi
   new-text node-type parse path reverse same serialize split sprintf
-  strmax strmin subst substr sum times var document documents lookup)
+  strmax strmin subst substr sum times var document documents lookup span context)
 }
 
 sub XPATH_doc {
@@ -975,7 +976,56 @@ sub XPATH_lookup {
   }
 }
 
+sub XPATH_span {
+  die "Wrong number of arguments for function xsh:span(node-set,node-set)!\n"
+    if (@_!=2);
+  # the first argument is a start node and
+  # the second is an end node;
+  # only the first argument is taken from each node-set!
+  #
+  # returns span of sibling nodes "between" them (inclusively).
+  # it is an error if the start and end nodes are not siblings.
 
+  my ($start,$end)=@_;
+  for my $nl ($start,$end) {
+    die "Wrong type of argument in function xsh:span(node-set,node-set)!\n"
+      if (!ref($nl) or not UNIVERSAL::isa($nl,"XML::LibXML::NodeList"));
+  }
+  ($start,$end) = map { $_->[0] } ($start,$end);
+  if ($start and $end) {
+    if ($start->parentNode->isSameNode($end->parentNode)) {
+      my @nodes = ();
+      do {{
+	push @nodes, $start;
+	if ($start->isSameNode($end)) {
+	  return XML::LibXML::NodeList->new_from_ref(\@nodes,1);
+	}
+	$start = $start->nextSibling();
+      }} while ($start);
+      return XML::LibXML::NodeList->new();
+    } else {
+      die "Start node and end node are not siblings at xsh:span(node-set,node-set)!\n"
+    }
+  } else {
+    return XML::LibXML::NodeList->new();
+  }
+}
+
+sub XPATH_context {
+  die "Wrong number of arguments for function xsh:context(node-set,float,float)!\n"
+    if (@_<2 or @_>3);
+  # returns a span of nodes consisting of a given number of nodes
+  # before the given context node, the context node itself and a given number of nodes
+  # following the context node
+
+  # $context ... preceding-sibling::node()[position()<$before] | . | following-sibling::node()[position<$after]
+  my ($context,$before,$after)=@_;
+  die "Wrong type of argument in function xsh:context(node-set,float,float)!\n"
+      if (!ref($context) or not UNIVERSAL::isa($context,"XML::LibXML::NodeList"));
+  $before = int($before);
+  $after = defined ($after) ? $before : int($after);
+  return scalar($_xpc->findnodes("preceding-sibling::node()[position()<$before] | . | following-sibling::node()[position()<$after]",$context->[0]));
+}
 
 # ===================== END OF XPATH EXT FUNC ================
 
@@ -1638,11 +1688,11 @@ sub var_value {
       if ($name !~ /((?:::)?[a-zA-Z_][a-zA-Z0-9_]*)*/);
     return var_value(q($).$name);
   } elsif ($var=~/^\$?(.*)/) {
+    no strict qw(refs);
     my $lex = lex_var($1);
     if ($lex) {
       return $$lex
     } elsif (defined(${"XML::XSH2::Map::$1"})) {
-      no strict qw(refs);
       return ${"XML::XSH2::Map::$1"};
     }
   } else {
@@ -1651,7 +1701,7 @@ sub var_value {
 }
 
 sub string_vars {
-  no strict;
+  no strict qw(refs);
   return sort grep { defined(${"XML::XSH2::Map::$_"}) } keys %{"XML::XSH2::Map::"};
 }
 
@@ -1776,11 +1826,11 @@ sub _rt_position {
 }
 
 sub _err {
-  print STDERR @_," at ",_rt_position(),"\n";
+  print STDERR @_," at ",_rt_position(),"\n" if $ERRORS;
 }
 
 sub _warn {
-  print STDERR "Warining: ",@_," at ",_rt_position(),"\n" if $WARNINGS;
+  print STDERR "Warning: ",@_," at ",_rt_position(),"\n" if $WARNINGS;
 }
 
 
@@ -2372,7 +2422,7 @@ sub _is_absolute {
 
 # create a new document by parsing a file
 sub open_doc {
-  my ($opts,$file)=@_;
+  my ($opts,$src)=@_;
   $opts = _ev_opts($opts);
 
   if (exists($opts->{file})+exists($opts->{pipe})+
@@ -2410,16 +2460,25 @@ sub open_doc {
   local $PARSER_EXPANDS_XINCLUDE = 0 if $opts->{'no-xinclude'};
 
   my ($source) = grep exists($opts->{$_}),qw(file pipe string);
-  my $file = _tilde_expand(_ev_string($file));
-#  $file=~s{^(\~[^\/]*)}{(glob($1))[0]}eg;
-  unless (_is_absolute($file)) {
-    $file = File::Spec->rel2abs($file);
+  my $file;
+  unless ($source eq 'string') {
+    $file = _tilde_expand(_ev_string($src));
+    #  $file=~s{^(\~[^\/]*)}{(glob($1))[0]}eg;
+    if ($source eq 'file' and !_is_absolute($file)) {
+      $file = File::Spec->rel2abs($file);
+    }
+    print STDERR "open [$file]\n" if "$DEBUG";
+    if ($file eq "") {
+      die "filename is empty (hint: \$variable := open file-name)\n";
+    }
+  } else {
+    $file = _ev_string($src);
+    print STDERR "open [<STRING>]\n" if "$DEBUG";
+    if ($file eq "") {
+      die "string is empty\n";
+    }
   }
 
-  print STDERR "open [$file]\n" if "$DEBUG";
-  if ($file eq "") {
-    die "filename is empty (hint: \$variable := open file-name)\n";
-  }
   if (($source ne 'file') or
       (-f $file) or $file eq "-" or
       ($file=~/^[a-z]+:/)) {
@@ -2886,14 +2945,14 @@ sub list {
 sub list_namespaces {
   my ($opts,$exp) = @_;
   $opts = _ev_opts($opts);
-  my $ql= ($opts->{registered} and $exp eq "") ? [] : _ev_nodelist($exp);
+  my $ql= ($opts->{registered} and $exp eq "") ? [] : _ev_nodelist(defined $exp ? $exp : '.');
   foreach my $node (@$ql) {
     my $n=$node;
     my %namespaces;
     while ($n) {
       foreach my $ns ($n->getNamespaces) {
-	$namespaces{$ns->getName()}=$ns->getData()
-	  unless (exists($namespaces{$ns->getName()}));
+	$namespaces{$ns->localname()}=$ns->value()
+	  unless (exists($namespaces{$ns->localname()}));
       }
       $n=$n->parentNode();
     }
@@ -3414,9 +3473,9 @@ sub set_namespace {
   my $prefix = $opts->{prefix};
   unless ($_xml_module->is_element($node) ||
 	    $_xml_module->is_attribute($node)) {
-    die "declare-ns: namespaces can only be set for element and attribute nodes\n";
+    die "set_namespace: namespaces can only be set for element and attribute nodes\n";
   }
-  if ($prefix) {
+  if (defined $prefix) {
     my $declaredURI = $node->lookupNamespaceURI($prefix);
     if (defined $declaredURI and $declaredURI eq $uri) {
       return $node->setNamespace($uri,$prefix);
@@ -3424,7 +3483,7 @@ sub set_namespace {
       die "Namespace error: prefix '$prefix' already used for the namespace '$declaredURI'\n";
     }
   } else {
-    if ($prefix = $node->lookupNamespacePrefix($uri)) {
+    if (defined($prefix = $node->lookupNamespacePrefix($uri))) {
       return $node->setNamespace($uri,$prefix);
     } else {
       die "Namespace error: use declare-ns command to declare a prefix for '$uri' first\n";
@@ -4679,7 +4738,7 @@ sub set_dtd {
     my $root = $opts->{name};
     my $public = $opts->{public};
     my $system = $opts->{system};
-    if (!defined($root)) {
+    if ((defined ($public) or defined ($system)) and !defined($root)) {
       if ($doc->getDocumentElement) {
 	$root = $doc->getDocumentElement->nodeName();
       } else {
@@ -4692,6 +4751,7 @@ sub set_dtd {
     if ($doc->externalSubset) {
       $doc->removeExternalSubset();
     }
+    return 1 unless (defined $root or defined $public or defined $system);
     if ($opts->{internal}) {
       $doc->setInternalSubset($doc->createInternalSubset($root, $public,
 							 $system));
