@@ -1,5 +1,5 @@
 # This file was automatically generated from src/xsh_grammar.xml on 
-# Fri Feb  8 11:40:47 2008
+# Wed Jun 22 23:38:38 2011
 
 package XML::XSH2::Help;
 use strict;
@@ -85,20 +85,20 @@ Help items:
 
   XSH Argument Types:
 
-    $variable, command, command-or-block, document, encoding, expression,
-    filename, location, node-type, nodename, perl-code, subroutine, xpath
+    $variable, block, command, document, encoding, expression, filename,
+    location, node-type, nodename, perl-code, subroutine, xpath
 
   XPath Extension Functions:
 
-    xsh:context, xsh:current, xsh:doc, xsh:document, xsh:documents,
-    xsh:evaluate, xsh:filename, xsh:grep, xsh:id2, xsh:if, xsh:join,
-    xsh:lc, xsh:lcfirst, xsh:lineno, xsh:lookup, xsh:map, xsh:match,
-    xsh:matches, xsh:max, xsh:min, xsh:new-attribute, xsh:new-cdata,
-    xsh:new-chunk, xsh:new-comment, xsh:new-element, xsh:new-element-ns,
-    xsh:new-pi, xsh:new-text, xsh:parse, xsh:path, xsh:reverse, xsh:same,
-    xsh:serialize, xsh:span, xsh:split, xsh:sprintf, xsh:strmax,
-    xsh:strmin, xsh:subst, xsh:substr, xsh:sum, xsh:times, xsh:uc,
-    xsh:ucfirst, xsh:var
+    xsh:base-uri, xsh:context, xsh:current, xsh:doc, xsh:document,
+    xsh:document-uri, xsh:documents, xsh:evaluate, xsh:filename, xsh:grep,
+    xsh:id2, xsh:if, xsh:join, xsh:lc, xsh:lcfirst, xsh:lineno, xsh:lookup,
+    xsh:map, xsh:match, xsh:matches, xsh:max, xsh:min, xsh:new-attribute,
+    xsh:new-cdata, xsh:new-chunk, xsh:new-comment, xsh:new-element,
+    xsh:new-element-ns, xsh:new-pi, xsh:new-text, xsh:parse, xsh:path,
+    xsh:resolve-uri, xsh:reverse, xsh:same, xsh:serialize, xsh:span,
+    xsh:split, xsh:sprintf, xsh:strmax, xsh:strmin, xsh:subst, xsh:substr,
+    xsh:sum, xsh:times, xsh:uc, xsh:ucfirst, xsh:var
 
 END
 
@@ -139,17 +139,17 @@ description:
 	     xmove, xpath-axis-completion, xpath-completion,
 	     xpath-extensions, xslt, xupdate
 
-see also:     command-or-block
+see also:     block
 
 END
 
 
-$HELP{'command-or-block'}=[<<'END'];
-command-or-block argument type
+$HELP{'block'}=[<<'END'];
+block argument type
 
 description:
-	     XSH2 [command] or a block of semicolon-separated commands
-	     enclosed within braces.
+	     a block of semicolon-separated XSH2 commands enclosed within
+	     braces.
 
 Example:     Count paragraphs in each chapter
 
@@ -167,9 +167,9 @@ $HELP{'type'}=[<<'END'];
 List of command argument types
 
 description:
-	     $variable, command, command-or-block, document, encoding,
-	     expression, filename, location, node-type, nodename,
-	     perl-code, subroutine, xpath
+	     $variable, block, command, document, encoding, expression,
+	     filename, location, node-type, nodename, perl-code,
+	     subroutine, xpath
 
 END
 
@@ -290,17 +290,18 @@ description:
 	     namespace, so that they may be used directly without any
 	     prefix.
 
-	     XPath extension functions defined in XSH2: xsh:context,
-	     xsh:current, xsh:doc, xsh:document, xsh:documents,
-	     xsh:evaluate, xsh:filename, xsh:grep, xsh:id2, xsh:if,
-	     xsh:join, xsh:lc, xsh:lcfirst, xsh:lineno, xsh:lookup,
-	     xsh:map, xsh:match, xsh:matches, xsh:max, xsh:min,
-	     xsh:new-attribute, xsh:new-cdata, xsh:new-chunk,
-	     xsh:new-comment, xsh:new-element, xsh:new-element-ns,
-	     xsh:new-pi, xsh:new-text, xsh:parse, xsh:path, xsh:reverse,
-	     xsh:same, xsh:serialize, xsh:span, xsh:split, xsh:sprintf,
-	     xsh:strmax, xsh:strmin, xsh:subst, xsh:substr, xsh:sum,
-	     xsh:times, xsh:uc, xsh:ucfirst, xsh:var
+	     XPath extension functions defined in XSH2: xsh:base-uri,
+	     xsh:context, xsh:current, xsh:doc, xsh:document,
+	     xsh:document-uri, xsh:documents, xsh:evaluate, xsh:filename,
+	     xsh:grep, xsh:id2, xsh:if, xsh:join, xsh:lc, xsh:lcfirst,
+	     xsh:lineno, xsh:lookup, xsh:map, xsh:match, xsh:matches,
+	     xsh:max, xsh:min, xsh:new-attribute, xsh:new-cdata,
+	     xsh:new-chunk, xsh:new-comment, xsh:new-element,
+	     xsh:new-element-ns, xsh:new-pi, xsh:new-text, xsh:parse,
+	     xsh:path, xsh:resolve-uri, xsh:reverse, xsh:same,
+	     xsh:serialize, xsh:span, xsh:split, xsh:sprintf, xsh:strmax,
+	     xsh:strmin, xsh:subst, xsh:substr, xsh:sum, xsh:times, xsh:uc,
+	     xsh:ucfirst, xsh:var
 
 Example:     Open a document and count all sections containing a subsection
 
@@ -457,16 +458,16 @@ END
 
 
 $HELP{'try'}=[<<'END'];
-usage:       try [command-or-block] catch [[local|my] [$variable]] [command-or-block]
+usage:       try [block] catch [[local|my] [$variable]] [block]
              
 description:
-	     Execute the [command-or-block] following the 'try' keyword. If
-	     an error or exception occurs during the evaluation, execute
-	     the 'catch' [command-or-block]. If the 'catch' keyword is
-	     followed by a variable (possibly localized for the following
-	     block using [my] or [local]) and the 'try' block fails with an
-	     exception, the error message of the exception is stored to the
-	     variable before the 'catch' block is executed.
+	     Execute the [block] following the 'try' keyword. If an error
+	     or exception occurs during the evaluation, execute the 'catch'
+	     [block]. If the 'catch' keyword is followed by a variable
+	     (possibly localized for the following block using [my] or
+	     [local]) and the 'try' block fails with an exception, the
+	     error message of the exception is stored to the variable
+	     before the 'catch' block is executed.
 
 	     The [throw] command as well as an equivalent Perl construction
 	     'perl { die "error message" }' allow user to throw custom
@@ -498,16 +499,16 @@ END
 $HELP{'if'}=[<<'END'];
 usage:       if [expression] [command]
              if [expression]
-    [command-or-block] [ elsif [command-or-block] ]* [ else [command-or-block] ]
+    [block] [ elsif [block] ]* [ else [block] ]
              
 description:
-	     Executes [command-or-block] if a given [expression] expression
-	     evaluates to a non-emtpty node-list, true boolean-value,
-	     non-zero number or non-empty literal. If the first expression
-	     fails, then 'elsif' conditions are tested (if any) and the
-	     [command-or-block] corresponding to the first one of them
+	     Executes [command] or [block] if a given [expression]
+	     expression evaluates to a non-emtpty node-list, true
+	     boolean-value, non-zero number or non-empty literal. If the
+	     first expression fails, then 'elsif' conditions are tested (if
+	     any) and the [block] corresponding to the first one of them
 	     which is true is executed. If none of the conditions is
-	     satisfied, an optional 'else' [command-or-block] is executed.
+	     satisfied, an optional 'else' [block] is executed.
 
 Example:     Display node type
 
@@ -540,7 +541,7 @@ $HELP{'unless'}=[<<'END'];
 usage:       unless [expression]
     [command]
              unless [expression]
-    [command-or-block] [ else [command-or-block] ]
+    [block] [ else [block] ]
              
 description:
 	     Like if but negating the result of the expression. Also,
@@ -552,10 +553,10 @@ END
 
 
 $HELP{'while'}=[<<'END'];
-usage:       while [expression] [command-or-block]
+usage:       while [expression] [block]
              
 description:
-	     Execute the [command-or-block] as long as the given
+	     Execute the [command] or [block] as long as the given
 	     [expression] evaluates to a non-emtpty node-list, true
 	     boolean-value, non-zero number or non-empty literal.
 
@@ -568,14 +569,13 @@ END
 
 
 $HELP{'do'}=[<<'END'];
-usage:       do [command-or-block]
+usage:       do [block]
              
 description:
-	     Execute [command-or-block]. This command is probably only
-	     useful when one wants to redirect output of more than one
-	     command.
+	     Execute [block]. This command is probably only useful when one
+	     wants to redirect output of more than one command.
 
-see also:     command-or-block
+see also:     block
 
 END
 
@@ -603,18 +603,18 @@ END
 
 $HELP{'foreach'}=[<<'END'];
 usage:       foreach [expression] 
-    [command]|[command-or-block]
+    [command]|[block]
              foreach [my|local] [$variable] in [expression]
-    [command]|[command-or-block]
+    [command]|[block]
              
 aliases:     for
 
 description:
 	     Evaluate given [expression] to a node-list and for each
-	     resulting node execute given [command] or [command-or-block].
-	     If used without a loop [$variable], the loop temporarily sets
-	     current node to the node being processed. Otherwise, the
-	     processed node is assigned to the loop variable.
+	     resulting node execute given [command] or [block]. If used
+	     without a loop [$variable], the loop temporarily sets current
+	     node to the node being processed. Otherwise, the processed
+	     node is assigned to the loop variable.
 
 	     The [expression] may be [xpath] as well as a [perl-code]. In
 	     the latter case, if used without a loop variable, the loop
@@ -653,7 +653,7 @@ END
 $HELP{'undefine'}=$HELP{'undef'};
 
 $HELP{'def'}=[<<'END'];
-usage:       def [subroutine] [[$variable] ...] [command-or-block]
+usage:       def [subroutine] [[$variable] ...] [block]
              
 aliases:     define
 
@@ -662,7 +662,7 @@ description:
 	     subroutine may require zero or more parameters. These are
 	     declared as a whitespace-separated list of parametric
 	     variables. The body of the subroutine is specified as a
-	     [command-or-block].
+	     [block].
 
 	     A sub-routine can be invoked directly by its name followed by
 	     its arguments just as any XSH2 command, or indirectly using
@@ -800,7 +800,7 @@ usage:       local [$variable] = [xpath]
 description:
 	     This command acts in a very similar way as [assign] does,
 	     except that the variable assignment is done temporarily and
-	     lasts only for the rest of its enclosing [command-or-block] or
+	     lasts only for the rest of its enclosing [block] or
 	     subroutine. At the end of the enclosing block or subroutine,
 	     the original value is restored. This also reverts any later
 	     usual assignments to the variable done occurring before the
@@ -831,9 +831,9 @@ description:
 	     variable assignments. Otherwise, settings are listed in the
 	     form of XSH commands.
 
-Example:     Store current settings in your .xshrc
+Example:     Store current settings in your .xsh2rc
 
-             xsh> settings | cat > ~/.xshrc
+             xsh> settings | cat > ~/.xsh2rc
 
 END
 
@@ -889,9 +889,9 @@ usage:       apropos [--fulltext] [--regexp] [expression]
 description:
 	     Print all help topics containing given expression in their
 	     short description. The '--fulltext' flag forces the search to
-	     be performed over the full text of help. '--fulltext'
-	     indicates, that the given [expression] is a regular expression
-	     instead of a literal string.
+	     be performed over the full text of help. '--regexp' indicates,
+	     that the given [expression] is a regular expression instead of
+	     a literal string.
 
 END
 
@@ -1606,7 +1606,7 @@ END
 $HELP{'strip_whitespace'}=$HELP{'strip-whitespace'};
 
 $HELP{'ls'}=[<<'END'];
-usage:       ls [--fold|:f] [--fold-attrs|:A] [--indent|:i | --no-indent|:n]
+usage:       ls [--fold|:f] [--fold-attrs|:A] [--indent|:i | --no-indent|:I]
     [--depth|:d [expression]] [[expression]]
              
 aliases:     list
@@ -1633,7 +1633,7 @@ description:
 	     listing). Folded attributes are replaced with ellipsis
 	     ('...').
 
-	     '--indent' (':i') and '--no-indent' (':n') may be used to
+	     '--indent' (':i') and '--no-indent' (':I') may be used to
 	     enforce/suppress indentation, overriding current setting (see
 	     command [indent]).
 
@@ -2359,7 +2359,7 @@ description:
 	     the specified node is saved instead of the complete document
 	     (this flag cannot be used with '--html' format).
 
-	     '--indent' (':i') and '--no-indent' (':n') may be used to
+	     '--indent' (':i') and '--no-indent' (':I') may be used to
 	     enforce/suppress indentation, overriding current global
 	     setting of [indent].
 
@@ -3209,15 +3209,15 @@ END
 
 
 $HELP{'iterate'}=[<<'END'];
-usage:       iterate [xpath] [command-or-block]
+usage:       iterate [xpath] [block]
              
 description:
 	     Iterate works very much like a [foreach] loop with the same
-	     [xpath] expression, except that it evaluates the
-	     [command-or-block] as soon as a new node matching a given
-	     [xpath] is found. As a limitation, an [xpath] expression used
-	     with 'iterate' may consist of one XPath step only, i.e. it may
-	     not contain an XPath step separator '/'.
+	     [xpath] expression, except that it evaluates the [block] as
+	     soon as a new node matching a given [xpath] is found. As a
+	     limitation, an [xpath] expression used with 'iterate' may
+	     consist of one XPath step only, i.e. it may not contain an
+	     XPath step separator '/'.
 
 	     A possible benefit of using 'iterate' instead of [foreach] is
 	     some efficiency when iterating over huge node-sets. Since
@@ -3360,8 +3360,8 @@ usage:       stream [ --input-file|:f [filename] |
    [ --output-file|:F [filename] |
            --output-pipe|:P [filename] |
            --output-string|:S [$variable] ]
-           select [xpath] [command-or-block]
-         [ select [xpath] [command-or-block] ... ]
+           select [xpath] [block]
+         [ select [xpath] [block] ... ]
              
 description:
 	     EXPERIMENTAL! This command provides a memory efficient (though
@@ -3388,19 +3388,19 @@ description:
 	     changed its state from A to B. No data are sent to the output
 	     at this stage. When the subtree is complete (i.e. the
 	     corresponding end-tag for its topmost element is encountered),
-	     the [command-or-block] of instructions following the [xpath]
-	     expression that matched is invoked with the root element of
-	     the subtree as the current context node. The commands in
-	     [command-or-block] are allowed to transform the whole element
-	     subtree or even to replace it with a different DOM subtree or
-	     subtrees. They must, however, leave intact all ancestor nodes
-	     of the subtree. Failing to do so can result in an error or
-	     unpredictable results.
+	     the [block] of instructions following the [xpath] expression
+	     that matched is invoked with the root element of the subtree
+	     as the current context node. The commands in [block] are
+	     allowed to transform the whole element subtree or even to
+	     replace it with a different DOM subtree or subtrees. They
+	     must, however, leave intact all ancestor nodes of the subtree.
+	     Failing to do so can result in an error or unpredictable
+	     results.
 
-	     After the subtree processing [command-or-block] returns, all
-	     subtrees that now appear in the DOM tree in the place of the
-	     original subtree are serialized to the output stream. After
-	     that, they are deleted and the parser returns to state A.
+	     After the subtree processing [block] returns, all subtrees
+	     that now appear in the DOM tree in the place of the original
+	     subtree are serialized to the output stream. After that, they
+	     are deleted and the parser returns to state A.
 
 	     Note that this type of processing highly limits the amount of
 	     information the selecting XPath expressions can use. The first
@@ -3640,14 +3640,61 @@ description:
 END
 
 
-$HELP{'xsh:filename'}=[<<'END'];
-usage:       node-set xsh:filename(node-set?)
+$HELP{'xsh:document-uri'}=[<<'END'];
+usage:       string xsh:document-uri(node-set?)
              
 description:
-	     Returns filename (URL) of the document containing the first
-	     node in the given node-set. If called without arguments, or if
-	     the node-set is empty, returns filename of the document
-	     containing the current node.
+	     Returns URI of the document containing the first node in the
+	     given node-set. If called without arguments, or if the
+	     node-set is empty, returns filename of the document containing
+	     the current node.
+
+END
+
+
+$HELP{'xsh:filename'}=[<<'END'];
+usage:       string xsh:filename(node-set?)
+             
+description:
+	     Same as xsh:document-uri();
+
+END
+
+
+$HELP{'xsh:base-uri'}=[<<'END'];
+usage:       string xsh:base-uri(node-set?)
+             
+description:
+	     Returns base URI of the first node in the node-set (or the
+	     current node). The function should work on both XML and HTML
+	     documents even if base mechanisms for these are completely
+	     different. It returns the base as defined in RFC 2396 sections
+	     "5.1.1. Base URI within Document Content" and "5.1.2. Base URI
+	     from the Encapsulating Entity". However it does not return the
+	     document base (5.1.3), use document-uri() for this.
+
+END
+
+
+$HELP{'xsh:resolve-uri'}=[<<'END'];
+usage:       string xsh:resolve-uri(string, string?)
+             
+description:
+	     This function takes one or two arguments: a relative URI and
+	     an optional base URI. If the first argument is a relative URI
+	     reference, this function resolves it against either the given
+	     base URI, if given (which is assumed to be an absolute URI)
+	     or, if base URI not given, against the URI of the current
+	     working directory. If the first argument is an absolute URI
+	     reference, it is returned unchanged.
+
+	     If the first argument is the zero-length string, returns the
+	     base URI if given and the URI of the current working directory
+	     otherwise.
+
+	     Note: Resolving a URI does not dereference it (download the
+	     referenced content); it is merely a syntactic operation on two
+	     character strings.
 
 END
 
@@ -4876,10 +4923,10 @@ Global settings
 
   The [settings] command displays current settings by means of XSH2
   commands. Thus it can not only be used to review current values, but also
-  to store them for future use, e.g. in ~/.xshrc file.
+  to store them for future use, e.g. in ~/.xsh2rc file.
 
 Example:
-  xsh> settings | cat > ~/.xshrc
+  xsh> settings | cat > ~/.xsh2rc
 
 
 Related help items:
@@ -5442,6 +5489,7 @@ $Apropos = {
              'xsh:uc' => undef,
              'fold' => 'mark elements to be folded by list command',
              'stream' => 'process selected elements from an XML stream (EXPERIMENTAL)',
+             'xsh:base-uri' => undef,
              'nobackups' => 'turn off backup file creation',
              'xsh:new-element' => undef,
              'pwd' => 'show current context node location (as a canonical XPath)',
@@ -5463,10 +5511,12 @@ $Apropos = {
              'test-mode' => 'do not execute any command, only check the syntax',
              'query-encoding' => 'declare the charset of XSH2 source files and terminal input',
              'while' => 'simple while loop',
+             'block' => 'a block of XSH2 commands',
              'xsh:if' => undef,
              'wrap-span' => 'wrap spans of nodes into elements',
              'subroutine' => 'name of a sub-routine',
              'move' => 'move nodes (in the one-to-one mode)',
+             'xsh:document-uri' => undef,
              'validation' => 'turn on/off validation in XML parser',
              'map' => 'transform node value/data using Perl or XPath expression',
              'xsh:strmax' => undef,
@@ -5488,6 +5538,7 @@ $Apropos = {
              'edit' => 'Edit parts of a XML document in a text editor.',
              'local' => 'temporarily assign new value to a variable',
              'edit-string' => 'Edit a string or variable in a text editor.',
+             'xsh:resolve-uri' => undef,
              'lcd' => 'change system working directory',
              'xsh:same' => undef,
              'set' => 'create or modify document content (EXPERIMENTAL)',
@@ -5540,7 +5591,6 @@ $Apropos = {
              'prev' => 'restart an iteration on a previous node',
              'xsh:new-attribute' => undef,
              'xsh:new-pi' => undef,
-             'command-or-block' => 'single XSH2 command or a block of XSH2 commands',
              'settings' => 'list current settings using XSH2 syntax',
              'return' => 'return from a subroutine',
              'xsh:grep' => undef,

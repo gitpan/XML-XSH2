@@ -1,6 +1,6 @@
 =for comment
   This file was automatically generated from src/xsh_grammar.xml
-  on Fri Feb  8 11:40:47 2008
+  on Wed Jun 22 23:38:39 2011
 
 =head1 NAME
 
@@ -294,11 +294,11 @@ The commands listed below can be used to modify the default behavior of the XML 
 
 The B<encoding> and B<query-encoding> settings allow to specify character encodings of user's input and XSH2's own output. This is particularly useful when you work with UTF-8 encoded documents on a console which only supports 8-bit characters.
 
-The B<settings> command displays current settings by means of XSH2 commands. Thus it can not only be used to review current values, but also to store them for future use, e.g. in ~E<sol>.xshrc file.
+The B<settings> command displays current settings by means of XSH2 commands. Thus it can not only be used to review current values, but also to store them for future use, e.g. in ~E<sol>.xsh2rc file.
 
 Example:
 
-  xsh> settings | cat > ~/.xshrc
+  xsh> settings | cat > ~/.xsh2rc
 
 =head2 RELATED COMMANDS
 
@@ -701,7 +701,7 @@ apropos [--fulltext] [--regexp] B<expression>
 
 =item Description:
 
-Print all help topics containing given expression in their short description. The B<--fulltext> flag forces the search to be performed over the full text of help. B<--fulltext> indicates, that the given B<expression> is a regular expression instead of a literal string.
+Print all help topics containing given expression in their short description. The B<--fulltext> flag forces the search to be performed over the full text of help. B<--regexp> indicates, that the given B<expression> is a regular expression instead of a literal string.
 
 =back
 
@@ -1081,7 +1081,7 @@ set_namespace_command change_namespace_uri_command change_namespace_prefix_comma
 
 =item Usage:
 
-def B<subroutine> [B<$variable> ...] B<command-or-block>
+def B<subroutine> [B<$variable> ...] B<block>
 
 =item Aliases:
 
@@ -1089,7 +1089,7 @@ define
 
 =item Description:
 
-Define a new XSH2 sub-routine named B<subroutine>. The subroutine may require zero or more parameters. These are declared as a whitespace-separated list of parametric variables. The body of the subroutine is specified as a B<command-or-block>.
+Define a new XSH2 sub-routine named B<subroutine>. The subroutine may require zero or more parameters. These are declared as a whitespace-separated list of parametric variables. The body of the subroutine is specified as a B<block>.
 
 A sub-routine can be invoked directly by its name followed by its arguments just as any XSH2 command, or indirectly using the B<call> command followed by an expression evaluating to the routine name and sub-routine arguments. Sub-routine arguments can be arbitrary expressions. These expressions are evaluated prior the sub-routine's code execution and are assigned to the sub-routine's parametric variables in the respective order. The number of parameter variables in a sub-routine definition and the number of arguments in a call to it must match. Calling a sub-routine with less or more arguments than declared is a run-time error.
 
@@ -1172,11 +1172,11 @@ def var_command
 
 =item Usage:
 
-do B<command-or-block>
+do B<block>
 
 =item Description:
 
-Execute B<command-or-block>. This command is probably only useful when one wants to redirect output of more than one command.
+Execute B<block>. This command is probably only useful when one wants to redirect output of more than one command.
 
 =item See also:
 
@@ -1459,9 +1459,9 @@ unfold_command list_command
 =item Usage:
 
 foreach B<expression> 
-    B<command>E<verbar>B<command-or-block>
+    B<command>E<verbar>B<block>
              foreach [myE<verbar>local] B<$variable> in B<expression>
-    B<command>E<verbar>B<command-or-block>
+    B<command>E<verbar>B<block>
 
 =item Aliases:
 
@@ -1469,7 +1469,7 @@ for
 
 =item Description:
 
-Evaluate given B<expression> to a node-list and for each resulting node execute given B<command> or B<command-or-block>. If used without a loop B<$variable>, the loop temporarily sets current node to the node being processed. Otherwise, the processed node is assigned to the loop variable.
+Evaluate given B<expression> to a node-list and for each resulting node execute given B<command> or B<block>. If used without a loop B<$variable>, the loop temporarily sets current node to the node being processed. Otherwise, the processed node is assigned to the loop variable.
 
 The B<expression> may be B<xpath> as well as a B<perl-code>. In the latter case, if used without a loop variable, the loop automatically converts Perl objects to nodes. No conversion is performed when a loop variable is used.
 
@@ -1559,11 +1559,11 @@ Print help on a given command, argument type or XPath extension function (use B<
 
 if B<expression> B<command>
              if B<expression>
-    B<command-or-block> [ elsif B<command-or-block> ]* [ else B<command-or-block> ]
+    B<block> [ elsif B<block> ]* [ else B<block> ]
 
 =item Description:
 
-Executes B<command-or-block> if a given B<expression> expression evaluates to a non-emtpty node-list, true boolean-value, non-zero number or non-empty literal. If the first expression fails, then B<elsif> conditions are tested (if any) and the B<command-or-block> corresponding to the first one of them which is true is executed. If none of the conditions is satisfied, an optional B<else> B<command-or-block> is executed.
+Executes B<command> or B<block> if a given B<expression> expression evaluates to a non-emtpty node-list, true boolean-value, non-zero number or non-empty literal. If the first expression fails, then B<elsif> conditions are tested (if any) and the B<block> corresponding to the first one of them which is true is executed. If none of the conditions is satisfied, an optional B<else> B<block> is executed.
 
 Example: Display node type
 
@@ -1695,11 +1695,11 @@ xinsert_command move_command xmove_command
 
 =item Usage:
 
-iterate B<xpath> B<command-or-block>
+iterate B<xpath> B<block>
 
 =item Description:
 
-Iterate works very much like a B<foreach> loop with the same B<xpath> expression, except that it evaluates the B<command-or-block> as soon as a new node matching a given B<xpath> is found. As a limitation, an B<xpath> expression used with B<iterate> may consist of one XPath step only, i.e. it may not contain an XPath step separator B<E<sol>>.
+Iterate works very much like a B<foreach> loop with the same B<xpath> expression, except that it evaluates the B<block> as soon as a new node matching a given B<xpath> is found. As a limitation, an B<xpath> expression used with B<iterate> may consist of one XPath step only, i.e. it may not contain an XPath step separator B<E<sol>>.
 
 A possible benefit of using B<iterate> instead of B<foreach> is some efficiency when iterating over huge node-sets. Since B<iterate> doesn't compute the resulting node-set in advance, it doesn't have to 1) allocate extra memory for it and 2) (more importantly) doesn't have to sort the node-list in the document order (which tends to be slow on large node-sets, unless B<index> is used). On the other hand, B<iterate> suffers from a considerable speed penalty since it isn't implemented in C (unlike libxml2's XPath engine).
 
@@ -1836,7 +1836,7 @@ local B<$variable> = B<xpath>
 
 =item Description:
 
-This command acts in a very similar way as B<assign> does, except that the variable assignment is done temporarily and lasts only for the rest of its enclosing B<command-or-block> or subroutine. At the end of the enclosing block or subroutine, the original value is restored. This also reverts any later usual assignments to the variable done occurring before the end of the block. This command may also be used without the assignment part.
+This command acts in a very similar way as B<assign> does, except that the variable assignment is done temporarily and lasts only for the rest of its enclosing B<block> or subroutine. At the end of the enclosing block or subroutine, the original value is restored. This also reverts any later usual assignments to the variable done occurring before the end of the block. This command may also be used without the assignment part.
 
 Note, that the variable itself remains global in the sense that it is still visible to any subroutine called subsequently from the same block. Unlike B<my> declaration, it does not create a new lexically scoped variable.
 
@@ -1874,7 +1874,7 @@ pwd_command
 
 =item Usage:
 
-ls [--foldE<verbar>:f] [--fold-attrsE<verbar>:A] [--indentE<verbar>:i E<verbar> --no-indentE<verbar>:n]
+ls [--foldE<verbar>:f] [--fold-attrsE<verbar>:A] [--indentE<verbar>:i E<verbar> --no-indentE<verbar>:I]
     [--depthE<verbar>:d B<expression>] [B<expression>]
 
 =item Aliases:
@@ -1893,7 +1893,7 @@ B<--fold> or B<:f> option makes the listing fold elements marked using the B<fol
 
 B<--fold-attrs> or B<:A> option avoids listing of attributes of the folded elements (i.e. elements on the lowest level of listing). Folded attributes are replaced with ellipsis (B<...>).
 
-B<--indent> (B<:i>) and B<--no-indent> (B<:n>) may be used to enforceE<sol>suppress indentation, overriding current setting (see command B<indent>).
+B<--indent> (B<:i>) and B<--no-indent> (B<:I>) may be used to enforceE<sol>suppress indentation, overriding current setting (see command B<indent>).
 
 Unless in B<quiet> mode, this command also prints the number of (top-level) nodes listed.
 
@@ -2681,7 +2681,7 @@ B<--xinclude> automatically implies XML format and can be used to force XSH2 to 
 
 If the B<--subtree> (B<:S>) flag is used, only the subtree of the specified node is saved instead of the complete document (this flag cannot be used with B<--html> format).
 
-B<--indent> (B<:i>) and B<--no-indent> (B<:n>) may be used to enforceE<sol>suppress indentation, overriding current global setting of B<indent>.
+B<--indent> (B<:i>) and B<--no-indent> (B<:I>) may be used to enforceE<sol>suppress indentation, overriding current global setting of B<indent>.
 
 B<--skip-dtd> (B<:d>) and B<--no-skip-dtd> (B<:D>) may be used to enforceE<sol>suppress skipping DTD declaration and internal subset on output, overriding current global setting of B<skip-dtd>.
 
@@ -2871,9 +2871,9 @@ List current values of all XSH2 settings (such as validation flag or query-encod
 
 B<--variables> or B<:v> flag enforces syntax which makes use of variable assignments. Otherwise, settings are listed in the form of XSH commands.
 
-Example: Store current settings in your .xshrc
+Example: Store current settings in your .xsh2rc
 
-  xsh> settings | cat > ~/.xshrc
+  xsh> settings | cat > ~/.xsh2rc
 
 =back
 
@@ -2955,8 +2955,8 @@ stream [ --input-fileE<verbar>:f B<filename> E<verbar>
    [ --output-fileE<verbar>:F B<filename> E<verbar>
            --output-pipeE<verbar>:P B<filename> E<verbar>
            --output-stringE<verbar>:S B<$variable> ]
-           select B<xpath> B<command-or-block>
-         [ select B<xpath> B<command-or-block> ... ]
+           select B<xpath> B<block>
+         [ select B<xpath> B<block> ... ]
 
 =item Description:
 
@@ -2964,9 +2964,9 @@ EXPERIMENTAL! This command provides a memory efficient (though slower) way to pr
 
 In the state A, only a limited vertical portion of the DOM tree is built. All XML data coming from the input stream other than start-tags are immediately copied to the output stream. If a new start-tag of an element arrives, a new node is created in the tree. All siblings of the newly created node are removed. Thus, in the state A, there is exactly one node on every level of the tree. After a node is added to the tree, all the B<xpath> expressions following the B<select> keyword are checked. If none matches, the parser remains in state A and copies the start-tag to the output stream. Otherwise, the first expression that matches is remembered and the parser changes its state to B.
 
-In state B the parser builds a complete DOM subtree of the element that was last added to the tree before the parser changed its state from A to B. No data are sent to the output at this stage. When the subtree is complete (i.e. the corresponding end-tag for its topmost element is encountered), the B<command-or-block> of instructions following the B<xpath> expression that matched is invoked with the root element of the subtree as the current context node. The commands in B<command-or-block> are allowed to transform the whole element subtree or even to replace it with a different DOM subtree or subtrees. They must, however, leave intact all ancestor nodes of the subtree. Failing to do so can result in an error or unpredictable results.
+In state B the parser builds a complete DOM subtree of the element that was last added to the tree before the parser changed its state from A to B. No data are sent to the output at this stage. When the subtree is complete (i.e. the corresponding end-tag for its topmost element is encountered), the B<block> of instructions following the B<xpath> expression that matched is invoked with the root element of the subtree as the current context node. The commands in B<block> are allowed to transform the whole element subtree or even to replace it with a different DOM subtree or subtrees. They must, however, leave intact all ancestor nodes of the subtree. Failing to do so can result in an error or unpredictable results.
 
-After the subtree processing B<command-or-block> returns, all subtrees that now appear in the DOM tree in the place of the original subtree are serialized to the output stream. After that, they are deleted and the parser returns to state A.
+After the subtree processing B<block> returns, all subtrees that now appear in the DOM tree in the place of the original subtree are serialized to the output stream. After that, they are deleted and the parser returns to state A.
 
 Note that this type of processing highly limits the amount of information the selecting XPath expressions can use. The first notable fact is, that elements can not be selected by their content. The only information present in the tree at the time of the XPath evaluation is the element's name and attributes plus the same information for all its ancestors (there is no information at all about its possible child nodes nor of the node's position within the list of its siblings).
 
@@ -3074,11 +3074,11 @@ try_catch
 
 =item Usage:
 
-try B<command-or-block> catch [[localE<verbar>my] B<$variable>] B<command-or-block>
+try B<block> catch [[localE<verbar>my] B<$variable>] B<block>
 
 =item Description:
 
-Execute the B<command-or-block> following the B<try> keyword. If an error or exception occurs during the evaluation, execute the B<catch> B<command-or-block>. If the B<catch> keyword is followed by a variable (possibly localized for the following block using B<my> or B<local>) and the B<try> block fails with an exception, the error message of the exception is stored to the variable before the B<catch> block is executed.
+Execute the B<block> following the B<try> keyword. If an error or exception occurs during the evaluation, execute the B<catch> B<block>. If the B<catch> keyword is followed by a variable (possibly localized for the following block using B<my> or B<local>) and the B<try> block fails with an exception, the error message of the exception is stored to the variable before the B<catch> block is executed.
 
 The B<throw> command as well as an equivalent Perl construction B<perl { die "error message" }> allow user to throw custom exceptions.
 
@@ -3155,7 +3155,7 @@ fold_command list_command
 unless B<expression>
     B<command>
              unless B<expression>
-    B<command-or-block> [ else B<command-or-block> ]
+    B<block> [ else B<block> ]
 
 =item Description:
 
@@ -3345,11 +3345,11 @@ Prints program version plus version numbers of the most important libraries used
 
 =item Usage:
 
-while B<expression> B<command-or-block>
+while B<expression> B<block>
 
 =item Description:
 
-Execute the B<command-or-block> as long as the given B<expression> evaluates to a non-emtpty node-list, true boolean-value, non-zero number or non-empty literal.
+Execute the B<command> or B<block> as long as the given B<expression> evaluates to a non-emtpty node-list, true boolean-value, non-zero number or non-empty literal.
 
 Example: The commands in this example do the same thing
 
@@ -3766,15 +3766,9 @@ XUpdate output can be generated for example by Python xmldiff utility from http:
 
 Variable names start with a dollar-sign (B<$>) followed by an identifier. The identifier must match the following regular expression B<[a-zA-Z_][a-zA-Z0-9_]*>, i.e., it must be at least one character long, must beginning with a letter or underscore, and may only containing letters, underscores, and digits.
 
-=item B<command>
+=item B<block>
 
-XSH2 command consists of a command name and possibly command parameters separated by whitespace. Individual B<XSH2 commands> are separated with a semicolon. A command may optionally be followed by an output redirection directive (see B<binding_shell> for output redirection to a command and B<Variables> for output redirection to variable). Most commands have aliases, so for example B<remove> command may also be invoked as B<del> or B<rm>.
-
-XSH2 recognizes the following commands (not including aliases): apropos, assign, backups, call, canonical, catalog, cd, change-ns-prefix, change-ns-uri, clone, close, copy, count, create, debug, declare-ns, def, defs, do, doc-info, documents, dtd, edit, edit-string, empty-tags, enc, encoding, eval, exec, exit, fold, foreach, get, hash, help, if, ifinclude, include, indent, index, insert, iterate, keep-blanks, last, lcd, lineno, load-ext-dtd, local, locate, ls, map, move, my, namespaces, next, nobackups, nodebug, normalize, open, parser-completes-attributes, parser-expands-entities, parser-expands-xinclude, pedantic-parser, perl, prev, print, process-xinclude, pwd, query-encoding, quiet, recovering, redo, register-function, register-namespace, register-xhtml-namespace, register-xsh-namespace, remove, rename, return, run-mode, save, set, set-dtd, set-enc, set-ns, set-standalone, set_filename, settings, skip-dtd, sort, stream, strip-whitespace, switch-to-new-documents, test-mode, throw, try, undef, unfold, unless, unregister-function, unregister-namespace, validate, validation, variables, verbose, version, while, wrap, wrap-span, xcopy, xinsert, xmove, xpath-axis-completion, xpath-completion, xpath-extensions, xslt, xupdate
-
-=item B<command-or-block>
-
-XSH2 B<command> or a block of semicolon-separated commands enclosed within braces.
+a block of semicolon-separated XSH2 commands enclosed within braces.
 
 Example: Count paragraphs in each chapter
 
@@ -3784,6 +3778,12 @@ Example: Count paragraphs in each chapter
     $i=$i+1;
     print "$c paragraphs in chapter no.$i";
   }
+
+=item B<command>
+
+XSH2 command consists of a command name and possibly command parameters separated by whitespace. Individual B<XSH2 commands> are separated with a semicolon. A command may optionally be followed by an output redirection directive (see B<binding_shell> for output redirection to a command and B<Variables> for output redirection to variable). Most commands have aliases, so for example B<remove> command may also be invoked as B<del> or B<rm>.
+
+XSH2 recognizes the following commands (not including aliases): apropos, assign, backups, call, canonical, catalog, cd, change-ns-prefix, change-ns-uri, clone, close, copy, count, create, debug, declare-ns, def, defs, do, doc-info, documents, dtd, edit, edit-string, empty-tags, enc, encoding, eval, exec, exit, fold, foreach, get, hash, help, if, ifinclude, include, indent, index, insert, iterate, keep-blanks, last, lcd, lineno, load-ext-dtd, local, locate, ls, map, move, my, namespaces, next, nobackups, nodebug, normalize, open, parser-completes-attributes, parser-expands-entities, parser-expands-xinclude, pedantic-parser, perl, prev, print, process-xinclude, pwd, query-encoding, quiet, recovering, redo, register-function, register-namespace, register-xhtml-namespace, register-xsh-namespace, remove, rename, return, run-mode, save, set, set-dtd, set-enc, set-ns, set-standalone, set_filename, settings, skip-dtd, sort, stream, strip-whitespace, switch-to-new-documents, test-mode, throw, try, undef, unfold, unless, unregister-function, unregister-namespace, validate, validation, variables, verbose, version, while, wrap, wrap-span, xcopy, xinsert, xmove, xpath-axis-completion, xpath-completion, xpath-extensions, xslt, xupdate
 
 =item B<document>
 
@@ -3966,7 +3966,7 @@ avoiding any white-space outside the square brackets, or completely enclosed in 
 
 XSH2 provides a number of powerful XPath extension functions, listed below and described in separate sections. XPath extension functions by default belong to XSH2 namespace B<http:E<sol>E<sol>xsh.sourceforge.netE<sol>xshE<sol>> with a namespace prefix set to B<xsh>. A program may however call the B<xpath-extensions> command to map XSH2 XPath extension functions into the default namespace, so that they may be used directly without any prefix.
 
-XPath extension functions defined in XSH2: xsh:context, xsh:current, xsh:doc, xsh:document, xsh:documents, xsh:evaluate, xsh:filename, xsh:grep, xsh:id2, xsh:if, xsh:join, xsh:lc, xsh:lcfirst, xsh:lineno, xsh:lookup, xsh:map, xsh:match, xsh:matches, xsh:max, xsh:min, xsh:new-attribute, xsh:new-cdata, xsh:new-chunk, xsh:new-comment, xsh:new-element, xsh:new-element-ns, xsh:new-pi, xsh:new-text, xsh:parse, xsh:path, xsh:reverse, xsh:same, xsh:serialize, xsh:span, xsh:split, xsh:sprintf, xsh:strmax, xsh:strmin, xsh:subst, xsh:substr, xsh:sum, xsh:times, xsh:uc, xsh:ucfirst, xsh:var
+XPath extension functions defined in XSH2: xsh:base-uri, xsh:context, xsh:current, xsh:doc, xsh:document, xsh:document-uri, xsh:documents, xsh:evaluate, xsh:filename, xsh:grep, xsh:id2, xsh:if, xsh:join, xsh:lc, xsh:lcfirst, xsh:lineno, xsh:lookup, xsh:map, xsh:match, xsh:matches, xsh:max, xsh:min, xsh:new-attribute, xsh:new-cdata, xsh:new-chunk, xsh:new-comment, xsh:new-element, xsh:new-element-ns, xsh:new-pi, xsh:new-text, xsh:parse, xsh:path, xsh:resolve-uri, xsh:reverse, xsh:same, xsh:serialize, xsh:span, xsh:split, xsh:sprintf, xsh:strmax, xsh:strmin, xsh:subst, xsh:substr, xsh:sum, xsh:times, xsh:uc, xsh:ucfirst, xsh:var
 
 Example: Open a document and count all sections containing a subsection
 
@@ -3978,6 +3978,20 @@ Example: Open a document and count all sections containing a subsection
 =back
 
 =head1 XPATH EXTENSION FUNCTION REFERENCE
+
+=head2 xsh:base-uri
+
+=over 4
+
+=item Usage:
+
+string xsh:base-uri(node-set?)
+
+=item Description:
+
+Returns base URI of the first node in the node-set (or the current node). The function should work on both XML and HTML documents even if base mechanisms for these are completely different. It returns the base as defined in RFC 2396 sections "5.1.1. Base URI within Document Content" and "5.1.2. Base URI from the Encapsulating Entity". However it does not return the document base (5.1.3), use document-uri() for this.
+
+=back
 
 =head2 xsh:context
 
@@ -4036,6 +4050,20 @@ Looks up among the currently open document the one whose filename is same as the
 =item See also:
 
 hash_command
+
+=back
+
+=head2 xsh:document-uri
+
+=over 4
+
+=item Usage:
+
+string xsh:document-uri(node-set?)
+
+=item Description:
+
+Returns URI of the document containing the first node in the given node-set. If called without arguments, or if the node-set is empty, returns filename of the document containing the current node.
 
 =back
 
@@ -4121,11 +4149,11 @@ map_function
 
 =item Usage:
 
-node-set xsh:filename(node-set?)
+string xsh:filename(node-set?)
 
 =item Description:
 
-Returns filename (URL) of the document containing the first node in the given node-set. If called without arguments, or if the node-set is empty, returns filename of the document containing the current node.
+Same as xsh:document-uri();
 
 =back
 
@@ -4479,6 +4507,24 @@ This function returns a string containing canonical XPath leading to B<NODE>.
 =item See also:
 
 pwd_command
+
+=back
+
+=head2 xsh:resolve-uri
+
+=over 4
+
+=item Usage:
+
+string xsh:resolve-uri(string, string?)
+
+=item Description:
+
+This function takes one or two arguments: a relative URI and an optional base URI. If the first argument is a relative URI reference, this function resolves it against either the given base URI, if given (which is assumed to be an absolute URI) or, if base URI not given, against the URI of the current working directory. If the first argument is an absolute URI reference, it is returned unchanged.
+
+If the first argument is the zero-length string, returns the base URI if given and the URI of the current working directory otherwise.
+
+Note: Resolving a URI does not dereference it (download the referenced content); it is merely a syntactic operation on two character strings.
 
 =back
 
