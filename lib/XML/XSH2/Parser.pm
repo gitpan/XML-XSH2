@@ -1,6 +1,5 @@
 package XML::XSH2::Parser;
 use Parse::RecDescent;
-
 { my $ERRORS;
 
 
@@ -23,7 +22,7 @@ local $SIG{__WARN__} = sub {0};
 }
 
 push @Parse::RecDescent::XML::XSH2::Parser::ISA, 'Parse::RecDescent';
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::xps
 {
 	my $thisparser = $_[0];
@@ -31,7 +30,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xps
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"xps"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [xps]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{xps},
@@ -49,12 +48,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xps
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/(?: [^\\$\\[\\]()'"\};]+ |
               \\$(?!\\\{) |
@@ -129,7 +129,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xps
                       q{xps},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
@@ -148,7 +148,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xps
                )*"
           )*)/x)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -156,7 +156,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xps
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -164,7 +164,6 @@ sub Parse::RecDescent::XML::XSH2::Parser::xps
                     if defined $::RD_TRACE;
         push @item, $item{__PATTERN1__}=$current_match;
         
-
 
         Parse::RecDescent::_trace(q{>>Matched production: [/(?: [^\\$\\[\\]()'"\};]+ |
               \\$(?!\\\{) |
@@ -184,6 +183,9 @@ sub Parse::RecDescent::XML::XSH2::Parser::xps
                       q{xps},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -218,7 +220,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xps
                       q{xps},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{xps},
                       $tracelevel)
@@ -227,7 +229,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xps
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command
 {
 	my $thisparser = $_[0];
@@ -235,7 +237,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command},
@@ -253,12 +255,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/--input-file|:f/, or /--input-pipe|:p/, or /--input-string|:s/, or /--output-file|:F/, or /--output-encoding|:E/, or /--output-pipe|:P/, or /--output-string|:S/});
     $expectation->at($_[1]);
@@ -294,13 +297,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
                       q{_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:--input-file|:f)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -308,7 +311,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -324,7 +327,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{filename})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::filename($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::filename($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [filename]>>},
@@ -337,7 +340,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [filename]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
@@ -369,12 +372,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/--input-file|:f/ filename]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -400,13 +405,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
                       q{_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:--input-pipe|:p)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -414,7 +419,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -430,7 +435,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{filename})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::filename($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::filename($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [filename]>>},
@@ -443,7 +448,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [filename]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
@@ -475,12 +480,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/--input-pipe|:p/ filename]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -506,13 +513,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
                       q{_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:--input-string|:s)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -520,7 +527,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -536,7 +543,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{exp})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [exp]>>},
@@ -549,7 +556,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [exp]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
@@ -581,12 +588,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/--input-string|:s/ exp]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -612,13 +621,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
                       q{_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:--output-file|:F)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -626,7 +635,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -642,7 +651,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{filename})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::filename($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::filename($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [filename]>>},
@@ -655,7 +664,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [filename]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
@@ -687,12 +696,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/--output-file|:F/ filename]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -718,13 +729,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
                       q{_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:--output-encoding|:E)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -732,7 +743,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -748,7 +759,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{enc_string})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::enc_string($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::enc_string($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [enc_string]>>},
@@ -761,7 +772,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [enc_string]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
@@ -793,12 +804,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/--output-encoding|:E/ enc_string]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -824,13 +837,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
                       q{_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:--output-pipe|:P)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -838,7 +851,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -854,7 +867,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{filename})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::filename($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::filename($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [filename]>>},
@@ -867,7 +880,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [filename]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
@@ -899,12 +912,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/--output-pipe|:P/ filename]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -930,13 +945,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
                       q{_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:--output-string|:S)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -944,7 +959,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -975,12 +990,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/--output-string|:S/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -1015,7 +1032,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
                       q{_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
@@ -1024,7 +1041,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::loose_exp
 {
 	my $thisparser = $_[0];
@@ -1032,7 +1049,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::loose_exp
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"loose_exp"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [loose_exp]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{loose_exp},
@@ -1050,12 +1067,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::loose_exp
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/^(?=\{)/, or '&', or /^(?=<<)/, or xpinter});
     $expectation->at($_[1]);
@@ -1091,13 +1109,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::loose_exp
                       q{loose_exp},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:^(?={))/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -1105,7 +1123,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::loose_exp
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -1121,7 +1139,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::loose_exp
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{perl_block})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::perl_block($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::perl_block($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [perl_block]>>},
@@ -1134,7 +1152,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::loose_exp
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [perl_block]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{loose_exp},
                       $tracelevel)
@@ -1166,12 +1184,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::loose_exp
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/^(?=\{)/ perl_block]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{loose_exp},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -1198,12 +1218,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::loose_exp
                       q{loose_exp},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A\&/)
         {
+            $text = $lastsep . $text if defined $lastsep;
             
             $expectation->failed();
             Parse::RecDescent::_trace(qq{<<Didn't match terminal>>},
@@ -1211,7 +1232,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::loose_exp
                             if defined $::RD_TRACE;
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -1227,7 +1248,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::loose_exp
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{block})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [block]>>},
@@ -1240,7 +1261,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::loose_exp
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [block]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{loose_exp},
                       $tracelevel)
@@ -1272,12 +1293,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::loose_exp
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: ['&' block]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{loose_exp},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -1303,13 +1326,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::loose_exp
                       q{loose_exp},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:^(?=<<))/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -1317,7 +1340,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::loose_exp
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -1333,7 +1356,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::loose_exp
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{inline_doc})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::inline_doc($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::inline_doc($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [inline_doc]>>},
@@ -1346,7 +1369,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::loose_exp
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [inline_doc]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{loose_exp},
                       $tracelevel)
@@ -1378,12 +1401,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::loose_exp
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/^(?=<<)/ inline_doc]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{loose_exp},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -1412,7 +1437,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::loose_exp
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpinter($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpinter($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xpinter]>>},
@@ -1425,7 +1450,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::loose_exp
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xpinter]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{loose_exp},
                       $tracelevel)
@@ -1435,12 +1460,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::loose_exp
         
         }
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [xpinter]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{loose_exp},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -1475,7 +1502,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::loose_exp
                       q{loose_exp},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{loose_exp},
                       $tracelevel)
@@ -1484,7 +1511,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::loose_exp
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::trail
 {
 	my $thisparser = $_[0];
@@ -1492,7 +1519,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::trail
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"trail"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [trail]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{trail},
@@ -1510,12 +1537,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::trail
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/(?=\\s*[\};]|\\s*\\Z)/, or '|>', or '|'});
     $expectation->at($_[1]);
@@ -1551,13 +1579,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::trail
                       q{trail},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(?=\s*[};]|\s*\Z))/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -1565,7 +1593,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::trail
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -1612,12 +1640,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::trail
         
         last unless defined $_tok;
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(?=\\s*[\};]|\\s*\\Z)/ <commit> <reject>]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{trail},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -1644,12 +1674,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::trail
                       q{trail},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A\|\>/)
         {
+            $text = $lastsep . $text if defined $lastsep;
             
             $expectation->failed();
             Parse::RecDescent::_trace(qq{<<Didn't match terminal>>},
@@ -1657,7 +1688,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::trail
                             if defined $::RD_TRACE;
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -1699,7 +1730,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::trail
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{variable})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::variable($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::variable($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [variable]>>},
@@ -1712,7 +1743,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::trail
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [variable]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{trail},
                       $tracelevel)
@@ -1744,12 +1775,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::trail
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: ['|>' <commit> variable]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{trail},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -1776,12 +1809,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::trail
                       q{trail},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A\|/)
         {
+            $text = $lastsep . $text if defined $lastsep;
             
             $expectation->failed();
             Parse::RecDescent::_trace(qq{<<Didn't match terminal>>},
@@ -1789,7 +1823,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::trail
                             if defined $::RD_TRACE;
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -1831,7 +1865,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::trail
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{shline})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::shline($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::shline($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [shline]>>},
@@ -1844,7 +1878,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::trail
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [shline]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{trail},
                       $tracelevel)
@@ -1876,12 +1910,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::trail
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: ['|' <commit> shline]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{trail},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -1916,7 +1952,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::trail
                       q{trail},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{trail},
                       $tracelevel)
@@ -1925,7 +1961,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::trail
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::xpbrackets
 {
 	my $thisparser = $_[0];
@@ -1933,7 +1969,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpbrackets
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"xpbrackets"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [xpbrackets]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{xpbrackets},
@@ -1951,12 +1987,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpbrackets
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/(?=\\()/});
     $expectation->at($_[1]);
@@ -1992,13 +2029,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpbrackets
                       q{xpbrackets},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(?=\())/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -2006,7 +2043,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpbrackets
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -2022,7 +2059,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpbrackets
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{xpbracket})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpbracket($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpbracket($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xpbracket]>>},
@@ -2035,7 +2072,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpbrackets
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xpbracket]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{xpbrackets},
                       $tracelevel)
@@ -2078,7 +2115,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpbrackets
                     if defined $::RD_TRACE;
         $expectation->is(q{xpfilters})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::xpfilters, 0, 1, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::xpfilters, 0, 1, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [xpfilters]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -2089,7 +2126,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpbrackets
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [xpfilters]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{xpbrackets},
                       $tracelevel)
@@ -2121,12 +2158,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpbrackets
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(?=\\()/ xpbracket <skip:""> xpfilters]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{xpbrackets},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -2161,7 +2200,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpbrackets
                       q{xpbrackets},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{xpbrackets},
                       $tracelevel)
@@ -2170,7 +2209,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpbrackets
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::xpintercont
 {
 	my $thisparser = $_[0];
@@ -2178,7 +2217,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpintercont
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"xpintercont"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [xpintercont]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{xpintercont},
@@ -2196,12 +2235,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpintercont
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{xpfilters, or xpbrackets});
     $expectation->at($_[1]);
@@ -2240,7 +2280,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpintercont
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule_xpintercont($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule_xpintercont($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [_alternation_1_of_production_1_of_rule_xpintercont]>>},
@@ -2253,7 +2293,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpintercont
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [_alternation_1_of_production_1_of_rule_xpintercont]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{xpintercont},
                       $tracelevel)
@@ -2296,7 +2336,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpintercont
                     if defined $::RD_TRACE;
         $expectation->is(q{xpinter})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::xpinter, 0, 1, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::xpinter, 0, 1, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [xpinter]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -2307,7 +2347,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpintercont
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [xpinter]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{xpintercont},
                       $tracelevel)
@@ -2339,12 +2379,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpintercont
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [xpfilters, or xpbrackets <skip:""> xpinter]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{xpintercont},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -2379,7 +2421,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpintercont
                       q{xpintercont},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{xpintercont},
                       $tracelevel)
@@ -2388,7 +2430,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpintercont
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::inline_doc_string
 {
 	my $thisparser = $_[0];
@@ -2396,7 +2438,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::inline_doc_string
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"inline_doc_string"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [inline_doc_string]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{inline_doc_string},
@@ -2414,12 +2456,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::inline_doc_string
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/'[a-zA-Z_][a-zA-Z0-9_]*'|"[a-zA-Z_][a-zA-Z0-9_]*"|\\([a-zA-Z_][a-zA-Z0-9_]*\\)|\\\{[a-zA-Z_][a-zA-Z0-9_]*\\\}|[a-zA-Z_][a-zA-Z0-9_]*/});
     $expectation->at($_[1]);
@@ -2455,13 +2498,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::inline_doc_string
                       q{inline_doc_string},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:'[a-zA-Z_][a-zA-Z0-9_]*'|"[a-zA-Z_][a-zA-Z0-9_]*"|\([a-zA-Z_][a-zA-Z0-9_]*\)|\{[a-zA-Z_][a-zA-Z0-9_]*\}|[a-zA-Z_][a-zA-Z0-9_]*)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -2469,7 +2512,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::inline_doc_string
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -2500,12 +2543,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::inline_doc_string
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/'[a-zA-Z_][a-zA-Z0-9_]*'|"[a-zA-Z_][a-zA-Z0-9_]*"|\\([a-zA-Z_][a-zA-Z0-9_]*\\)|\\\{[a-zA-Z_][a-zA-Z0-9_]*\\\}|[a-zA-Z_][a-zA-Z0-9_]*/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{inline_doc_string},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -2540,7 +2585,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::inline_doc_string
                       q{inline_doc_string},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{inline_doc_string},
                       $tracelevel)
@@ -2549,7 +2594,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::inline_doc_string
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::shline_nosc
 {
 	my $thisparser = $_[0];
@@ -2557,7 +2602,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_nosc
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"shline_nosc"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [shline_nosc]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{shline_nosc},
@@ -2575,12 +2620,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_nosc
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/([^;()\\\\"'\\|]|\\|[^>]|\\\\.|\\"([^\\"\\\\]|\\\\.)*\\"|\\'([^\\'\\\\]|\\\\\\'|\\\\\\\\|\\\\[^\\'\\\\])*\\')*/});
     $expectation->at($_[1]);
@@ -2616,13 +2662,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_nosc
                       q{shline_nosc},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:([^;()\\"'\|]|\|[^>]|\\.|\"([^\"\\]|\\.)*\"|\'([^\'\\]|\\\'|\\\\|\\[^\'\\])*\')*)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -2630,7 +2676,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_nosc
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -2639,12 +2685,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_nosc
         push @item, $item{__PATTERN1__}=$current_match;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/([^;()\\\\"'\\|]|\\|[^>]|\\\\.|\\"([^\\"\\\\]|\\\\.)*\\"|\\'([^\\'\\\\]|\\\\\\'|\\\\\\\\|\\\\[^\\'\\\\])*\\')*/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{shline_nosc},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -2679,7 +2727,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_nosc
                       q{shline_nosc},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{shline_nosc},
                       $tracelevel)
@@ -2688,7 +2736,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_nosc
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::xpinter
 {
 	my $thisparser = $_[0];
@@ -2696,7 +2744,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpinter
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"xpinter"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [xpinter]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{xpinter},
@@ -2714,12 +2762,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpinter
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{xps});
     $expectation->at($_[1]);
@@ -2758,7 +2807,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpinter
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xps($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xps($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xps]>>},
@@ -2771,7 +2820,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpinter
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xps]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{xpinter},
                       $tracelevel)
@@ -2814,7 +2863,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpinter
                     if defined $::RD_TRACE;
         $expectation->is(q{xpintercont})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::xpintercont, 0, 1, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::xpintercont, 0, 1, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [xpintercont]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -2825,7 +2874,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpinter
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [xpintercont]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{xpinter},
                       $tracelevel)
@@ -2857,12 +2906,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpinter
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [xps <skip:""> xpintercont]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{xpinter},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -2897,7 +2948,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpinter
                       q{xpinter},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{xpinter},
                       $tracelevel)
@@ -2906,7 +2957,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpinter
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::inline_doc
 {
 	my $thisparser = $_[0];
@@ -2914,7 +2965,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::inline_doc
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"inline_doc"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [inline_doc]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{inline_doc},
@@ -2932,12 +2983,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::inline_doc
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/<</});
     $expectation->at($_[1]);
@@ -2973,13 +3025,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::inline_doc
                       q{inline_doc},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:<<)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -2987,7 +3039,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::inline_doc
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -3003,7 +3055,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::inline_doc
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{inline_doc_string})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::inline_doc_string($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::inline_doc_string($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [inline_doc_string]>>},
@@ -3016,7 +3068,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::inline_doc
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [inline_doc_string]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{inline_doc},
                       $tracelevel)
@@ -3056,13 +3108,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::inline_doc
                       q{inline_doc},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{/.*\\n/})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:.*\n)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -3070,7 +3122,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::inline_doc
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -3083,13 +3135,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::inline_doc
                       q{inline_doc},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{/(.|\\n)*?\\n$item[2][1]\\s*(\\n|$)/})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(.|\n)*?\n$item[2][1]\s*(\n|$))/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -3097,7 +3149,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::inline_doc
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -3141,12 +3193,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::inline_doc
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/<</ inline_doc_string <skip:""> /.*\\n/ /(.|\\n)*?\\n$item[2][1]\\s*(\\n|$)/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{inline_doc},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -3181,7 +3235,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::inline_doc
                       q{inline_doc},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{inline_doc},
                       $tracelevel)
@@ -3190,7 +3244,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::inline_doc
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::statement
 {
 	my $thisparser = $_[0];
@@ -3198,7 +3252,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"statement"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [statement]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{statement},
@@ -3216,12 +3270,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/(?=\\s*[\}\{;])/, or /(if)\\b/, or /(unless)\\b/, or /(while)\\b/, or /(foreach|for)\\b/, or /(try)\\b/, or /(iterate)\\b/, or /(def|define)\\b/});
     $expectation->at($_[1]);
@@ -3257,13 +3312,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                       q{statement},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(?=\s*[}{;]))/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -3271,7 +3326,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -3318,12 +3373,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         
         last unless defined $_tok;
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(?=\\s*[\}\{;])/ <commit> <reject>]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -3349,13 +3406,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                       q{statement},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(if)\b)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -3363,7 +3420,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -3405,7 +3462,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{exp})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [exp]>>},
@@ -3418,7 +3475,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [exp]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
@@ -3435,7 +3492,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{block})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [block]>>},
@@ -3448,7 +3505,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [block]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
@@ -3465,7 +3522,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{elsif_block})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::elsif_block($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::elsif_block($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [elsif_block]>>},
@@ -3478,7 +3535,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [elsif_block]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
@@ -3495,7 +3552,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{else_block})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::else_block($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::else_block($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [else_block]>>},
@@ -3508,7 +3565,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [else_block]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
@@ -3540,12 +3597,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(if)\\b/ <commit> exp block elsif_block else_block]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -3571,13 +3630,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                       q{statement},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(unless)\b)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -3585,7 +3644,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -3627,7 +3686,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{exp})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [exp]>>},
@@ -3640,7 +3699,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [exp]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
@@ -3657,7 +3716,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{block})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [block]>>},
@@ -3670,7 +3729,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [block]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
@@ -3687,7 +3746,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                     if defined $::RD_TRACE;
         $expectation->is(q{else_block})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::else_block, 0, 1, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::else_block, 0, 1, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [else_block]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -3698,7 +3757,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [else_block]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
@@ -3730,12 +3789,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(unless)\\b/ <commit> exp block else_block]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -3761,13 +3822,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                       q{statement},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(while)\b)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -3775,7 +3836,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -3817,7 +3878,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{exp})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [exp]>>},
@@ -3830,7 +3891,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [exp]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
@@ -3847,7 +3908,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{block})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [block]>>},
@@ -3860,7 +3921,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [block]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
@@ -3892,12 +3953,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(while)\\b/ <commit> exp block]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -3923,13 +3986,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                       q{statement},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(foreach|for)\b)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -3937,7 +4000,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -3979,7 +4042,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                     if defined $::RD_TRACE;
         $expectation->is(q{local_var_in})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::local_var_in, 0, 1, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::local_var_in, 0, 1, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [local_var_in]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -3990,7 +4053,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [local_var_in]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
@@ -4007,7 +4070,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{exp})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [exp]>>},
@@ -4020,7 +4083,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [exp]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
@@ -4037,7 +4100,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{block})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [block]>>},
@@ -4050,7 +4113,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [block]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
@@ -4082,12 +4145,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(foreach|for)\\b/ <commit> local_var_in exp block]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -4113,13 +4178,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                       q{statement},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(try)\b)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -4127,7 +4192,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -4169,7 +4234,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{block})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [block]>>},
@@ -4182,7 +4247,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [block]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
@@ -4197,12 +4262,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                       q{statement},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{'catch'})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\Acatch/)
         {
+            $text = $lastsep . $text if defined $lastsep;
             
             $expectation->failed();
             Parse::RecDescent::_trace(qq{<<Didn't match terminal>>},
@@ -4210,7 +4276,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                             if defined $::RD_TRACE;
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -4226,7 +4292,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                     if defined $::RD_TRACE;
         $expectation->is(q{local_var})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::local_var, 0, 1, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::local_var, 0, 1, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [local_var]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -4237,7 +4303,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [local_var]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
@@ -4254,7 +4320,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{block})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [block]>>},
@@ -4267,7 +4333,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [block]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
@@ -4299,12 +4365,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(try)\\b/ <commit> block 'catch' local_var block]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -4330,13 +4398,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                       q{statement},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(iterate)\b)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -4344,7 +4412,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -4386,7 +4454,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{xpstep})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpstep($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpstep($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xpstep]>>},
@@ -4399,7 +4467,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xpstep]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
@@ -4416,7 +4484,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{block})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [block]>>},
@@ -4429,7 +4497,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [block]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
@@ -4461,12 +4529,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(iterate)\\b/ <commit> xpstep block]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -4492,13 +4562,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                       q{statement},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(def|define)\b)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -4506,7 +4576,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -4548,7 +4618,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{ID})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::ID($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::ID($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [ID]>>},
@@ -4561,7 +4631,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [ID]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
@@ -4600,7 +4670,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                     if defined $::RD_TRACE;
         $expectation->is(q{variable})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::variable, 0, 100000000, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::variable, 0, 100000000, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [variable]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -4611,7 +4681,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [variable]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
@@ -4628,7 +4698,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{block})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [block]>>},
@@ -4641,7 +4711,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [block]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
@@ -4675,12 +4745,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
         $item{__ACTION2__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(def|define)\\b/ <commit> ID variable block]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{statement},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -4715,7 +4787,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
                       q{statement},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{statement},
                       $tracelevel)
@@ -4724,7 +4796,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::statement
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule_xpintercont
 {
 	my $thisparser = $_[0];
@@ -4732,7 +4804,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"_alternation_1_of_production_1_of_rule_xpintercont"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [_alternation_1_of_production_1_of_rule_xpintercont]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{_alternation_1_of_production_1_of_rule_xpintercont},
@@ -4750,12 +4822,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{xpfilters, or xpbrackets});
     $expectation->at($_[1]);
@@ -4794,7 +4867,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpfilters($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpfilters($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xpfilters]>>},
@@ -4807,7 +4880,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xpfilters]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_1_of_rule_xpintercont},
                       $tracelevel)
@@ -4817,12 +4890,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
         
         }
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [xpfilters]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_1_of_rule_xpintercont},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -4851,7 +4926,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpbrackets($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpbrackets($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xpbrackets]>>},
@@ -4864,7 +4939,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xpbrackets]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_1_of_rule_xpintercont},
                       $tracelevel)
@@ -4874,12 +4949,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
         
         }
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [xpbrackets]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_1_of_rule_xpintercont},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -4914,7 +4991,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
                       q{_alternation_1_of_production_1_of_rule_xpintercont},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{_alternation_1_of_production_1_of_rule_xpintercont},
                       $tracelevel)
@@ -4923,7 +5000,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::xplocationstep
 {
 	my $thisparser = $_[0];
@@ -4931,7 +5008,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xplocationstep
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"xplocationstep"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [xplocationstep]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{xplocationstep},
@@ -4949,12 +5026,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xplocationstep
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{xpaxis});
     $expectation->at($_[1]);
@@ -4993,7 +5071,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xplocationstep
                     if defined $::RD_TRACE;
         $expectation->is(q{})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::xpaxis, 0, 1, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::xpaxis, 0, 1, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [xpaxis]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -5004,7 +5082,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xplocationstep
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [xpaxis]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{xplocationstep},
                       $tracelevel)
@@ -5021,7 +5099,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xplocationstep
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{xpnodetest})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpnodetest($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpnodetest($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xpnodetest]>>},
@@ -5034,7 +5112,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xplocationstep
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xpnodetest]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{xplocationstep},
                       $tracelevel)
@@ -5066,12 +5144,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::xplocationstep
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [xpaxis xpnodetest]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{xplocationstep},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -5106,7 +5186,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xplocationstep
                       q{xplocationstep},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{xplocationstep},
                       $tracelevel)
@@ -5115,7 +5195,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xplocationstep
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::local_var_in
 {
 	my $thisparser = $_[0];
@@ -5123,7 +5203,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::local_var_in
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"local_var_in"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [local_var_in]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{local_var_in},
@@ -5141,12 +5221,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::local_var_in
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{local_var});
     $expectation->at($_[1]);
@@ -5185,7 +5266,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::local_var_in
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::local_var($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::local_var($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [local_var]>>},
@@ -5198,7 +5279,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::local_var_in
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [local_var]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{local_var_in},
                       $tracelevel)
@@ -5213,12 +5294,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::local_var_in
                       q{local_var_in},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{'in'})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\Ain/)
         {
+            $text = $lastsep . $text if defined $lastsep;
             
             $expectation->failed();
             Parse::RecDescent::_trace(qq{<<Didn't match terminal>>},
@@ -5226,7 +5308,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::local_var_in
                             if defined $::RD_TRACE;
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -5257,12 +5339,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::local_var_in
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [local_var 'in']<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{local_var_in},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -5297,7 +5381,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::local_var_in
                       q{local_var_in},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{local_var_in},
                       $tracelevel)
@@ -5306,7 +5390,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::local_var_in
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::param
 {
 	my $thisparser = $_[0];
@@ -5314,7 +5398,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::param
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"param"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [param]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{param},
@@ -5332,12 +5416,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::param
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/[^=\\s]+/});
     $expectation->at($_[1]);
@@ -5373,13 +5458,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::param
                       q{param},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:[^=\s]+)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -5387,7 +5472,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::param
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -5401,12 +5486,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::param
                       q{param},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{'='})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A\=/)
         {
+            $text = $lastsep . $text if defined $lastsep;
             
             $expectation->failed();
             Parse::RecDescent::_trace(qq{<<Didn't match terminal>>},
@@ -5414,7 +5500,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::param
                             if defined $::RD_TRACE;
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -5430,7 +5516,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::param
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{exp})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [exp]>>},
@@ -5443,7 +5529,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::param
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [exp]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{param},
                       $tracelevel)
@@ -5475,12 +5561,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::param
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/[^=\\s]+/ '=' exp]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{param},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -5515,7 +5603,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::param
                       q{param},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{param},
                       $tracelevel)
@@ -5524,7 +5612,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::param
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::startrule
 {
 	my $thisparser = $_[0];
@@ -5532,7 +5620,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::startrule
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"startrule"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [startrule]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{startrule},
@@ -5550,12 +5638,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::startrule
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{shell, or complex_command});
     $expectation->at($_[1]);
@@ -5594,7 +5683,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::startrule
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::shell($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::shell($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [shell]>>},
@@ -5607,7 +5696,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::startrule
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [shell]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{startrule},
                       $tracelevel)
@@ -5650,7 +5739,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::startrule
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{eof})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::eof($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::eof($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [eof]>>},
@@ -5663,7 +5752,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::startrule
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [eof]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{startrule},
                       $tracelevel)
@@ -5695,12 +5784,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::startrule
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [shell <commit> eof]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{startrule},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -5729,7 +5820,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::startrule
                     if defined $::RD_TRACE;
         $expectation->is(q{})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::complex_command, 1, 100000000, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::complex_command, 1, 100000000, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [complex_command]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -5740,7 +5831,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::startrule
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [complex_command]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{startrule},
                       $tracelevel)
@@ -5783,7 +5874,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::startrule
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{eof})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::eof($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::eof($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [eof]>>},
@@ -5796,7 +5887,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::startrule
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [eof]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{startrule},
                       $tracelevel)
@@ -5828,12 +5919,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::startrule
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [complex_command <commit> eof]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{startrule},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -5868,7 +5961,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::startrule
                       q{startrule},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{startrule},
                       $tracelevel)
@@ -5877,7 +5970,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::startrule
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::exp
 {
 	my $thisparser = $_[0];
@@ -5885,7 +5978,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"exp"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [exp]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{exp},
@@ -5903,12 +5996,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/^(?=\{)/, or '&', or /^(?=<<)/, or xpath});
     $expectation->at($_[1]);
@@ -5944,13 +6038,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp
                       q{exp},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:^(?={))/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -5958,7 +6052,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -5974,7 +6068,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{perl_block})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::perl_block($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::perl_block($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [perl_block]>>},
@@ -5987,7 +6081,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [perl_block]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{exp},
                       $tracelevel)
@@ -6019,12 +6113,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/^(?=\{)/ perl_block]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{exp},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -6051,12 +6147,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp
                       q{exp},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A\&/)
         {
+            $text = $lastsep . $text if defined $lastsep;
             
             $expectation->failed();
             Parse::RecDescent::_trace(qq{<<Didn't match terminal>>},
@@ -6064,7 +6161,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp
                             if defined $::RD_TRACE;
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -6080,7 +6177,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{block})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [block]>>},
@@ -6093,7 +6190,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [block]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{exp},
                       $tracelevel)
@@ -6125,12 +6222,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: ['&' block]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{exp},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -6156,13 +6255,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp
                       q{exp},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:^(?=<<))/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -6170,7 +6269,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -6186,7 +6285,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{inline_doc})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::inline_doc($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::inline_doc($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [inline_doc]>>},
@@ -6199,7 +6298,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [inline_doc]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{exp},
                       $tracelevel)
@@ -6231,12 +6330,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/^(?=<<)/ inline_doc]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{exp},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -6265,7 +6366,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpath($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpath($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xpath]>>},
@@ -6278,7 +6379,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xpath]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{exp},
                       $tracelevel)
@@ -6288,12 +6389,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp
         
         }
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [xpath]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{exp},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -6328,7 +6431,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp
                       q{exp},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{exp},
                       $tracelevel)
@@ -6337,7 +6440,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::xpstring
 {
 	my $thisparser = $_[0];
@@ -6345,7 +6448,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpstring
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"xpstring"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [xpstring]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{xpstring},
@@ -6363,12 +6466,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpstring
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/'(?:\\$\\\{(?:\\$?[a-zA-Z_][a-zA-Z0-9_]*|\\\{.*?\\\}|\\(.+?\\))\\\}|\\$(?!\\\{)|[^\\$'])*' |
               "(?:\\$\\\{(?:\\$?[a-zA-Z_][a-zA-Z0-9_]*|\\\{.*?\\\}|\\(.+?\\))\\\}|\\$(?!\\\{)|[^\\$"])*"/x});
@@ -6407,14 +6511,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpstring
                       q{xpstring},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:'(?:\$\{(?:\$?[a-zA-Z_][a-zA-Z0-9_]*|\{.*?\}|\(.+?\))\}|\$(?!\{)|[^\$'])*' |
               "(?:\$\{(?:\$?[a-zA-Z_][a-zA-Z0-9_]*|\{.*?\}|\(.+?\))\}|\$(?!\{)|[^\$"])*")/x)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -6422,7 +6526,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpstring
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -6431,13 +6535,15 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpstring
         push @item, $item{__PATTERN1__}=$current_match;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/'(?:\\$\\\{(?:\\$?[a-zA-Z_][a-zA-Z0-9_]*|\\\{.*?\\\}|\\(.+?\\))\\\}|\\$(?!\\\{)|[^\\$'])*' |
               "(?:\\$\\\{(?:\\$?[a-zA-Z_][a-zA-Z0-9_]*|\\\{.*?\\\}|\\(.+?\\))\\\}|\\$(?!\\\{)|[^\\$"])*"/x]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{xpstring},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -6472,7 +6578,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpstring
                       q{xpstring},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{xpstring},
                       $tracelevel)
@@ -6481,7 +6587,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpstring
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::nodename
 {
 	my $thisparser = $_[0];
@@ -6489,7 +6595,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::nodename
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"nodename"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [nodename]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{nodename},
@@ -6507,12 +6613,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::nodename
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{exp});
     $expectation->at($_[1]);
@@ -6551,7 +6658,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::nodename
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [exp]>>},
@@ -6564,7 +6671,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::nodename
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [exp]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{nodename},
                       $tracelevel)
@@ -6574,12 +6681,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::nodename
         
         }
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [exp]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{nodename},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -6614,7 +6723,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::nodename
                       q{nodename},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{nodename},
                       $tracelevel)
@@ -6623,7 +6732,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::nodename
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::undef
 {
 	my $thisparser = $_[0];
@@ -6631,7 +6740,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::undef
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"undef"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [undef]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{undef},
@@ -6649,12 +6758,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::undef
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/(undef|undefine)\\b/});
     $expectation->at($_[1]);
@@ -6690,13 +6800,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::undef
                       q{undef},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(undef|undefine)\b)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -6704,7 +6814,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::undef
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -6743,13 +6853,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::undef
                       q{undef},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{/\\$?[a-zA-Z_][a-zA-Z0-9_]*/})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:\$?[a-zA-Z_][a-zA-Z0-9_]*)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -6757,7 +6867,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::undef
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -6790,12 +6900,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::undef
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(undef|undefine)\\b/ <commit> /\\$?[a-zA-Z_][a-zA-Z0-9_]*/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{undef},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -6830,7 +6942,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::undef
                       q{undef},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{undef},
                       $tracelevel)
@@ -6839,7 +6951,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::undef
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::xpfilters
 {
 	my $thisparser = $_[0];
@@ -6847,7 +6959,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpfilters
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"xpfilters"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [xpfilters]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{xpfilters},
@@ -6865,12 +6977,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpfilters
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/(?=\\[)/});
     $expectation->at($_[1]);
@@ -6906,13 +7019,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpfilters
                       q{xpfilters},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(?=\[))/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -6920,7 +7033,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpfilters
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -6936,7 +7049,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpfilters
                     if defined $::RD_TRACE;
         $expectation->is(q{xpfilter})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::xpfilter, 1, 100000000, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::xpfilter, 1, 100000000, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [xpfilter]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -6947,7 +7060,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpfilters
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [xpfilter]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{xpfilters},
                       $tracelevel)
@@ -6979,12 +7092,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpfilters
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(?=\\[)/ xpfilter]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{xpfilters},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -7019,7 +7134,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpfilters
                       q{xpfilters},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{xpfilters},
                       $tracelevel)
@@ -7028,7 +7143,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpfilters
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule_local_var
 {
 	my $thisparser = $_[0];
@@ -7036,7 +7151,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"_alternation_1_of_production_1_of_rule_local_var"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [_alternation_1_of_production_1_of_rule_local_var]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{_alternation_1_of_production_1_of_rule_local_var},
@@ -7054,12 +7169,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/(local|my)\\s/});
     $expectation->at($_[1]);
@@ -7095,13 +7211,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
                       q{_alternation_1_of_production_1_of_rule_local_var},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(local|my)\s)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -7109,7 +7225,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -7118,12 +7234,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
         push @item, $item{__PATTERN1__}=$current_match;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(local|my)\\s/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_1_of_rule_local_var},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -7158,7 +7276,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
                       q{_alternation_1_of_production_1_of_rule_local_var},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{_alternation_1_of_production_1_of_rule_local_var},
                       $tracelevel)
@@ -7167,7 +7285,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::loc
 {
 	my $thisparser = $_[0];
@@ -7175,7 +7293,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::loc
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"loc"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [loc]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{loc},
@@ -7193,12 +7311,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::loc
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/after\\s/, or /before\\s/, or /(in)?to\\s/, or /(append(ing)?|as\\s+(a\\s+)child(\\s+of)?)\\s/, or /(prepend(ing)?|(as\\s+)(the\\s+)first(\\s+child(\\s+of)?)?)\\s/, or /(replace|instead( of)?)\\s/});
     $expectation->at($_[1]);
@@ -7234,13 +7353,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::loc
                       q{loc},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:after\s)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -7248,7 +7367,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::loc
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -7279,12 +7398,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::loc
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/after\\s/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{loc},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -7310,13 +7431,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::loc
                       q{loc},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:before\s)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -7324,7 +7445,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::loc
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -7355,12 +7476,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::loc
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/before\\s/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{loc},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -7386,13 +7509,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::loc
                       q{loc},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(in)?to\s)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -7400,7 +7523,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::loc
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -7431,12 +7554,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::loc
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(in)?to\\s/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{loc},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -7462,13 +7587,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::loc
                       q{loc},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(append(ing)?|as\s+(a\s+)child(\s+of)?)\s)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -7476,7 +7601,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::loc
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -7507,12 +7632,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::loc
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(append(ing)?|as\\s+(a\\s+)child(\\s+of)?)\\s/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{loc},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -7538,13 +7665,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::loc
                       q{loc},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(prepend(ing)?|(as\s+)(the\s+)first(\s+child(\s+of)?)?)\s)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -7552,7 +7679,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::loc
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -7583,12 +7710,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::loc
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(prepend(ing)?|(as\\s+)(the\\s+)first(\\s+child(\\s+of)?)?)\\s/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{loc},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -7614,13 +7743,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::loc
                       q{loc},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(replace|instead( of)?)\s)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -7628,7 +7757,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::loc
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -7659,12 +7788,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::loc
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(replace|instead( of)?)\\s/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{loc},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -7699,7 +7830,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::loc
                       q{loc},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{loc},
                       $tracelevel)
@@ -7708,7 +7839,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::loc
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::eof
 {
 	my $thisparser = $_[0];
@@ -7716,7 +7847,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::eof
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"eof"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [eof]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{eof},
@@ -7734,12 +7865,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::eof
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/\\Z/});
     $expectation->at($_[1]);
@@ -7775,13 +7907,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::eof
                       q{eof},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:\Z)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -7789,7 +7921,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::eof
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -7820,12 +7952,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::eof
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/\\Z/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{eof},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -7860,7 +7994,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::eof
                       q{eof},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{eof},
                       $tracelevel)
@@ -7869,7 +8003,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::eof
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::nodetype
 {
 	my $thisparser = $_[0];
@@ -7877,7 +8011,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::nodetype
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"nodetype"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [nodetype]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{nodetype},
@@ -7895,12 +8029,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::nodetype
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/element|attribute|attributes|text|cdata|pi|comment|chunk|entity_reference/});
     $expectation->at($_[1]);
@@ -7936,13 +8071,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::nodetype
                       q{nodetype},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:element|attribute|attributes|text|cdata|pi|comment|chunk|entity_reference)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -7950,7 +8085,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::nodetype
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -7959,12 +8094,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::nodetype
         push @item, $item{__PATTERN1__}=$current_match;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/element|attribute|attributes|text|cdata|pi|comment|chunk|entity_reference/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{nodetype},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -7999,7 +8136,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::nodetype
                       q{nodetype},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{nodetype},
                       $tracelevel)
@@ -8008,7 +8145,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::nodetype
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::xpcont
 {
 	my $thisparser = $_[0];
@@ -8016,7 +8153,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpcont
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"xpcont"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [xpcont]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{xpcont},
@@ -8034,12 +8171,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpcont
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{xpfilters, or xpbrackets, or xpath});
     $expectation->at($_[1]);
@@ -8078,7 +8216,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpcont
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule_xpcont($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule_xpcont($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [_alternation_1_of_production_1_of_rule_xpcont]>>},
@@ -8091,7 +8229,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpcont
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [_alternation_1_of_production_1_of_rule_xpcont]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{xpcont},
                       $tracelevel)
@@ -8134,7 +8272,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpcont
                     if defined $::RD_TRACE;
         $expectation->is(q{xpath})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::xpath, 0, 1, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::xpath, 0, 1, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [xpath]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -8145,7 +8283,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpcont
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [xpath]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{xpcont},
                       $tracelevel)
@@ -8177,12 +8315,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpcont
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [xpfilters, or xpbrackets <skip:""> xpath]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{xpcont},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -8211,7 +8351,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpcont
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpath($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpath($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xpath]>>},
@@ -8224,7 +8364,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpcont
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xpath]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{xpcont},
                       $tracelevel)
@@ -8256,12 +8396,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpcont
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [xpath]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{xpcont},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -8296,7 +8438,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpcont
                       q{xpcont},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{xpcont},
                       $tracelevel)
@@ -8305,7 +8447,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpcont
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::stream_select
 {
 	my $thisparser = $_[0];
@@ -8313,7 +8455,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::stream_select
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"stream_select"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [stream_select]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{stream_select},
@@ -8331,12 +8473,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::stream_select
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/select\\s/});
     $expectation->at($_[1]);
@@ -8372,13 +8515,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::stream_select
                       q{stream_select},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:select\s)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -8386,7 +8529,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::stream_select
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -8402,7 +8545,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::stream_select
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{xpath})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpath($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpath($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xpath]>>},
@@ -8415,7 +8558,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::stream_select
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xpath]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{stream_select},
                       $tracelevel)
@@ -8432,7 +8575,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::stream_select
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{block})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [block]>>},
@@ -8445,7 +8588,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::stream_select
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [block]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{stream_select},
                       $tracelevel)
@@ -8477,12 +8620,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::stream_select
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/select\\s/ xpath block]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{stream_select},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -8517,7 +8662,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::stream_select
                       q{stream_select},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{stream_select},
                       $tracelevel)
@@ -8526,7 +8671,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::stream_select
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::ID
 {
 	my $thisparser = $_[0];
@@ -8534,7 +8679,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::ID
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"ID"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [ID]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{ID},
@@ -8552,12 +8697,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::ID
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/[a-zA-Z_][a-zA-Z0-9_]*/});
     $expectation->at($_[1]);
@@ -8593,13 +8739,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::ID
                       q{ID},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:[a-zA-Z_][a-zA-Z0-9_]*)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -8607,7 +8753,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::ID
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -8616,12 +8762,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::ID
         push @item, $item{__PATTERN1__}=$current_match;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/[a-zA-Z_][a-zA-Z0-9_]*/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{ID},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -8656,7 +8804,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::ID
                       q{ID},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{ID},
                       $tracelevel)
@@ -8665,7 +8813,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::ID
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::variable
 {
 	my $thisparser = $_[0];
@@ -8673,7 +8821,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::variable
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"variable"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [variable]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{variable},
@@ -8691,12 +8839,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::variable
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/\\$[a-zA-Z_][a-zA-Z0-9_]*/});
     $expectation->at($_[1]);
@@ -8732,13 +8881,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::variable
                       q{variable},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:\$[a-zA-Z_][a-zA-Z0-9_]*)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -8746,7 +8895,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::variable
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -8755,12 +8904,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::variable
         push @item, $item{__PATTERN1__}=$current_match;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/\\$[a-zA-Z_][a-zA-Z0-9_]*/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{variable},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -8795,7 +8946,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::variable
                       q{variable},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{variable},
                       $tracelevel)
@@ -8804,7 +8955,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::variable
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::xpstep
 {
 	my $thisparser = $_[0];
@@ -8812,7 +8963,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpstep
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"xpstep"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [xpstep]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{xpstep},
@@ -8830,12 +8981,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpstep
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{xplocationstep});
     $expectation->at($_[1]);
@@ -8874,7 +9026,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpstep
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xplocationstep($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xplocationstep($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xplocationstep]>>},
@@ -8887,7 +9039,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpstep
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xplocationstep]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{xpstep},
                       $tracelevel)
@@ -8930,7 +9082,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpstep
                     if defined $::RD_TRACE;
         $expectation->is(q{xpfilter})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::xpfilter, 0, 1, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::xpfilter, 0, 1, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [xpfilter]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -8941,7 +9093,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpstep
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [xpfilter]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{xpstep},
                       $tracelevel)
@@ -8973,12 +9125,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpstep
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [xplocationstep <skip:""> xpfilter]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{xpstep},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -9013,7 +9167,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpstep
                       q{xpstep},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{xpstep},
                       $tracelevel)
@@ -9022,7 +9176,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpstep
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::xpaxis
 {
 	my $thisparser = $_[0];
@@ -9030,7 +9184,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpaxis
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"xpaxis"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [xpaxis]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{xpaxis},
@@ -9048,12 +9202,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpaxis
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/[-a-z]+::/});
     $expectation->at($_[1]);
@@ -9089,13 +9244,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpaxis
                       q{xpaxis},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:[-a-z]+::)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -9103,7 +9258,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpaxis
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -9112,12 +9267,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpaxis
         push @item, $item{__PATTERN1__}=$current_match;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/[-a-z]+::/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{xpaxis},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -9152,7 +9309,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpaxis
                       q{xpaxis},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{xpaxis},
                       $tracelevel)
@@ -9161,7 +9318,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpaxis
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::local_var
 {
 	my $thisparser = $_[0];
@@ -9169,7 +9326,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::local_var
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"local_var"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [local_var]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{local_var},
@@ -9187,12 +9344,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::local_var
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/(local|my)\\s/});
     $expectation->at($_[1]);
@@ -9231,7 +9389,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::local_var
                     if defined $::RD_TRACE;
         $expectation->is(q{})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule_local_var, 0, 1, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule_local_var, 0, 1, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [/(local|my)\\s/]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -9242,7 +9400,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::local_var
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [_alternation_1_of_production_1_of_rule_local_var]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{local_var},
                       $tracelevel)
@@ -9259,7 +9417,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::local_var
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{variable})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::variable($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::variable($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [variable]>>},
@@ -9272,7 +9430,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::local_var
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [variable]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{local_var},
                       $tracelevel)
@@ -9304,12 +9462,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::local_var
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(local|my)\\s/ variable]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{local_var},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -9344,7 +9504,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::local_var
                       q{local_var},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{local_var},
                       $tracelevel)
@@ -9353,7 +9513,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::local_var
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::xpbracket
 {
 	my $thisparser = $_[0];
@@ -9361,7 +9521,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpbracket
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"xpbracket"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [xpbracket]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{xpbracket},
@@ -9379,12 +9539,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpbracket
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{'('});
     $expectation->at($_[1]);
@@ -9421,12 +9582,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpbracket
                       q{xpbracket},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A\(/)
         {
+            $text = $lastsep . $text if defined $lastsep;
             
             $expectation->failed();
             Parse::RecDescent::_trace(qq{<<Didn't match terminal>>},
@@ -9434,7 +9596,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpbracket
                             if defined $::RD_TRACE;
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -9476,7 +9638,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpbracket
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{xpinter})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpinter($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpinter($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xpinter]>>},
@@ -9489,7 +9651,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpbracket
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xpinter]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{xpbracket},
                       $tracelevel)
@@ -9504,12 +9666,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpbracket
                       q{xpbracket},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{')'})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A\)/)
         {
+            $text = $lastsep . $text if defined $lastsep;
             
             $expectation->failed();
             Parse::RecDescent::_trace(qq{<<Didn't match terminal>>},
@@ -9517,7 +9680,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpbracket
                             if defined $::RD_TRACE;
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -9548,12 +9711,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpbracket
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: ['(' <skip:""> xpinter ')']<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{xpbracket},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -9588,7 +9753,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpbracket
                       q{xpbracket},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{xpbracket},
                       $tracelevel)
@@ -9597,7 +9762,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpbracket
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::complex_command
 {
 	my $thisparser = $_[0];
@@ -9605,7 +9770,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"complex_command"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [complex_command]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{complex_command},
@@ -9623,12 +9788,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/(?=\\s*[\{\}]|\\s*\\Z)/, or /\\s*;/, or /(?=(?:foreach|for|if|unless|iterate|while|try|def|define)\\b)/, or command});
     $expectation->at($_[1]);
@@ -9664,13 +9830,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
                       q{complex_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(?=\s*[{}]|\s*\Z))/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -9678,7 +9844,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -9725,12 +9891,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
         
         last unless defined $_tok;
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(?=\\s*[\{\}]|\\s*\\Z)/ <commit> <reject>]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{complex_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -9756,13 +9924,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
                       q{complex_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:\s*;)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -9770,7 +9938,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -9805,12 +9973,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
         push @item, $item{__DIRECTIVE1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/\\s*;/ <commit>]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{complex_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -9836,13 +10006,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
                       q{complex_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(?=(?:foreach|for|if|unless|iterate|while|try|def|define)\b))/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -9850,7 +10020,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -9866,7 +10036,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{statement})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::statement($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::statement($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [statement]>>},
@@ -9879,7 +10049,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [statement]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{complex_command},
                       $tracelevel)
@@ -9922,7 +10092,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
                     if defined $::RD_TRACE;
         $expectation->is(q{trail})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::trail, 0, 1, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::trail, 0, 1, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [trail]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -9933,7 +10103,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [trail]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{complex_command},
                       $tracelevel)
@@ -9975,12 +10145,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(?=(?:foreach|for|if|unless|iterate|while|try|def|define)\\b)/ statement <commit> trail]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{complex_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -10009,7 +10181,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::command($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::command($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [command]>>},
@@ -10022,7 +10194,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [command]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{complex_command},
                       $tracelevel)
@@ -10065,7 +10237,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
                     if defined $::RD_TRACE;
         $expectation->is(q{trail})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::trail, 0, 1, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::trail, 0, 1, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [trail]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -10076,7 +10248,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [trail]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{complex_command},
                       $tracelevel)
@@ -10090,13 +10262,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
                       q{complex_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{/\\s*;|(?=\\s*\}|\\s*\\Z)/})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:\s*;|(?=\s*}|\s*\Z))/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -10104,7 +10276,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -10145,12 +10317,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [command <commit> trail /\\s*;|(?=\\s*\}|\\s*\\Z)/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{complex_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -10198,12 +10372,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
         push @item, $item{__DIRECTIVE1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [<error...>]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{complex_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -10238,7 +10414,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
                       q{complex_command},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{complex_command},
                       $tracelevel)
@@ -10247,7 +10423,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::complex_command
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::enc_string
 {
 	my $thisparser = $_[0];
@@ -10255,7 +10431,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::enc_string
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"enc_string"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [enc_string]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{enc_string},
@@ -10273,12 +10449,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::enc_string
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{exp});
     $expectation->at($_[1]);
@@ -10317,7 +10494,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::enc_string
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [exp]>>},
@@ -10330,7 +10507,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::enc_string
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [exp]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{enc_string},
                       $tracelevel)
@@ -10340,12 +10517,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::enc_string
         
         }
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [exp]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{enc_string},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -10380,7 +10559,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::enc_string
                       q{enc_string},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{enc_string},
                       $tracelevel)
@@ -10389,7 +10568,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::enc_string
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::xpsimple
 {
 	my $thisparser = $_[0];
@@ -10397,7 +10576,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpsimple
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"xpsimple"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [xpsimple]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{xpsimple},
@@ -10415,12 +10594,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpsimple
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/(?: 
               \\$\\\{ (?: \\$?[a-zA-Z_][a-zA-Z0-9_]* | \\\{.*?\\\} | \\(.+?\\) ) \\\} |
@@ -10486,7 +10666,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpsimple
                       q{xpsimple},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
@@ -10502,7 +10682,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpsimple
               [^\[\]\${}|"'\ \s();]
           )*)/x)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -10510,7 +10690,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpsimple
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -10518,7 +10698,6 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpsimple
                     if defined $::RD_TRACE;
         push @item, $item{__PATTERN1__}=$current_match;
         
-
 
         Parse::RecDescent::_trace(q{>>Matched production: [/(?: 
               \\$\\\{ (?: \\$?[a-zA-Z_][a-zA-Z0-9_]* | \\\{.*?\\\} | \\(.+?\\) ) \\\} |
@@ -10535,6 +10714,9 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpsimple
                       q{xpsimple},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -10563,7 +10745,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpsimple
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpbrackets($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpbrackets($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xpbrackets]>>},
@@ -10576,7 +10758,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpsimple
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xpbrackets]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{xpsimple},
                       $tracelevel)
@@ -10586,12 +10768,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpsimple
         
         }
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [xpbrackets]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{xpsimple},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -10626,7 +10810,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpsimple
                       q{xpsimple},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{xpsimple},
                       $tracelevel)
@@ -10635,7 +10819,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpsimple
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::shell
 {
 	my $thisparser = $_[0];
@@ -10643,7 +10827,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shell
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"shell"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [shell]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{shell},
@@ -10661,12 +10845,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::shell
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/!\\s*/});
     $expectation->at($_[1]);
@@ -10702,13 +10887,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::shell
                       q{shell},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:!\s*)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -10716,7 +10901,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shell
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -10755,13 +10940,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::shell
                       q{shell},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{/.*/})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:.*)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -10769,7 +10954,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shell
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -10800,12 +10985,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::shell
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/!\\s*/ <commit> /.*/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{shell},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -10865,12 +11052,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::shell
         
         last unless defined $_tok;
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [<error?:...> <reject>]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{shell},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -10905,7 +11094,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shell
                       q{shell},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{shell},
                       $tracelevel)
@@ -10914,7 +11103,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shell
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_2_of_rule_command
 {
 	my $thisparser = $_[0];
@@ -10922,7 +11111,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_2_of_rule
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"_alternation_1_of_production_2_of_rule_command"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [_alternation_1_of_production_2_of_rule_command]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{_alternation_1_of_production_2_of_rule_command},
@@ -10940,12 +11129,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_2_of_rule
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/(?:[\\-\\+\\*\\/%x.]|\\|\\||\\&\\&)?=/, or /\\s*(?:[\\-\\+\\*\\/%x.]|\\|\\||\\&\\&)?:=/});
     $expectation->at($_[1]);
@@ -10981,13 +11171,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_2_of_rule
                       q{_alternation_1_of_production_2_of_rule_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(?:[\-\+\*\/%x.]|\|\||\&\&)?=)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -10995,7 +11185,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_2_of_rule
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -11037,7 +11227,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_2_of_rule
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{loose_exp})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::loose_exp($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::loose_exp($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [loose_exp]>>},
@@ -11050,7 +11240,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_2_of_rule
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [loose_exp]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_2_of_rule_command},
                       $tracelevel)
@@ -11082,12 +11272,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_2_of_rule
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(?:[\\-\\+\\*\\/%x.]|\\|\\||\\&\\&)?=/ <commit> loose_exp]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_2_of_rule_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -11113,13 +11305,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_2_of_rule
                       q{_alternation_1_of_production_2_of_rule_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:\s*(?:[\-\+\*\/%x.]|\|\||\&\&)?:=)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -11127,7 +11319,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_2_of_rule
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -11143,7 +11335,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_2_of_rule
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{command})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::command($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::command($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [command]>>},
@@ -11156,7 +11348,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_2_of_rule
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [command]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_2_of_rule_command},
                       $tracelevel)
@@ -11188,12 +11380,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_2_of_rule
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/\\s*(?:[\\-\\+\\*\\/%x.]|\\|\\||\\&\\&)?:=/ command]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_2_of_rule_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -11228,7 +11422,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_2_of_rule
                       q{_alternation_1_of_production_2_of_rule_command},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{_alternation_1_of_production_2_of_rule_command},
                       $tracelevel)
@@ -11237,7 +11431,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_2_of_rule
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::option
 {
 	my $thisparser = $_[0];
@@ -11245,7 +11439,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::option
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"option"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [option]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{option},
@@ -11263,12 +11457,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::option
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/:[[:alnum:]]|--[-_[:alnum:]]+/});
     $expectation->at($_[1]);
@@ -11304,13 +11499,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::option
                       q{option},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?::[[:alnum:]]|--[-_[:alnum:]]+)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -11318,7 +11513,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::option
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -11327,12 +11522,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::option
         push @item, $item{__PATTERN1__}=$current_match;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/:[[:alnum:]]|--[-_[:alnum:]]+/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{option},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -11367,7 +11564,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::option
                       q{option},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{option},
                       $tracelevel)
@@ -11376,7 +11573,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::option
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::shline_inter
 {
 	my $thisparser = $_[0];
@@ -11384,7 +11581,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_inter
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"shline_inter"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [shline_inter]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{shline_inter},
@@ -11402,12 +11599,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_inter
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/([^()\\\\"']|\\\\.|\\"([^\\"\\\\]|\\\\.)*\\"|\\'([^\\'\\\\]|\\\\\\'|\\\\\\\\|\\\\[^\\'\\\\])*\\')*/});
     $expectation->at($_[1]);
@@ -11443,13 +11641,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_inter
                       q{shline_inter},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:([^()\\"']|\\.|\"([^\"\\]|\\.)*\"|\'([^\'\\]|\\\'|\\\\|\\[^\'\\])*\')*)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -11457,7 +11655,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_inter
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -11466,12 +11664,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_inter
         push @item, $item{__PATTERN1__}=$current_match;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/([^()\\\\"']|\\\\.|\\"([^\\"\\\\]|\\\\.)*\\"|\\'([^\\'\\\\]|\\\\\\'|\\\\\\\\|\\\\[^\\'\\\\])*\\')*/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{shline_inter},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -11506,7 +11706,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_inter
                       q{shline_inter},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{shline_inter},
                       $tracelevel)
@@ -11515,7 +11715,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_inter
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::perl_expression
 {
 	my $thisparser = $_[0];
@@ -11523,7 +11723,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::perl_expression
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"perl_expression"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [perl_expression]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{perl_expression},
@@ -11541,12 +11741,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::perl_expression
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{exp});
     $expectation->at($_[1]);
@@ -11612,12 +11813,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::perl_expression
         
         last unless defined $_tok;
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [<reject>]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{perl_expression},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -11646,7 +11849,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::perl_expression
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [exp]>>},
@@ -11659,7 +11862,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::perl_expression
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [exp]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{perl_expression},
                       $tracelevel)
@@ -11691,12 +11894,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::perl_expression
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [exp]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{perl_expression},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -11731,7 +11936,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::perl_expression
                       q{perl_expression},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{perl_expression},
                       $tracelevel)
@@ -11740,7 +11945,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::perl_expression
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::command
 {
 	my $thisparser = $_[0];
@@ -11748,7 +11953,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"command"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [command]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{command},
@@ -11766,12 +11971,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/(?=\\s*[\}\{;]|\\s*\\Z)/, or /assign\\b|(?:local\\b|my\\b)?(?=\\s*\\$[a-zA-Z_][a-zA-Z0-9_]*\\s*\\s*(?:[\\-\\+\\*\\/%x.]|\\|\\||\\&\\&)?:?=)/, or /(my)\\b/, or /(local)\\b/, or /(do)\\b/, or /(if)\\b/, or /(unless)\\b/, or /(while)\\b/, or /(foreach|for)\\b/, or /(stream)\\b/, or /(undef|undefine)\\b/, or /(use)\\b/, or /(test-mode|test_mode)/, or /(run-mode|run_mode)/, or /(?!(?:iterate|try|def|define)\\b)/});
     $expectation->at($_[1]);
@@ -11807,13 +12013,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(?=\s*[}{;]|\s*\Z))/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -11821,7 +12027,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -11868,12 +12074,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         
         last unless defined $_tok;
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(?=\\s*[\}\{;]|\\s*\\Z)/ <commit> <reject>]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -11899,13 +12107,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:assign\b|(?:local\b|my\b)?(?=\s*\$[a-zA-Z_][a-zA-Z0-9_]*\s*\s*(?:[\-\+\*\/%x.]|\|\||\&\&)?:?=))/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -11913,7 +12121,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -11955,7 +12163,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{variable})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::variable($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::variable($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [variable]>>},
@@ -11968,7 +12176,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [variable]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
@@ -11985,7 +12193,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{/(?:[\\-\\+\\*\\/%x.]|\\|\\||\\&\\&)?=/, or /\\s*(?:[\\-\\+\\*\\/%x.]|\\|\\||\\&\\&)?:=/})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_2_of_rule_command($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_2_of_rule_command($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [_alternation_1_of_production_2_of_rule_command]>>},
@@ -11998,7 +12206,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [_alternation_1_of_production_2_of_rule_command]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
@@ -12030,12 +12238,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/assign\\b|(?:local\\b|my\\b)?(?=\\s*\\$[a-zA-Z_][a-zA-Z0-9_]*\\s*\\s*(?:[\\-\\+\\*\\/%x.]|\\|\\||\\&\\&)?:?=)/ <commit> variable /(?:[\\-\\+\\*\\/%x.]|\\|\\||\\&\\&)?=/, or /\\s*(?:[\\-\\+\\*\\/%x.]|\\|\\||\\&\\&)?:=/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -12061,13 +12271,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(my)\b)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -12075,7 +12285,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -12091,7 +12301,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                     if defined $::RD_TRACE;
         $expectation->is(q{variable})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::variable, 1, 100000000, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::variable, 1, 100000000, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [variable]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -12102,7 +12312,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [variable]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
@@ -12134,12 +12344,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(my)\\b/ variable]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -12165,13 +12377,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(local)\b)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -12179,7 +12391,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -12195,7 +12407,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                     if defined $::RD_TRACE;
         $expectation->is(q{variable})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::variable, 1, 100000000, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::variable, 1, 100000000, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [variable]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -12206,7 +12418,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [variable]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
@@ -12238,12 +12450,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(local)\\b/ variable]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -12269,13 +12483,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(do)\b)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -12283,7 +12497,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -12325,7 +12539,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{block})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [block]>>},
@@ -12338,7 +12552,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [block]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
@@ -12370,12 +12584,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(do)\\b/ <commit> block]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -12401,13 +12617,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(if)\b)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -12415,7 +12631,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -12457,7 +12673,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{exp})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [exp]>>},
@@ -12470,7 +12686,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [exp]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
@@ -12487,7 +12703,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{command})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::command($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::command($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [command]>>},
@@ -12500,7 +12716,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [command]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
@@ -12532,12 +12748,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(if)\\b/ <commit> exp command]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -12563,13 +12781,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(unless)\b)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -12577,7 +12795,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -12619,7 +12837,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{exp})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [exp]>>},
@@ -12632,7 +12850,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [exp]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
@@ -12649,7 +12867,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{command})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::command($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::command($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [command]>>},
@@ -12662,7 +12880,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [command]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
@@ -12694,12 +12912,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(unless)\\b/ <commit> exp command]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -12725,13 +12945,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(while)\b)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -12739,7 +12959,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -12781,7 +13001,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{exp})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [exp]>>},
@@ -12794,7 +13014,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [exp]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
@@ -12811,7 +13031,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{command})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::command($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::command($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [command]>>},
@@ -12824,7 +13044,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [command]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
@@ -12856,12 +13076,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(while)\\b/ <commit> exp command]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -12887,13 +13109,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(foreach|for)\b)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -12901,7 +13123,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -12943,7 +13165,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                     if defined $::RD_TRACE;
         $expectation->is(q{local_var_in})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::local_var_in, 0, 1, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::local_var_in, 0, 1, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [local_var_in]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -12954,7 +13176,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [local_var_in]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
@@ -12971,7 +13193,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{exp})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [exp]>>},
@@ -12984,7 +13206,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [exp]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
@@ -13001,7 +13223,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{command})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::command($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::command($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [command]>>},
@@ -13014,7 +13236,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [command]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
@@ -13046,12 +13268,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(foreach|for)\\b/ <commit> local_var_in exp command]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -13077,13 +13301,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(stream)\b)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -13091,7 +13315,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -13133,7 +13357,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{/--input-file|:f/, or /--input-pipe|:p/, or /--input-string|:s/, or /--output-file|:F/, or /--output-encoding|:E/, or /--output-pipe|:P/, or /--output-string|:S/})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_10_of_rule_command($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_10_of_rule_command($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [_alternation_1_of_production_10_of_rule_command]>>},
@@ -13146,7 +13370,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [_alternation_1_of_production_10_of_rule_command]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
@@ -13163,7 +13387,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                     if defined $::RD_TRACE;
         $expectation->is(q{stream_select})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::stream_select, 1, 100000000, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::stream_select, 1, 100000000, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [stream_select]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -13174,7 +13398,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [stream_select]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
@@ -13206,12 +13430,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(stream)\\b/ <commit> /--input-file|:f/, or /--input-pipe|:p/, or /--input-string|:s/, or /--output-file|:F/, or /--output-encoding|:E/, or /--output-pipe|:P/, or /--output-string|:S/ stream_select]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -13237,13 +13463,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(undef|undefine)\b)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -13251,7 +13477,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -13290,13 +13516,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{/\\$?[a-zA-Z_][a-zA-Z0-9_]*/})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:\$?[a-zA-Z_][a-zA-Z0-9_]*)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -13304,7 +13530,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -13337,12 +13563,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(undef|undefine)\\b/ <commit> /\\$?[a-zA-Z_][a-zA-Z0-9_]*/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -13368,13 +13596,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(use)\b)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -13382,7 +13610,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -13421,13 +13649,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{/XML::XSH2::(?:Inline|Compile)/})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:XML::XSH2::(?:Inline|Compile))/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -13435,7 +13663,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -13466,12 +13694,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(use)\\b/ <commit> /XML::XSH2::(?:Inline|Compile)/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -13497,13 +13727,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(test-mode|test_mode))/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -13511,7 +13741,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -13542,12 +13772,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(test-mode|test_mode)/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -13573,13 +13805,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(run-mode|run_mode))/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -13587,7 +13819,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -13618,12 +13850,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(run-mode|run_mode)/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -13649,13 +13883,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(?!(?:iterate|try|def|define)\b))/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -13663,7 +13897,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -13676,13 +13910,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{/\\.|[a-zA-Z_][-a-zA-Z0-9_]*/})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:\.|[a-zA-Z_][-a-zA-Z0-9_]*)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -13690,7 +13924,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -13706,7 +13940,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                     if defined $::RD_TRACE;
         $expectation->is(q{exp_or_opt})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::exp_or_opt, 0, 100000000, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::exp_or_opt, 0, 100000000, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [exp_or_opt]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -13717,7 +13951,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [exp_or_opt]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
@@ -13753,12 +13987,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(?!(?:iterate|try|def|define)\\b)/ /\\.|[a-zA-Z_][-a-zA-Z0-9_]*/ exp_or_opt]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -13793,7 +14029,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
                       q{command},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{command},
                       $tracelevel)
@@ -13802,7 +14038,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::command
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::else_block
 {
 	my $thisparser = $_[0];
@@ -13810,7 +14046,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::else_block
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"else_block"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [else_block]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{else_block},
@@ -13828,12 +14064,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::else_block
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/(else)\\b/, or /(?!else)/});
     $expectation->at($_[1]);
@@ -13869,13 +14106,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::else_block
                       q{else_block},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(else)\b)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -13883,7 +14120,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::else_block
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -13925,7 +14162,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::else_block
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{block})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [block]>>},
@@ -13938,7 +14175,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::else_block
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [block]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{else_block},
                       $tracelevel)
@@ -13970,12 +14207,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::else_block
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(else)\\b/ <commit> block]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{else_block},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -14001,13 +14240,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::else_block
                       q{else_block},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(?!else))/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -14015,7 +14254,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::else_block
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -14046,12 +14285,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::else_block
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(?!else)/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{else_block},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -14125,12 +14366,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::else_block
         push @item, $item{__DIRECTIVE2__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [<uncommit> <error...>]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{else_block},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -14165,7 +14408,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::else_block
                       q{else_block},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{else_block},
                       $tracelevel)
@@ -14174,7 +14417,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::else_block
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::xpfilter
 {
 	my $thisparser = $_[0];
@@ -14182,7 +14425,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpfilter
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"xpfilter"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [xpfilter]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{xpfilter},
@@ -14200,12 +14443,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpfilter
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{'['});
     $expectation->at($_[1]);
@@ -14242,12 +14486,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpfilter
                       q{xpfilter},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A\[/)
         {
+            $text = $lastsep . $text if defined $lastsep;
             
             $expectation->failed();
             Parse::RecDescent::_trace(qq{<<Didn't match terminal>>},
@@ -14255,7 +14500,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpfilter
                             if defined $::RD_TRACE;
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -14271,7 +14516,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpfilter
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{xpinter})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpinter($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpinter($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xpinter]>>},
@@ -14284,7 +14529,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpfilter
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xpinter]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{xpfilter},
                       $tracelevel)
@@ -14299,12 +14544,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpfilter
                       q{xpfilter},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{']'})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A\]/)
         {
+            $text = $lastsep . $text if defined $lastsep;
             
             $expectation->failed();
             Parse::RecDescent::_trace(qq{<<Didn't match terminal>>},
@@ -14312,7 +14558,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpfilter
                             if defined $::RD_TRACE;
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -14343,12 +14589,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpfilter
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: ['[' xpinter ']']<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{xpfilter},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -14383,7 +14631,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpfilter
                       q{xpfilter},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{xpfilter},
                       $tracelevel)
@@ -14392,7 +14640,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpfilter
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_10_of_rule_command
 {
 	my $thisparser = $_[0];
@@ -14400,7 +14648,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_10_of_rul
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"_alternation_1_of_production_10_of_rule_command"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [_alternation_1_of_production_10_of_rule_command]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{_alternation_1_of_production_10_of_rule_command},
@@ -14418,12 +14666,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_10_of_rul
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/--input-file|:f/, or /--input-pipe|:p/, or /--input-string|:s/, or /--output-file|:F/, or /--output-encoding|:E/, or /--output-pipe|:P/, or /--output-string|:S/});
     $expectation->at($_[1]);
@@ -14462,7 +14711,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_10_of_rul
                     if defined $::RD_TRACE;
         $expectation->is(q{})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command, 0, 100000000, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command, 0, 100000000, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [/--input-file|:f/, or /--input-pipe|:p/, or /--input-string|:s/, or /--output-file|:F/, or /--output-encoding|:E/, or /--output-pipe|:P/, or /--output-string|:S/]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -14473,7 +14722,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_10_of_rul
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [_alternation_1_of_production_1_of_rule__alternation_1_of_production_10_of_rule_command]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
@@ -14505,12 +14754,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_10_of_rul
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/--input-file|:f/, or /--input-pipe|:p/, or /--input-string|:s/, or /--output-file|:F/, or /--output-encoding|:E/, or /--output-pipe|:P/, or /--output-string|:S/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -14545,7 +14796,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_10_of_rul
                       q{_alternation_1_of_production_10_of_rule_command},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{_alternation_1_of_production_10_of_rule_command},
                       $tracelevel)
@@ -14554,7 +14805,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_10_of_rul
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::xpath
 {
 	my $thisparser = $_[0];
@@ -14562,7 +14813,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpath
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"xpath"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [xpath]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{xpath},
@@ -14580,12 +14831,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpath
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/(?=['"])/, or xpsimple});
     $expectation->at($_[1]);
@@ -14621,13 +14873,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpath
                       q{xpath},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(?=['"]))/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -14635,7 +14887,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpath
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -14677,7 +14929,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpath
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{xpstring})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpstring($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpstring($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xpstring]>>},
@@ -14690,7 +14942,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpath
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xpstring]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{xpath},
                       $tracelevel)
@@ -14722,12 +14974,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpath
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(?=['"])/ <commit> xpstring]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{xpath},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -14756,7 +15010,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpath
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpsimple($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpsimple($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xpsimple]>>},
@@ -14769,7 +15023,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpath
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xpsimple]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{xpath},
                       $tracelevel)
@@ -14812,7 +15066,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpath
                     if defined $::RD_TRACE;
         $expectation->is(q{xpcont})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::xpcont, 0, 1, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::xpcont, 0, 1, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [xpcont]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -14823,7 +15077,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpath
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [xpcont]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{xpath},
                       $tracelevel)
@@ -14855,12 +15109,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpath
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [xpsimple <skip:""> xpcont]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{xpath},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -14908,12 +15164,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpath
         push @item, $item{__DIRECTIVE1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [<error...>]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{xpath},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -14948,7 +15206,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpath
                       q{xpath},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{xpath},
                       $tracelevel)
@@ -14957,7 +15215,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpath
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::xpnodetest
 {
 	my $thisparser = $_[0];
@@ -14965,7 +15223,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpnodetest
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"xpnodetest"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [xpnodetest]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{xpnodetest},
@@ -14983,12 +15241,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpnodetest
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/node\\(\\)|text\\(\\)|comment\\(\\)|processing-instruction\\(\\s*(?:"[^"]*"\\s*|'[^'*]'\\s*)?\\)|[^\\(\\[\\/\\"\\'\\&\\;\\s]+/});
     $expectation->at($_[1]);
@@ -15024,13 +15283,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpnodetest
                       q{xpnodetest},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:node\(\)|text\(\)|comment\(\)|processing-instruction\(\s*(?:"[^"]*"\s*|'[^'*]'\s*)?\)|[^\(\[\/\"\'\&\;\s]+)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -15038,7 +15297,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpnodetest
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -15047,12 +15306,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpnodetest
         push @item, $item{__PATTERN1__}=$current_match;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/node\\(\\)|text\\(\\)|comment\\(\\)|processing-instruction\\(\\s*(?:"[^"]*"\\s*|'[^'*]'\\s*)?\\)|[^\\(\\[\\/\\"\\'\\&\\;\\s]+/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{xpnodetest},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -15087,7 +15348,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpnodetest
                       q{xpnodetest},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{xpnodetest},
                       $tracelevel)
@@ -15096,7 +15357,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::xpnodetest
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::filename
 {
 	my $thisparser = $_[0];
@@ -15104,7 +15365,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::filename
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"filename"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [filename]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{filename},
@@ -15122,12 +15383,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::filename
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{exp});
     $expectation->at($_[1]);
@@ -15166,7 +15428,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::filename
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [exp]>>},
@@ -15179,7 +15441,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::filename
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [exp]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{filename},
                       $tracelevel)
@@ -15189,12 +15451,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::filename
         
         }
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [exp]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{filename},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -15229,7 +15493,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::filename
                       q{filename},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{filename},
                       $tracelevel)
@@ -15238,7 +15502,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::filename
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule_xpcont
 {
 	my $thisparser = $_[0];
@@ -15246,7 +15510,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"_alternation_1_of_production_1_of_rule_xpcont"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [_alternation_1_of_production_1_of_rule_xpcont]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{_alternation_1_of_production_1_of_rule_xpcont},
@@ -15264,12 +15528,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{xpfilters, or xpbrackets});
     $expectation->at($_[1]);
@@ -15308,7 +15573,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpfilters($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpfilters($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xpfilters]>>},
@@ -15321,7 +15586,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xpfilters]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_1_of_rule_xpcont},
                       $tracelevel)
@@ -15331,12 +15596,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
         
         }
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [xpfilters]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_1_of_rule_xpcont},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -15365,7 +15632,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpbrackets($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::xpbrackets($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xpbrackets]>>},
@@ -15378,7 +15645,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xpbrackets]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_1_of_rule_xpcont},
                       $tracelevel)
@@ -15388,12 +15655,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
         
         }
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [xpbrackets]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{_alternation_1_of_production_1_of_rule_xpcont},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -15428,7 +15697,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
                       q{_alternation_1_of_production_1_of_rule_xpcont},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{_alternation_1_of_production_1_of_rule_xpcont},
                       $tracelevel)
@@ -15437,7 +15706,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::_alternation_1_of_production_1_of_rule
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::elsif_block
 {
 	my $thisparser = $_[0];
@@ -15445,7 +15714,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::elsif_block
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"elsif_block"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [elsif_block]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{elsif_block},
@@ -15463,12 +15732,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::elsif_block
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/(elsif)\\b/, or /(?!elsif)/});
     $expectation->at($_[1]);
@@ -15504,13 +15774,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::elsif_block
                       q{elsif_block},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(elsif)\b)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -15518,7 +15788,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::elsif_block
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -15560,7 +15830,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::elsif_block
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{exp})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [exp]>>},
@@ -15573,7 +15843,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::elsif_block
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [exp]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{elsif_block},
                       $tracelevel)
@@ -15590,7 +15860,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::elsif_block
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{block})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::block($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [block]>>},
@@ -15603,7 +15873,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::elsif_block
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [block]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{elsif_block},
                       $tracelevel)
@@ -15620,7 +15890,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::elsif_block
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{elsif_block})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::elsif_block($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::elsif_block($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [elsif_block]>>},
@@ -15633,7 +15903,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::elsif_block
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [elsif_block]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{elsif_block},
                       $tracelevel)
@@ -15665,12 +15935,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::elsif_block
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(elsif)\\b/ <commit> exp block elsif_block]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{elsif_block},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -15696,13 +15968,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::elsif_block
                       q{elsif_block},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(?!elsif))/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -15710,7 +15982,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::elsif_block
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -15741,12 +16013,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::elsif_block
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(?!elsif)/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{elsif_block},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -15820,12 +16094,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::elsif_block
         push @item, $item{__DIRECTIVE2__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [<uncommit> <error...>]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{elsif_block},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -15860,7 +16136,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::elsif_block
                       q{elsif_block},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{elsif_block},
                       $tracelevel)
@@ -15869,7 +16145,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::elsif_block
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::shline
 {
 	my $thisparser = $_[0];
@@ -15877,7 +16153,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"shline"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [shline]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{shline},
@@ -15895,12 +16171,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{shline_nosc});
     $expectation->at($_[1]);
@@ -15939,7 +16216,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::shline_nosc($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::shline_nosc($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [shline_nosc]>>},
@@ -15952,7 +16229,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [shline_nosc]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{shline},
                       $tracelevel)
@@ -15969,7 +16246,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline
                     if defined $::RD_TRACE;
         $expectation->is(q{shline_bracket})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::shline_bracket, 0, 1, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::shline_bracket, 0, 1, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [shline_bracket]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -15980,7 +16257,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [shline_bracket]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{shline},
                       $tracelevel)
@@ -15997,7 +16274,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{shline_nosc})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::shline_nosc($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::shline_nosc($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [shline_nosc]>>},
@@ -16010,7 +16287,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [shline_nosc]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{shline},
                       $tracelevel)
@@ -16042,12 +16319,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [shline_nosc shline_bracket shline_nosc]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{shline},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -16082,7 +16361,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline
                       q{shline},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{shline},
                       $tracelevel)
@@ -16091,7 +16370,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::block
 {
 	my $thisparser = $_[0];
@@ -16099,7 +16378,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::block
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"block"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [block]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{block},
@@ -16117,12 +16396,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::block
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{'\{'});
     $expectation->at($_[1]);
@@ -16159,12 +16439,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::block
                       q{block},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A\{/)
         {
+            $text = $lastsep . $text if defined $lastsep;
             
             $expectation->failed();
             Parse::RecDescent::_trace(qq{<<Didn't match terminal>>},
@@ -16172,7 +16453,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::block
                             if defined $::RD_TRACE;
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -16214,7 +16495,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::block
                     if defined $::RD_TRACE;
         $expectation->is(q{complex_command})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::complex_command, 1, 100000000, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::complex_command, 1, 100000000, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [complex_command]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -16225,7 +16506,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::block
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [complex_command]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{block},
                       $tracelevel)
@@ -16240,12 +16521,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::block
                       q{block},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{'\}'})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A\}/)
         {
+            $text = $lastsep . $text if defined $lastsep;
             
             $expectation->failed();
             Parse::RecDescent::_trace(qq{<<Didn't match terminal>>},
@@ -16253,7 +16535,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::block
                             if defined $::RD_TRACE;
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -16284,12 +16566,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::block
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: ['\{' <commit> complex_command '\}']<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{block},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -16324,7 +16608,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::block
                       q{block},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{block},
                       $tracelevel)
@@ -16333,7 +16617,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::block
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::perl_block
 {
 	my $thisparser = $_[0];
@@ -16341,7 +16625,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::perl_block
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"perl_block"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [perl_block]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{perl_block},
@@ -16359,12 +16643,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::perl_block
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{});
     $expectation->at($_[1]);
@@ -16430,12 +16715,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::perl_block
         
         last unless defined $_tok;
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [<reject>]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{perl_block},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -16491,12 +16778,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::perl_block
         
         last unless defined $_tok;
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [<reject>]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{perl_block},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -16504,7 +16793,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::perl_block
 
     while (!$_matched && !$commit)
     {
-        local $skip = defined($skip) ? $skip : $Parse::RecDescent::skip;
+        
         Parse::RecDescent::_trace(q{Trying production: [<perl_codeblock>]},
                       Parse::RecDescent::_tracefirst($_[1]),
                       q{perl_block},
@@ -16574,12 +16863,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::perl_block
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [<perl_codeblock>]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{perl_block},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -16614,7 +16905,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::perl_block
                       q{perl_block},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{perl_block},
                       $tracelevel)
@@ -16623,7 +16914,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::perl_block
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::shline_bracket
 {
 	my $thisparser = $_[0];
@@ -16631,7 +16922,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_bracket
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"shline_bracket"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [shline_bracket]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{shline_bracket},
@@ -16649,12 +16940,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_bracket
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{'('});
     $expectation->at($_[1]);
@@ -16691,12 +16983,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_bracket
                       q{shline_bracket},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A\(/)
         {
+            $text = $lastsep . $text if defined $lastsep;
             
             $expectation->failed();
             Parse::RecDescent::_trace(qq{<<Didn't match terminal>>},
@@ -16704,7 +16997,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_bracket
                             if defined $::RD_TRACE;
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -16720,7 +17013,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_bracket
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{shline_inter})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::shline_inter($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::shline_inter($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [shline_inter]>>},
@@ -16733,7 +17026,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_bracket
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [shline_inter]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{shline_bracket},
                       $tracelevel)
@@ -16750,7 +17043,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_bracket
                     if defined $::RD_TRACE;
         $expectation->is(q{shline_bracket})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::shline_bracket, 0, 1, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::XML::XSH2::Parser::shline_bracket, 0, 1, $_noactions,undef,$expectation,sub { \@arg })))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [shline_bracket]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -16761,7 +17054,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_bracket
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [shline_bracket]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{shline_bracket},
                       $tracelevel)
@@ -16778,7 +17071,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_bracket
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{shline_inter})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::shline_inter($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::shline_inter($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [shline_inter]>>},
@@ -16791,7 +17084,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_bracket
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [shline_inter]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{shline_bracket},
                       $tracelevel)
@@ -16806,12 +17099,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_bracket
                       q{shline_bracket},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{')'})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A\)/)
         {
+            $text = $lastsep . $text if defined $lastsep;
             
             $expectation->failed();
             Parse::RecDescent::_trace(qq{<<Didn't match terminal>>},
@@ -16819,7 +17113,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_bracket
                             if defined $::RD_TRACE;
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -16850,12 +17144,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_bracket
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: ['(' shline_inter shline_bracket shline_inter ')']<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{shline_bracket},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -16890,7 +17186,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_bracket
                       q{shline_bracket},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{shline_bracket},
                       $tracelevel)
@@ -16899,7 +17195,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::shline_bracket
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, $_itempos, \@args)
 sub Parse::RecDescent::XML::XSH2::Parser::exp_or_opt
 {
 	my $thisparser = $_[0];
@@ -16907,7 +17203,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp_or_opt
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"exp_or_opt"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [exp_or_opt]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{exp_or_opt},
@@ -16925,12 +17221,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp_or_opt
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my $_itempos = $_[4];
+    my @arg =    defined $_[5] ? @{ &{$_[5]} } : ();
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/(?=\\s*[\};]|\\s*\\Z)/, or option, or exp});
     $expectation->at($_[1]);
@@ -16966,13 +17263,13 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp_or_opt
                       q{exp_or_opt},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:(?=\s*[};]|\s*\Z))/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -16980,7 +17277,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp_or_opt
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -17027,12 +17324,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp_or_opt
         
         last unless defined $_tok;
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/(?=\\s*[\};]|\\s*\\Z)/ <commit> <reject>]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{exp_or_opt},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -17061,7 +17360,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp_or_opt
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::option($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::option($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [option]>>},
@@ -17074,7 +17373,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp_or_opt
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [option]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{exp_or_opt},
                       $tracelevel)
@@ -17084,12 +17383,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp_or_opt
         
         }
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [option]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{exp_or_opt},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -17118,7 +17419,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp_or_opt
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::XML::XSH2::Parser::exp($thisparser,$text,$repeating,$_noactions,undef,sub { \@arg })))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [exp]>>},
@@ -17131,7 +17432,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp_or_opt
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [exp]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{exp_or_opt},
                       $tracelevel)
@@ -17141,12 +17442,14 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp_or_opt
         
         }
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [exp]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{exp_or_opt},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -17181,7 +17484,7 @@ sub Parse::RecDescent::XML::XSH2::Parser::exp_or_opt
                       q{exp_or_opt},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{exp_or_opt},
                       $tracelevel)
