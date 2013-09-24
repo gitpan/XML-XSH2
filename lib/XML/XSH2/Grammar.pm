@@ -1,5 +1,5 @@
 # This file was automatically generated from src/xsh_grammar.xml on 
-# Mon Apr  1 18:23:18 2013
+# Tue Sep 24 18:48:21 2013
 
 
 package XML::XSH2::Grammar;
@@ -459,7 +459,13 @@ $grammar=<<'_EO_GRAMMAR_';
 _EO_GRAMMAR_
 
 sub compile {
-  Parse::RecDescent->Precompile($grammar,"XML::XSH2::Parser");
+  my @opts = ( { -standalone => 1 },
+               $grammar,
+               "XML::XSH2::Parser",
+             );
+  shift @opts
+      if $Parse::RecDescent::VERSION < 1.967_005; # Standalone not supported.
+  Parse::RecDescent->Precompile(@opts);
 }
 
 sub new {

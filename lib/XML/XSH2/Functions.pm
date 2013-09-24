@@ -41,7 +41,7 @@ use vars qw/@ISA @EXPORT_OK %EXPORT_TAGS $VERSION $REVISION $OUT
 	  /;
 
 BEGIN {
-  $VERSION='2.1.7'; # VERSION TEMPLATE
+  $VERSION='2.1.8'; # VERSION TEMPLATE
   $REVISION=q($Revision: 2.49 $);
   @ISA=qw(Exporter);
   @PARAM_VARS=qw/$ENCODING
@@ -1246,7 +1246,8 @@ EOS
   } else {    
     print STDERR "Saving compiled '$SCRIPT' to '$DUMP'\n" unless $QUIET;
     open my $f, ($DUMP_APPEND ? '>>' : '>'), $DUMP || die "Can't dump parse tree to '$DUMP': $!";
-    print {$f} "#!/usr/bin/env perl\n" unless $DUMP_APPEND;
+    require Config;
+    print {$f} "$Config::Config{startperl}\n" unless $DUMP_APPEND;
     print {$f} $dump;
     close $f;
     chmod 0755, $DUMP unless $DUMP_APPEND;
