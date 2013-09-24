@@ -41,7 +41,7 @@ use vars qw/@ISA @EXPORT_OK %EXPORT_TAGS $VERSION $REVISION $OUT
 	  /;
 
 BEGIN {
-  $VERSION='2.1.8'; # VERSION TEMPLATE
+  $VERSION='2.1.9'; # VERSION TEMPLATE
   $REVISION=q($Revision: 2.49 $);
   @ISA=qw(Exporter);
   @PARAM_VARS=qw/$ENCODING
@@ -6137,7 +6137,8 @@ use vars qw(@ISA);
 #######################################################################
 #######################################################################
 
-  package XML::SAX::Writer::XMLEnc;
+  package # hide from PAUSE
+      XML::SAX::Writer::XMLEnc;
 use vars qw(@ISA);
 @ISA=qw(XML::SAX::Writer::XML);
 

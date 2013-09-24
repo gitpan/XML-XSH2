@@ -4,7 +4,7 @@
       "Petr Pajas (pajas@matfyz.cz)"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "ExtUtils::MakeMaker version 6.78, CPAN::Meta::Converter version 2.120351",
+   "generated_by" : "ExtUtils::MakeMaker version 6.6302, CPAN::Meta::Converter version 2.120630",
    "license" : [
       "unknown"
    ],
@@ -49,5 +49,5 @@
       }
    },
    "release_status" : "stable",
-   "version" : "v2.1.8"
+   "version" : "v2.1.9"
 }
