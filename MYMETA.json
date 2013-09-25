@@ -48,6 +48,6 @@
          }
       }
    },
-   "release_status" : "testing",
-   "version" : "2.1_11"
+   "release_status" : "stable",
+   "version" : "v2.1.12"
 }
