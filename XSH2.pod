@@ -1,6 +1,6 @@
 =for comment
   This file was automatically generated from src/xsh_grammar.xml
-  on Wed Sep 25 00:28:10 2013
+  on Wed Sep 25 10:13:59 2013
 
 =head1 NAME
 
@@ -4772,4 +4772,3 @@ Petr Pajas, pajas@matfyz.cz
 L<xsh>, L<XML::XSH2>, L<XML::XSH2::Compile>, L<XML::LibXML>, L<XML::XUpdate>, L<http://xsh.sourceforge.net/doc>
 
 =cut
-

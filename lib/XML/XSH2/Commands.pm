@@ -1,5 +1,5 @@
 # This file was automatically generated from src/xsh_grammar.xml on 
-# Wed Sep 25 00:28:09 2013
+# Wed Sep 25 10:13:58 2013
 package XML::XSH2::Functions;
 
 %COMMANDS = (
