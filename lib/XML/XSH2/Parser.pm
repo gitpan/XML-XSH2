@@ -1774,7 +1774,8 @@ use vars qw ( $AUTOLOAD $VERSION $_FILENAME);
 
 my $ERRORS = 0;
 
-our $VERSION = '1.967006';
+our $VERSION = # Hide from PAUSE
+     '1.967006';
 $VERSION = eval $VERSION;
 $_FILENAME=__FILE__;
 
