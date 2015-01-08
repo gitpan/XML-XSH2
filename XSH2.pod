@@ -1,6 +1,6 @@
 =for comment
   This file was automatically generated from src/xsh_grammar.xml
-  on Mon Nov 25 17:19:03 2013
+  on Thu Jan  8 09:43:23 2015
 
 =head1 NAME
 
@@ -1759,9 +1759,9 @@ last [B<expression>]
 
 =item Description:
 
-The last command is like the break statement in C (as used in loops); it immediately exits an enclosing loop. The optional B<expression> argument may evaluate to a positive integer number that indicates which level of the nested loops to quit. If this argument is omitted, it defaults to 1, i.e. the innermost loop.
+The B<last> command is like the break statement in C (as used in loops); it immediately exits an enclosing loop. The optional B<expression> argument may evaluate to a positive integer number that indicates which level of the nested loops to quit. If this argument is omitted, it defaults to 1, i.e. the innermost loop.
 
-Using this command outside a subroutine causes an immediate run-time error.
+Using this command outside a loop causes an immediate run-time error.
 
 =item See also:
 

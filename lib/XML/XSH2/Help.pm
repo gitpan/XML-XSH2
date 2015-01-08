@@ -1,5 +1,5 @@
 # This file was automatically generated from src/xsh_grammar.xml on 
-# Mon Nov 25 17:19:03 2013
+# Thu Jan  8 09:43:22 2015
 
 package XML::XSH2::Help;
 use strict;
@@ -3149,15 +3149,15 @@ $HELP{'last'}=[<<'END'];
 usage:       last [[expression]]
              
 description:
-	     The last command is like the break statement in C (as used in
-	     loops); it immediately exits an enclosing loop. The optional
-	     [expression] argument may evaluate to a positive integer
-	     number that indicates which level of the nested loops to quit.
-	     If this argument is omitted, it defaults to 1, i.e. the
-	     innermost loop.
+	     The 'last' command is like the break statement in C (as used
+	     in loops); it immediately exits an enclosing loop. The
+	     optional [expression] argument may evaluate to a positive
+	     integer number that indicates which level of the nested loops
+	     to quit. If this argument is omitted, it defaults to 1, i.e.
+	     the innermost loop.
 
-	     Using this command outside a subroutine causes an immediate
-	     run-time error.
+	     Using this command outside a loop causes an immediate run-time
+	     error.
 
 see also:     foreach while iterate next last
 
